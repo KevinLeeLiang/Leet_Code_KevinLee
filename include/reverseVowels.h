@@ -16,35 +16,39 @@
 
 #include "algorithm"
 #include <unordered_set>
+
 using namespace std;
+
 class reverseVowels_solution {
 private:
-  const unordered_set<char> vowels = {'a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'};
-  bool isVowel(char c) {
-    return vowels.count(c) != 0;
-  }
-public:
-  string reverseVowels(string s){
-    int slow, fast;
-    slow = 0;
-    fast = s.size() - 1;
-    while (slow < fast) {
-      if (!isVowel(s[slow])) {
-        slow++;
-        continue;
-      }
-      if (!isVowel(s[fast])) {
-        fast--;
-        continue;
-      }
-      char tmp = s[slow];
-      s[slow] = s[fast];
-      s[fast] = tmp;
-      slow ++;
-      fast --;
+    const unordered_set<char> vowels = {'a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'};
+
+    bool isVowel(char c) {
+        return vowels.count(c) != 0;
     }
-    return s;
-  }
+
+public:
+    string reverseVowels(string s) {
+        int slow, fast;
+        slow = 0;
+        fast = s.size() - 1;
+        while (slow < fast) {
+            if (!isVowel(s[slow])) {
+                slow++;
+                continue;
+            }
+            if (!isVowel(s[fast])) {
+                fast--;
+                continue;
+            }
+            char tmp = s[slow];
+            s[slow] = s[fast];
+            s[fast] = tmp;
+            slow++;
+            fast--;
+        }
+        return s;
+    }
 
 };
 

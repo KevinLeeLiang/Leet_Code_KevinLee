@@ -17,32 +17,34 @@
 #include<vector>
 #include<unordered_map>
 #include<queue>
+
 using namespace std;
+
 class topKFrequent_solution {
 public:
-  vector<int> topKFrequent(vector<int>& nums, int k) {
-    unordered_map<int, int> map;
-    for (auto num : nums){
-      map[num]++;
-    }
-    auto cmp = [](pair<int, int>&a, pair<int, int>& b) {
-      return a.second > b.second;
-    };
-    priority_queue<pair<int, int>, vector<pair<int, int>>, decltype(cmp)> pq(cmp);
-    for (auto pair : map) {
-      pq.push(pair);
-      if (pq.size() > k){
-        pq.pop();
-      }
-    }
+    vector<int> topKFrequent(vector<int> &nums, int k) {
+        unordered_map<int, int> map;
+        for (auto num : nums) {
+            map[num]++;
+        }
+        auto cmp = [](pair<int, int> &a, pair<int, int> &b) {
+            return a.second > b.second;
+        };
+        priority_queue<pair<int, int>, vector<pair<int, int>>, decltype(cmp)> pq(cmp);
+        for (auto pair : map) {
+            pq.push(pair);
+            if (pq.size() > k) {
+                pq.pop();
+            }
+        }
 
-    vector<int>result;
-    while (!pq.empty()) {
-      result.push_back(pq.top().first);
-      pq.pop();
+        vector<int> result;
+        while (!pq.empty()) {
+            result.push_back(pq.top().first);
+            pq.pop();
+        }
+        return result;
     }
-    return result;
-  }
 };
 
 
