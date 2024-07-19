@@ -2938,9 +2938,44 @@ void checkSubarraySum_test() {
     }
 }
 
+namespace findMaxLength {
+    int findMaxLength(vector<int>& nums) {
+        int maxLength = 0;
+        unordered_map<int, int> mp;
+        int counter = 0;
+        mp[counter] = -1;
+        int n = nums.size();
+        for (int i = 0; i < n; i++) {
+            int num = nums[i];
+            if (num == 1) {
+                counter++;
+            } else {
+                counter--;
+            }
+            if (mp.count(counter)) {
+                int prevIndex = mp[counter];
+                maxLength = max(maxLength, i - prevIndex);
+            } else {
+                mp[counter] = i;
+            }
+        }
+        return maxLength;
+    }
+}
+
+void findMaxLength_test() {
+    vector<int> nums;
+    nums = {0, 1};
+    cout << findMaxLength::findMaxLength(nums) << endl;
+    nums = {0, 1, 0};
+    cout << findMaxLength::findMaxLength(nums) << endl;
+}
+
 int main() {
-    checkSubarraySum_test();
+    findMaxLength_test();
     {
+        //checkSubarraySum_test();
+
         // findLUSlength2_test();
 
         // findLUSlength_test();
