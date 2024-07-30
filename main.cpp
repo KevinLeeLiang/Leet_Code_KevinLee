@@ -2939,7 +2939,7 @@ void checkSubarraySum_test() {
 }
 
 namespace findMaxLength {
-    int findMaxLength(vector<int>& nums) {
+    int findMaxLength(vector<int> &nums) {
         int maxLength = 0;
         unordered_map<int, int> mp;
         int counter = 0;
@@ -2971,9 +2971,76 @@ void findMaxLength_test() {
     cout << findMaxLength::findMaxLength(nums) << endl;
 }
 
+namespace leastBricks {
+    int leastBricks(vector<vector<int>>& wall) {
+        unordered_map<int, int>cnt;
+        for (auto &widths : wall) {
+            int n = widths.size();
+            int sum = 0;
+            for (int i = 0; i < n - 1; ++i) {
+                sum += widths[i];
+                cnt[sum]++;
+            }
+        }
+        int maxCnt = 0;
+        for (auto [_, c] : cnt) {
+            maxCnt = max(maxCnt, c);
+        }
+        return wall.size() - maxCnt;
+    }
+}
+
+void leastBricks_test() {
+    vector<vector<int>> wall;
+    wall = {{1, 2, 2, 1},
+            {3, 1, 2},
+            {1, 3, 2},
+            {2, 4},
+            {3, 1, 2},
+            {1, 3, 1, 1}};
+    cout << leastBricks::leastBricks(wall) << endl;
+    wall = {{1},
+            {1},
+            {1}};
+    cout << leastBricks::leastBricks(wall) << endl;
+}
+
+namespace nextGreaterElement3 {
+    int nextGreaterElement(int n) {
+        string nums = to_string(n);
+        int i = nums.size() - 2;
+        while (i >= 0 && nums[i] >= nums[i + 1]) {
+            i--;
+        }
+        if (i < 0) {
+            return -1;
+        }
+        int j = nums.size() - 1;
+        while (j >= 0 && nums[i] >= nums[j]) {
+            j--;
+        }
+        swap(nums[i], nums[j]);
+        reverse(nums.begin() + i + 1, nums.end()) ;
+        long ans = stol(nums);
+        return ans > INT_MAX ? -1 : ans;
+    }
+}
+
+void nextGreaterElement3_test(){
+    int n ;
+    n = 12;
+    cout << nextGreaterElement3::nextGreaterElement(n) << endl;
+    n = 21;
+    cout << nextGreaterElement3::nextGreaterElement(n) << endl;
+}
+
 int main() {
-    findMaxLength_test();
+    nextGreaterElement3_test();
     {
+    //leastBricks_test();
+
+        //findMaxLength_test();
+
         //checkSubarraySum_test();
 
         // findLUSlength2_test();
