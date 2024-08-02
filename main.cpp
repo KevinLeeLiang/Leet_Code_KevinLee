@@ -3289,10 +3289,10 @@ namespace findTilt {
         if (node == nullptr) {
             return 0;
         }
-        int sumLeft = dfs(node->left);
-        int sumRight = dfs(node->right);
-        ans += abs(sumLeft - sumRight);
-        return sumLeft + sumRight + node->val;
+        int left = dfs(node->left);
+        int righ = dfs(node->right);
+        ans += abs(left - righ);
+        return left + righ + node->val;
     }
 
     int findTilt(TreeNode::TreeNode* root) {
