@@ -2972,8 +2972,8 @@ void findMaxLength_test() {
 }
 
 namespace leastBricks {
-    int leastBricks(vector<vector<int>>& wall) {
-        unordered_map<int, int>cnt;
+    int leastBricks(vector<vector<int>> &wall) {
+        unordered_map<int, int> cnt;
         for (auto &widths : wall) {
             int n = widths.size();
             int sum = 0;
@@ -2983,7 +2983,7 @@ namespace leastBricks {
             }
         }
         int maxCnt = 0;
-        for (auto [_, c] : cnt) {
+        for (auto[_, c] : cnt) {
             maxCnt = max(maxCnt, c);
         }
         return wall.size() - maxCnt;
@@ -3020,24 +3020,316 @@ namespace nextGreaterElement3 {
             j--;
         }
         swap(nums[i], nums[j]);
-        reverse(nums.begin() + i + 1, nums.end()) ;
+        reverse(nums.begin() + i + 1, nums.end());
         long ans = stol(nums);
         return ans > INT_MAX ? -1 : ans;
     }
 }
 
-void nextGreaterElement3_test(){
-    int n ;
+void nextGreaterElement3_test() {
+    int n;
     n = 12;
     cout << nextGreaterElement3::nextGreaterElement(n) << endl;
     n = 21;
     cout << nextGreaterElement3::nextGreaterElement(n) << endl;
 }
 
+namespace QTree {
+    class Node {
+    public:
+        bool val;
+        bool isLeaf;
+        Node *topLeft;
+        Node *topRight;
+        Node *bottomLeft;
+        Node *bottomRight;
+
+        Node() {
+            val = false;
+            isLeaf = false;
+            topLeft = NULL;
+            topRight = NULL;
+            bottomLeft = NULL;
+            bottomRight = NULL;
+        }
+
+        Node(bool _val, bool _isLeaf) {
+            val = _val;
+            isLeaf = _isLeaf;
+            topLeft = NULL;
+            topRight = NULL;
+            bottomLeft = NULL;
+            bottomRight = NULL;
+        }
+
+        Node(bool _val, bool _isLeaf, Node *_topLeft, Node *_topRight, Node *_bottomLeft, Node *_bottomRight) {
+            val = _val;
+            isLeaf = _isLeaf;
+            topLeft = _topLeft;
+            topRight = _topRight;
+            bottomLeft = _bottomLeft;
+            bottomRight = _bottomRight;
+        }
+
+    };
+
+    Node *create_qtreenode(vector<vector<int>> &qtree) {
+        Node *node = new Node(qtree[0][1], qtree[0][0]);
+        queue<Node *> q;
+        q.push(node);
+        int start = 0;
+        while (!q.empty()) {
+            int size = q.size();
+            start = start + size;
+            for (int i = 0; i < size; ++i) {
+                auto tmp = q.front();
+                if (tmp->isLeaf == 0) {
+                    tmp->topLeft = new Node(qtree[start + 0][1], qtree[start + 0][0]);
+                    tmp->topRight = new Node(qtree[start + 1][1], qtree[start + 1][0]);
+                    tmp->bottomLeft = new Node(qtree[start + 2][1], qtree[start + 2][0]);
+                    tmp->bottomRight = new Node(qtree[start + 3][1], qtree[start + 3][0]);
+                    q.push(tmp->topLeft);
+                    q.push(tmp->topRight);
+                    q.push(tmp->bottomLeft);
+                    q.push(tmp->bottomRight);
+                } else if (tmp->isLeaf == 1) {
+                    start = start + 4;
+                }
+                q.pop();
+            }
+        }
+        return node;
+    }
+
+    Node *intersect(Node *quadTree1, Node *quadTree2) {
+        if (quadTree1->isLeaf) {
+            if (quadTree1->val) {
+                return new Node(true, true);
+            }
+            return new Node(quadTree2->val, quadTree2->isLeaf, quadTree2->topLeft, quadTree2->topRight,
+                            quadTree2->bottomLeft, quadTree2->bottomRight);
+        }
+        if (quadTree2->isLeaf) {
+            return intersect(quadTree2, quadTree1);
+        }
+        Node *o1 = intersect(quadTree1->topLeft, quadTree2->topLeft);
+        Node *o2 = intersect(quadTree1->topRight, quadTree2->topRight);
+        Node *o3 = intersect(quadTree1->bottomLeft, quadTree2->bottomLeft);
+        Node *o4 = intersect(quadTree1->bottomRight, quadTree2->bottomRight);
+        if (o1->isLeaf && o2->isLeaf && o3->isLeaf && o4->isLeaf && o1->val == o2->val && o1->val == o3->val &&
+            o1->val == o4->val) {
+            return new Node(o1->val, true);
+        }
+        return new Node(false, false, o1, o2, o3, o4);
+    }
+
+    void print_qtreenode(Node *root) {
+
+    }
+}
+
+void QTree_test() {
+    vector<vector<int>> qtree1, qtree2;
+    qtree1 = {{0, 1},
+              {1, 1},
+              {1, 1},
+              {1, 0},
+              {1, 0}};
+    qtree2 = {{0,  1},
+              {1,  1},
+              {0,  1},
+              {1,  1},
+              {1,  0},
+              {-1, -1},
+              {-1, -1},
+              {-1, -1},
+              {-1, -1},
+              {1,  0},
+              {1,  0},
+              {1,  1},
+              {1,  1}};
+    QTree::Node *qtree_node1 = QTree::create_qtreenode(qtree1);
+    QTree::Node *qtree_node2 = QTree::create_qtreenode(qtree2);
+    QTree::Node *res = QTree::intersect(qtree_node1, qtree_node2);
+    qtree1 = {{1, 0}};
+    qtree2 = {{1, 0}};
+    qtree_node1 = QTree::create_qtreenode(qtree1);
+    qtree_node2 = QTree::create_qtreenode(qtree2);
+    res = QTree::intersect(qtree_node1, qtree_node2);
+}
+
+namespace NTree {
+    class Node {
+    public:
+        int val;
+        vector<Node *> children;
+
+        Node() {}
+
+        Node(int _val) {
+            val = _val;
+        }
+
+        Node(int _val, vector<Node *> _children) {
+            val = _val;
+            children = _children;
+        }
+    };
+
+    Node *createNTree(vector<int> tree) {
+        Node *root = new Node(tree[0]);
+        queue<Node *> q;
+        int start = 2;
+        q.push(root);
+        while (!q.empty()) {
+            int size = q.size();
+
+            for (int i = 0; i < size; ++i) {
+                auto n = q.front();
+                while (start < tree.size() && tree[start] != 0) {
+                    auto tmp = new Node(tree[start]);
+                    n->children.push_back(tmp);
+                    q.push(tmp);
+                    start++;
+                }
+                if (start < tree.size() && tree[start] == 0) {
+                    start++;
+                }
+                q.pop();
+            }
+        }
+        return root;
+    }
+
+    int maxDepth(Node *root) {
+        queue<Node *> q;
+        q.push(root);
+        int res = 0;
+        if (root == nullptr) {
+            return 0;
+        }
+        int laycount = 0;
+        int laynum = 1;
+        while (!q.empty()) {
+            auto tmp = q.front();
+            for (auto node : tmp->children) {
+                q.push(node);
+            }
+            q.pop();
+            laycount++;
+            if (laycount == laynum) {
+                res++;
+                laynum = q.size();
+                laycount = 0;
+            }
+        }
+        return res;
+    }
+}
+
+void ntreedepth_test() {
+    vector<int> ntree = {1, 0, 3, 2, 4, 0, 5, 6};
+    NTree::Node *node = NTree::createNTree(ntree);
+    cout << NTree::maxDepth(node) << endl;
+    ntree = {1, 0, 2, 3, 4, 5, 0, 0, 6, 7, 0, 8, 0, 9, 10, 0, 0, 11, 0, 12, 0, 13, 0, 0, 14};
+    node = NTree::createNTree(ntree);
+    cout << NTree::maxDepth(node) << endl;
+}
+
+namespace subarraySum {
+    int subarraySum(vector<int> &nums, int k) {
+        unordered_map<int, int> mp;
+        mp[0] = 1;
+        int count = 0, pre = 0;
+        for (auto x : nums) {
+            pre += x;
+            if (mp.find(pre - k) != mp.end()) {
+                count += mp[pre - k];
+            }
+            mp[pre]++;
+        }
+        return count;
+    }
+}
+
+void subarraySum_test() {
+    vector<int> nums;
+    int k;
+    nums = {1, 1, 1};
+    k = 2;
+    cout << subarraySum::subarraySum(nums, k) << endl;
+    nums = {1, 2, 3};
+    k = 3;
+    cout << subarraySum::subarraySum(nums, k) << endl;
+}
+
+namespace arrayPairSum {
+    int arrayPairSum(vector<int> &nums) {
+        sort(nums.begin(), nums.end());
+        int ans = 0;
+        for (int i = 0; i < nums.size(); i += 2) {
+            ans += nums[i];
+        }
+        return ans;
+    }
+}
+
+void arrayPairSum_test() {
+    vector<int> nums;
+    nums = {1, 4, 3, 2};
+    cout << arrayPairSum::arrayPairSum(nums) << endl;
+    nums = {6, 2, 6, 5, 1, 2};
+    cout << arrayPairSum::arrayPairSum(nums) << endl;
+}
+
+namespace findTilt {
+    int ans = 0;
+
+    int dfs(TreeNode::TreeNode* node) {
+        if (node == nullptr) {
+            return 0;
+        }
+        int sumLeft = dfs(node->left);
+        int sumRight = dfs(node->right);
+        ans += abs(sumLeft - sumRight);
+        return sumLeft + sumRight + node->val;
+    }
+
+    int findTilt(TreeNode::TreeNode* root) {
+        ans = 0;
+        dfs(root);
+        return ans;
+    }
+}
+
+void findTilt_test() {
+    TreeNode::TreeNode *node;
+    vector<int> tree;
+    tree = {1, 2, 3};
+    node = create_treenode(tree);
+    cout << findTilt::findTilt(node) << endl;
+    tree = {4, 2, 9, 3, 5, 0, 7};
+    node = create_treenode(tree);
+    cout << findTilt::findTilt(node) << endl;
+    tree = {21, 7, 14, 1, 1, 2, 2, 3, 3};
+    node = create_treenode(tree);
+    cout << findTilt::findTilt(node) << endl;
+}
+
 int main() {
-    nextGreaterElement3_test();
+    findTilt_test();
     {
-    //leastBricks_test();
+        //arrayPairSum_test();
+
+        //subarraySum_test();
+
+        //ntreedepth_test();
+
+        //QTree_test();
+
+        //nextGreaterElement3_test();
+
+        //leastBricks_test();
 
         //findMaxLength_test();
 
