@@ -3285,7 +3285,7 @@ void arrayPairSum_test() {
 namespace findTilt {
     int ans = 0;
 
-    int dfs(TreeNode::TreeNode* node) {
+    int dfs(TreeNode::TreeNode *node) {
         if (node == nullptr) {
             return 0;
         }
@@ -3295,7 +3295,7 @@ namespace findTilt {
         return left + righ + node->val;
     }
 
-    int findTilt(TreeNode::TreeNode* root) {
+    int findTilt(TreeNode::TreeNode *root) {
         ans = 0;
         dfs(root);
         return ans;
@@ -3316,9 +3316,81 @@ void findTilt_test() {
     cout << findTilt::findTilt(node) << endl;
 }
 
+namespace nearestPalindromic {
+    using ULL = unsigned long long;
+    vector<ULL> getCandidates(const string& n) {
+        int len = n.length();
+        vector<ULL> candidates = {
+                (ULL)pow(10, len - 1) - 1,
+                (ULL)pow(10, len) + 1,
+        };
+        ULL selfPrefix = stoull(n.substr(0, (len + 1) / 2));
+        for (int i : {selfPrefix - 1, selfPrefix, selfPrefix + 1}) {
+            string prefix = to_string(i);
+            string candidate = prefix + string(prefix.rbegin() + (len & 1), prefix.rend());
+            candidates.push_back(stoull(candidate));
+        }
+        return candidates;
+    }
+
+    string nearestPalindromic(string n) {
+        ULL selfNumber = stoull(n), ans = -1;
+        const vector<ULL> &candidates = getCandidates(n);
+        for (auto &candidate : candidates) {
+            if (candidate != selfNumber) {
+                if (ans == -1 ||
+                    llabs(candidate - selfNumber) < llabs(ans - selfNumber) ||
+                    llabs(candidate - selfNumber) == llabs(ans - selfNumber) && candidate < ans) {
+                    ans = candidate;
+                }
+            }
+        }
+        return to_string(ans);
+    }
+}
+
+void nearestPalindromic_test() {
+    string n;
+    n = "123";
+    cout << n << " 的最近的回文数是 " << nearestPalindromic::nearestPalindromic(n) << endl;
+    n = "1";
+    cout << n << " 的最近的回文数是 " << nearestPalindromic::nearestPalindromic(n) << endl;
+    n = "99321";
+    cout << n << " 的最近的回文数是 " << nearestPalindromic::nearestPalindromic(n) << endl;
+}
+
+namespace arrayNesting {
+    int arrayNesting(vector<int>& nums) {
+        int ans = 0, n = nums.size();
+        vector<int> vis(n);
+        for (int i = 0; i < n; ++i) {
+            int cnt = 0;
+            while (!vis[i]) {
+                vis[i] = true;
+                i = nums[i];
+                ++cnt;
+            }
+            ans = max(ans, cnt);
+        }
+        return ans;
+    }
+}
+
+void arrayNesting_test(){
+    vector<int>n ;
+    n = {5,4,0,3,1,6,2};
+    cout << arrayNesting::arrayNesting(n) << endl;
+    n = {0,1,2};
+    cout << arrayNesting::arrayNesting(n) << endl;
+}
+
 int main() {
-    findTilt_test();
+    arrayNesting_test();
     {
+    //nearestPalindromic_test();
+
+        //findTilt_test();
+
         //arrayPairSum_test();
 
         //subarraySum_test();
