@@ -257,7 +257,7 @@ namespace kSmallestPairs {
                                     const pair<int, int> &b) {
             return nums1[a.first] + nums2[a.second] > nums1[b.first] + nums2[b.second];
         };
-        priority_queue<pair<int, int>, vector<pair<int, int>>, decltype(cmp)> pq(cmp);
+        priority_queue<pair<int, int>, vector<pair<int, int >>, decltype(cmp)> pq(cmp);
         int m = nums1.size();
         int n = nums2.size();
         vector<vector<int>> ans;
@@ -1970,8 +1970,8 @@ namespace findMaxForm {
 
     int findMaxForm(vector<string> &strs, int m, int n) {
         int length = strs.size();
-        vector<vector<vector<int>>> dp(
-                length + 1, vector<vector<int>>(m + 1, vector<int>(n + 1)));
+        vector<vector<vector<int >>> dp(
+                length + 1, vector<vector<int >>(m + 1, vector<int>(n + 1)));
         for (int i = 1; i <= length; i++) {
             vector<int> &&zerosOnes = getZerosOnes(strs[i - 1]);
             int zeros = zerosOnes[0], ones = zerosOnes[1];
@@ -3318,11 +3318,12 @@ void findTilt_test() {
 
 namespace nearestPalindromic {
     using ULL = unsigned long long;
-    vector<ULL> getCandidates(const string& n) {
+
+    vector<ULL> getCandidates(const string &n) {
         int len = n.length();
         vector<ULL> candidates = {
-                (ULL)pow(10, len - 1) - 1,
-                (ULL)pow(10, len) + 1,
+                (ULL) pow(10, len - 1) - 1,
+                (ULL) pow(10, len) + 1,
         };
         ULL selfPrefix = stoull(n.substr(0, (len + 1) / 2));
         for (int i : {selfPrefix - 1, selfPrefix, selfPrefix + 1}) {
@@ -3360,7 +3361,7 @@ void nearestPalindromic_test() {
 }
 
 namespace arrayNesting {
-    int arrayNesting(vector<int>& nums) {
+    int arrayNesting(vector<int> &nums) {
         int ans = 0, n = nums.size();
         vector<int> vis(n);
         for (int i = 0; i < n; ++i) {
@@ -3376,18 +3377,88 @@ namespace arrayNesting {
     }
 }
 
-void arrayNesting_test(){
-    vector<int>n ;
-    n = {5,4,0,3,1,6,2};
+void arrayNesting_test() {
+    vector<int> n;
+    n = {5, 4, 0, 3, 1, 6, 2};
     cout << arrayNesting::arrayNesting(n) << endl;
-    n = {0,1,2};
+    n = {0, 1, 2};
     cout << arrayNesting::arrayNesting(n) << endl;
 }
 
+namespace matrixReshape {
+    vector<vector<int>> matrixReshape(vector<vector<int>> &mat, int r, int c) {
+        int m = mat.size();
+        int n = mat[0].size();
+        if (m * n != r * c) {
+            return mat;
+        }
+
+        vector<vector<int>> ans(r, vector<int>(c));
+        for (int x = 0; x < m * n; ++x) {
+            ans[x / c][x % c] = mat[x / n][x % n];
+        }
+        return ans;
+
+    }
+}
+
+void matrixReshape_test() {
+    vector<vector<int>> mat;
+    int r, c;
+    mat = {{1, 2},
+           {3, 4}};
+    r = 1, c = 4;
+    auto ans = matrixReshape::matrixReshape(mat, r, c);
+    print_mat(ans);
+    r = 2, c = 4;
+    ans = matrixReshape::matrixReshape(mat, r, c);
+    print_mat(ans);
+}
+
+namespace checkInclusion {
+    bool checkInclusion(string s1, string s2) {
+        int n = s1.length(), m = s2.length();
+        if (n > m) {
+            return false;
+        }
+        vector<int> cnt1(26), cnt2(26);
+        for (int i = 0; i < n; ++i) {
+            ++cnt1[s1[i] - 'a'];
+            ++cnt2[s2[i] - 'a'];
+        }
+        if (cnt1 == cnt2) {
+            return true;
+        }
+        for (int i = n; i < m; ++i) {
+            ++cnt2[s2[i] - 'a'];
+            --cnt2[s2[i - n] - 'a'];
+            if (cnt1 == cnt2) {
+                return true;
+            }
+        }
+        return false;
+
+    }
+}
+
+void checkInclusion_test(){
+    string s1, s2;
+    s1 = "ab";
+    s2 = "eidbaooo";
+    cout << checkInclusion::checkInclusion(s1, s2) << endl;
+    s1 = "ab";
+    s2 = "eidboaoo";
+    cout << checkInclusion::checkInclusion(s1, s2) << endl;
+}
+
 int main() {
-    arrayNesting_test();
+    checkInclusion_test();
     {
-    //nearestPalindromic_test();
+    //matrixReshape_test();
+
+        //arrayNesting_test();
+
+        //nearestPalindromic_test();
 
         //findTilt_test();
 
