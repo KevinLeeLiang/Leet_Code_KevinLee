@@ -3441,7 +3441,7 @@ namespace checkInclusion {
     }
 }
 
-void checkInclusion_test(){
+void checkInclusion_test() {
     string s1, s2;
     s1 = "ab";
     s2 = "eidbaooo";
@@ -3451,10 +3451,67 @@ void checkInclusion_test(){
     cout << checkInclusion::checkInclusion(s1, s2) << endl;
 }
 
+namespace isSubtree {
+    bool check(TreeNode::TreeNode *o, TreeNode::TreeNode *t) {
+        if (!o && !t) {
+            return true;
+        }
+        if ((o && !t) || (!o && t) || (o->val != t->val)) {
+            return false;
+        }
+        return check(o->left, t->left) && check(o->right, t->right);
+    }
+
+    bool dfs(TreeNode::TreeNode *o, TreeNode::TreeNode *t) {
+        if (!o) {
+            return false;
+        }
+        return check(o, t) || dfs(o->left, t) || dfs(o->right, t);
+    }
+    bool isSubtree(TreeNode::TreeNode *root, TreeNode::TreeNode *subRoot) {
+        return dfs(root, subRoot);
+    }
+}
+
+void isSubtree_test() {
+    TreeNode::TreeNode *root, *subRoot;
+    vector<int> root_data, subroot_data;
+    root_data = {3, 4, 5, 1, 2};
+    subroot_data = {4, 1, 2};
+    root = create_treenode(root_data);
+    subRoot = create_treenode(subroot_data);
+    cout << isSubtree::isSubtree(root, subRoot);
+    root_data = {3, 4, 5, 1, 2, 0, 0, 0, 0, 10};
+    subroot_data = {4, 1, 2};
+    cout << isSubtree::isSubtree(root, subRoot);
+}
+
+namespace distributeCandies {
+    int distributeCandies(vector<int>& candyType) {
+        unordered_set<int> set(candyType.begin(), candyType.end());
+
+        return min(set.size(), candyType.size() / 2);
+    }
+}
+
+void distributeCandies_test(){
+    vector<int>candyType;
+    candyType = {1,1,2,2,3,3};
+    cout << distributeCandies::distributeCandies(candyType) << endl;
+    candyType = {1,1,2,3};
+    cout << distributeCandies::distributeCandies(candyType) << endl;
+    candyType = {6,6,6,6};
+    cout << distributeCandies::distributeCandies(candyType) << endl;
+}
+
 int main() {
-    checkInclusion_test();
+    distributeCandies_test();
     {
-    //matrixReshape_test();
+    //isSubtree_test();
+
+        //checkInclusion_test();
+
+        //matrixReshape_test();
 
         //arrayNesting_test();
 
