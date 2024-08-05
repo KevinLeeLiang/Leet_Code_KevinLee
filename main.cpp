@@ -3468,6 +3468,7 @@ namespace isSubtree {
         }
         return check(o, t) || dfs(o->left, t) || dfs(o->right, t);
     }
+
     bool isSubtree(TreeNode::TreeNode *root, TreeNode::TreeNode *subRoot) {
         return dfs(root, subRoot);
     }
@@ -3487,27 +3488,27 @@ void isSubtree_test() {
 }
 
 namespace distributeCandies {
-    int distributeCandies(vector<int>& candyType) {
+    int distributeCandies(vector<int> &candyType) {
         unordered_set<int> set(candyType.begin(), candyType.end());
 
         return min(set.size(), candyType.size() / 2);
     }
 }
 
-void distributeCandies_test(){
-    vector<int>candyType;
-    candyType = {1,1,2,2,3,3};
+void distributeCandies_test() {
+    vector<int> candyType;
+    candyType = {1, 1, 2, 2, 3, 3};
     cout << distributeCandies::distributeCandies(candyType) << endl;
-    candyType = {1,1,2,3};
+    candyType = {1, 1, 2, 3};
     cout << distributeCandies::distributeCandies(candyType) << endl;
-    candyType = {6,6,6,6};
+    candyType = {6, 6, 6, 6};
     cout << distributeCandies::distributeCandies(candyType) << endl;
 }
 
 int main() {
     distributeCandies_test();
     {
-    //isSubtree_test();
+        //isSubtree_test();
 
         //checkInclusion_test();
 
