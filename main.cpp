@@ -3507,13 +3507,17 @@ void distributeCandies_test() {
 
 namespace findPaths {
     static constexpr int MOD = 1'000'000'007;
+
     int findPaths(int m, int n, int maxMove, int startRow, int startColumn) {
-        vector<vector<int>> directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        vector<vector<int>> directions = {{-1, 0},
+                                          {1,  0},
+                                          {0,  -1},
+                                          {0,  1}};
         int outCounts = 0;
-        vector<vector<int>>dp(m, vector<int>(n));
+        vector<vector<int>> dp(m, vector<int>(n));
         dp[startRow][startColumn] = 1;
         for (int i = 0; i < maxMove; ++i) {
-            vector<vector<int>>dpNew(m, vector<int>(n));
+            vector<vector<int>> dpNew(m, vector<int>(n));
             for (int j = 0; j < m; ++j) {
                 for (int k = 0; k < n; ++k) {
                     int count = dp[j][k];
@@ -3538,13 +3542,13 @@ namespace findPaths {
 
 void findPaths_test() {
     int m = 2, n = 2, maxMove = 2, startRow = 0, startColumn = 0;
-    cout << findPaths::findPaths(m, n, maxMove, startRow, startColumn) <<endl;
+    cout << findPaths::findPaths(m, n, maxMove, startRow, startColumn) << endl;
     m = 1, n = 3, maxMove = 3, startRow = 0, startColumn = 1;
-    cout << findPaths::findPaths(m, n, maxMove, startRow, startColumn) <<endl;
+    cout << findPaths::findPaths(m, n, maxMove, startRow, startColumn) << endl;
 }
 
 namespace findUnsortedSubarray {
-    int findUnsortedSubarray(vector<int>& nums) {
+    int findUnsortedSubarray(vector<int> &nums) {
         int srt = 0;
         int end = nums.size() - 1;
         auto sort_nums = nums;
@@ -3566,20 +3570,127 @@ namespace findUnsortedSubarray {
     }
 }
 
-void findUnsortedSubarray_test(){
-    vector<int>nums;
-    nums = {2,6,4,8,10,9,15};
+void findUnsortedSubarray_test() {
+    vector<int> nums;
+    nums = {2, 6, 4, 8, 10, 9, 15};
     cout << findUnsortedSubarray::findUnsortedSubarray(nums) << endl;
-    nums = {1,2,3,4};
+    nums = {1, 2, 3, 4};
     cout << findUnsortedSubarray::findUnsortedSubarray(nums) << endl;
 }
 
-int main() {
-    findUnsortedSubarray_test();
-    {
-    //findPaths_test();
+namespace minDistance {
+    int minDistance(string word1, string word2) {
+        int m = word1.size();
+        int n = word2.size();
+        vector<vector<int>> dp(m + 1, vector<int>(n + 1));
 
-    //distributeCandies_test();
+        for (int i = 1; i <= m; i++) {
+            char c1 = word1[i - 1];
+            for (int j = 1; j <= n; j++) {
+                char c2 = word2[j - 1];
+                if (c1 == c2) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+
+        int lcs = dp[m][n];
+        return m - lcs + n - lcs;
+    }
+}
+
+void minDistance_test() {
+    string word1, word2;
+    word1 = "sea";
+    word2 = "eat";
+    cout << minDistance::minDistance(word1, word2) << endl;
+    word1 = "leetcode";
+    word2 = "etco";
+    cout << minDistance::minDistance(word1, word2) << endl;
+}
+
+namespace outerTrees {
+    int cross(vector<int> & p, vector<int> & q, vector<int> & r) {
+        return (q[0] - p[0]) * (r[1] - q[1]) - (q[1] - p[1]) * (r[0] - q[0]);
+    }
+
+    vector<vector<int>> outerTrees(vector<vector<int>>& trees) {
+        int n = trees.size();
+        if (n < 4) {
+            return trees;
+        }
+        int leftMost = 0;
+        for (int i = 0; i < n; i++) {
+            if (trees[i][0] < trees[leftMost][0] ||
+                (trees[i][0] == trees[leftMost][0] &&
+                 trees[i][1] < trees[leftMost][1])) {
+                leftMost = i;
+            }
+        }
+
+        vector<vector<int>> res;
+        vector<bool> visit(n, false);
+        int p = leftMost;
+        do {
+            int q = (p + 1) % n;
+            for (int r = 0; r < n; r++) {
+                /* 如果 r 在 pq 的右侧，则 q = r */
+                if (cross(trees[p], trees[q], trees[r]) < 0) {
+                    q = r;
+                }
+            }
+            /* 是否存在点 i, 使得 p 、q 、i 在同一条直线上 */
+            for (int i = 0; i < n; i++) {
+                if (visit[i] || i == p || i == q) {
+                    continue;
+                }
+                if (cross(trees[p], trees[q], trees[i]) == 0) {
+                    res.emplace_back(trees[i]);
+                    visit[i] = true;
+                }
+            }
+            if  (!visit[q]) {
+                res.emplace_back(trees[q]);
+                visit[q] = true;
+            }
+            p = q;
+        } while (p != leftMost);
+        return res;
+    }
+}
+
+void outerTrees_test() {
+    vector<vector<int>> trees = {{1, 1},
+                                 {2, 2},
+                                 {2, 0},
+                                 {2, 4},
+                                 {3, 3},
+                                 {4, 2}};
+    auto ans = outerTrees::outerTrees(trees);
+    for (auto line : ans) {
+        print_vector(line);
+    }
+    trees = {{1, 2},
+             {2, 2},
+             {4, 2}};
+    ans = outerTrees::outerTrees(trees);
+    for (auto line : ans) {
+        print_vector(line);
+    }
+}
+
+int main() {
+    outerTrees_test();
+    {
+        //minDistance_test();
+
+        //findUnsortedSubarray_test();
+
+        //findPaths_test();
+
+        //distributeCandies_test();
 
         //isSubtree_test();
 
