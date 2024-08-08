@@ -3612,11 +3612,11 @@ void minDistance_test() {
 }
 
 namespace outerTrees {
-    int cross(vector<int> & p, vector<int> & q, vector<int> & r) {
+    int cross(vector<int> &p, vector<int> &q, vector<int> &r) {
         return (q[0] - p[0]) * (r[1] - q[1]) - (q[1] - p[1]) * (r[0] - q[0]);
     }
 
-    vector<vector<int>> outerTrees(vector<vector<int>>& trees) {
+    vector<vector<int>> outerTrees(vector<vector<int>> &trees) {
         int n = trees.size();
         if (n < 4) {
             return trees;
@@ -3651,7 +3651,7 @@ namespace outerTrees {
                     visit[i] = true;
                 }
             }
-            if  (!visit[q]) {
+            if (!visit[q]) {
                 res.emplace_back(trees[q]);
                 visit[q] = true;
             }
@@ -3681,9 +3681,70 @@ void outerTrees_test() {
     }
 }
 
+namespace preorder {
+    void dfs(NTree::Node*root, vector<int>&ans) {
+        if (root == nullptr)
+            return;
+        ans.push_back(root->val);
+        for (auto child : root->children) {
+            dfs(child, ans);
+        }
+    }
+    vector<int> preorder(NTree::Node *root) {
+        vector<int>ans;
+        dfs(root, ans);
+        return ans;
+    }
+}
+
+void preorder_test() {
+    vector<int> ans;
+    vector<int> tree = {1, 0, 3, 2, 4, 0, 5, 6};
+    NTree::Node *root = NTree::createNTree(tree);
+    ans = preorder::preorder(root);
+    print_vector(ans);
+    tree = {1, 0, 2, 3, 4, 5, 0, 0, 6, 7, 0, 8, 0, 9, 10, 0, 0, 11, 0, 12, 0, 13, 0, 0, 14};
+    root = NTree::createNTree(tree);
+    ans = preorder::preorder(root);
+    print_vector(ans);
+}
+
+namespace postorder {
+    void dfs(NTree::Node*root, vector<int>&ans) {
+        if (root == nullptr)
+            return;
+
+        for (auto child : root->children) {
+            dfs(child, ans);
+        }
+        ans.push_back(root->val);
+    }
+    vector<int> postorder(NTree::Node* root) {
+        vector<int>ans;
+        dfs(root, ans);
+        return ans;
+    }
+}
+
+void postorder_test(){
+    vector<int> ans;
+    vector<int> tree = {1, 0, 3, 2, 4, 0, 5, 6};
+    NTree::Node *root = NTree::createNTree(tree);
+    ans = postorder::postorder(root);
+    print_vector(ans);
+    tree = {1, 0, 2, 3, 4, 5, 0, 0, 6, 7, 0, 8, 0, 9, 10, 0, 0, 11, 0, 12, 0, 13, 0, 0, 14};
+    root = NTree::createNTree(tree);
+    ans = postorder::postorder(root);
+    print_vector(ans);
+}
+
 int main() {
-    outerTrees_test();
+    postorder_test();
     {
+    //preorder_test();
+
+        //outerTrees_test();
+
         //minDistance_test();
 
         //findUnsortedSubarray_test();
