@@ -3740,7 +3740,7 @@ void postorder_test() {
     print_vector(ans);
 }
 
-namespace fractionAddition{
+namespace fractionAddition {
     string fractionAddition(string expression) {
         long long x = 0, y = 1; // 分子，分母
         int index = 0, n = expression.size();
@@ -3776,7 +3776,7 @@ namespace fractionAddition{
     }
 }
 
-void fractionAddition_test(){
+void fractionAddition_test() {
     string expression = "-1/2+1/2";
     cout << expression << " = " << fractionAddition::fractionAddition(expression) << endl;
     expression = "-1/2+1/2+1/3";
@@ -3786,13 +3786,13 @@ void fractionAddition_test(){
 }
 
 namespace findLHS {
-    int findLHS(vector<int>& nums) {
+    int findLHS(vector<int> &nums) {
         unordered_map<int, int> cnt;
         int res = 0;
         for (int num : nums) {
             cnt[num]++;
         }
-        for (auto [key, val] : cnt) {
+        for (auto[key, val] : cnt) {
             if (cnt.count(key + 1)) {
                 res = max(res, val + cnt[key + 1]);
             }
@@ -3801,20 +3801,84 @@ namespace findLHS {
     }
 }
 
-void findLHS_test(){
+void findLHS_test() {
     vector<int> nums;
-    nums = {1,3,2,2,5,2,3,7};
+    nums = {1, 3, 2, 2, 5, 2, 3, 7};
     cout << findLHS::findLHS(nums) << endl;
-    nums = {1,2,3,4};
+    nums = {1, 2, 3, 4};
     cout << findLHS::findLHS(nums) << endl;
-    nums = {1,1,1,1};
+    nums = {1, 1, 1, 1};
     cout << findLHS::findLHS(nums) << endl;
 }
 
+namespace triangleNumber {
+    int triangleNumber(vector<int> &nums) {
+        int n = nums.size();
+        sort(nums.begin(), nums.end());
+        int ans = 0;
+        for (int i = 0; i < n; ++i) {
+            int k = i;
+            for (int j = i + 1; j < n; ++j) {
+                while (k + 1 < n && nums[k + 1] < nums[i] + nums[j]) {
+                    ++k;
+                }
+                ans += max(k - j, 0);
+            }
+        }
+        return ans;
+    }
+}
+
+void triangleNumber_test() {
+    vector<int> nums;
+    nums = {2, 2, 3, 4};
+    cout << triangleNumber::triangleNumber(nums) << endl;
+    nums = {4, 2, 3, 4};
+    cout << triangleNumber::triangleNumber(nums) << endl;
+    nums = {48,66,61,46,94,75};
+    cout << triangleNumber::triangleNumber(nums)<< endl;
+}
+
+namespace mergeTrees {
+    TreeNode::TreeNode* mergeTrees(TreeNode::TreeNode* root1, TreeNode::TreeNode* root2) {
+        if (root1 == nullptr) {
+            return root2;
+        }
+        if (root2 == nullptr) {
+            return root1;
+        }
+        auto merged = new TreeNode::TreeNode(root1->val + root2->val);
+        merged->left = mergeTrees(root1->left, root2->left);
+        merged->right = mergeTrees(root1->right, root2->right);
+        return merged;
+
+    }
+}
+
+void mergeTrees_test(){
+    vector<int>nums1, nums2;
+    nums1 = {1,3,2,5};
+    nums2 = {2,1,3,0,4,0,7};
+    TreeNode::TreeNode* root1 = create_treenode(nums1);
+    TreeNode::TreeNode* root2 = create_treenode(nums2);
+    auto ans = mergeTrees::mergeTrees(root1, root2);
+    cout << TreeNode::print_tree(ans) << endl;
+    nums1 = {1};
+    nums2 = {1,2};
+    root1 = create_treenode(nums1);
+    root2 = create_treenode(nums2);
+    ans = mergeTrees::mergeTrees(root1, root2);
+    cout << TreeNode::print_tree(ans) << endl;
+}
+
 int main() {
-    findLHS_test();
+    mergeTrees_test();
     {
-    //fractionAddition_test();
+    //triangleNumber_test();
+
+        //findLHS_test();
+
+        //fractionAddition_test();
 
         //postorder_test();
 
