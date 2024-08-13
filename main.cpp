@@ -3835,12 +3835,12 @@ void triangleNumber_test() {
     cout << triangleNumber::triangleNumber(nums) << endl;
     nums = {4, 2, 3, 4};
     cout << triangleNumber::triangleNumber(nums) << endl;
-    nums = {48,66,61,46,94,75};
-    cout << triangleNumber::triangleNumber(nums)<< endl;
+    nums = {48, 66, 61, 46, 94, 75};
+    cout << triangleNumber::triangleNumber(nums) << endl;
 }
 
 namespace mergeTrees {
-    TreeNode::TreeNode* mergeTrees(TreeNode::TreeNode* root1, TreeNode::TreeNode* root2) {
+    TreeNode::TreeNode *mergeTrees(TreeNode::TreeNode *root1, TreeNode::TreeNode *root2) {
         if (root1 == nullptr) {
             return root2;
         }
@@ -3855,26 +3855,105 @@ namespace mergeTrees {
     }
 }
 
-void mergeTrees_test(){
-    vector<int>nums1, nums2;
-    nums1 = {1,3,2,5};
-    nums2 = {2,1,3,0,4,0,7};
-    TreeNode::TreeNode* root1 = create_treenode(nums1);
-    TreeNode::TreeNode* root2 = create_treenode(nums2);
+void mergeTrees_test() {
+    vector<int> nums1, nums2;
+    nums1 = {1, 3, 2, 5};
+    nums2 = {2, 1, 3, 0, 4, 0, 7};
+    TreeNode::TreeNode *root1 = create_treenode(nums1);
+    TreeNode::TreeNode *root2 = create_treenode(nums2);
     auto ans = mergeTrees::mergeTrees(root1, root2);
     cout << TreeNode::print_tree(ans) << endl;
     nums1 = {1};
-    nums2 = {1,2};
+    nums2 = {1, 2};
     root1 = create_treenode(nums1);
     root2 = create_treenode(nums2);
     ans = mergeTrees::mergeTrees(root1, root2);
     cout << TreeNode::print_tree(ans) << endl;
 }
 
+namespace leastInterval {
+    int leastInterval(vector<char> &tasks, int n) {
+        unordered_map<char, int> freq;
+        for (char ch: tasks) {
+            ++freq[ch];
+        }
+
+        // 最多的执行次数
+        int maxExec = max_element(freq.begin(), freq.end(), [](const auto &u, const auto &v) {
+            return u.second < v.second;
+        })->second;
+        // 具有最多执行次数的任务数量
+        int maxCount = accumulate(freq.begin(), freq.end(), 0, [=](int acc, const auto &u) {
+            return acc + (u.second == maxExec);
+        });
+
+        return max((maxExec - 1) * (n + 1) + maxCount, static_cast<int>(tasks.size()));
+    }
+}
+
+void leastInterval_test() {
+    vector<char> tasks;
+    int n = 2;
+    tasks = {'A', 'A', 'A', 'B', 'B', 'B'};// 8
+    cout << leastInterval::leastInterval(tasks, n) << endl;
+    n = 1;
+    tasks = {'A', 'C', 'A', 'B', 'D', 'B'};//6
+    cout << leastInterval::leastInterval(tasks, n) << endl;
+    n = 3;
+    tasks = {'A', 'A', 'A', 'B', 'B', 'B'};//10
+    cout << leastInterval::leastInterval(tasks, n) << endl;
+    n = 0;
+    tasks = {'A', 'A', 'A', 'B', 'B', 'B'};//6
+    cout << leastInterval::leastInterval(tasks, n) << endl;
+    n = 2;
+    tasks = {'A', 'A', 'A', 'A', 'A', 'A', 'B', 'C', 'D', 'E', 'F', 'G'};//16
+    cout << leastInterval::leastInterval(tasks, n) << endl;
+}
+
+namespace addOneRow {
+    TreeNode::TreeNode *addOneRow(TreeNode::TreeNode *root, int val, int depth) {
+        if (root == nullptr) {
+            return nullptr;
+        }
+        if (depth == 1) {
+            return new TreeNode::TreeNode(val, root, nullptr);
+        }
+        if (depth == 2) {
+            root->left = new TreeNode::TreeNode(val, root->left, nullptr);
+            root->right = new TreeNode::TreeNode(val, nullptr, root->right);
+        } else {
+            root->left = addOneRow(root->left, val, depth - 1);
+            root->right = addOneRow(root->right, val, depth - 1);
+        }
+        return root;
+    }
+}
+
+void addOneRow_test() {
+    vector<int> tree;
+    int val, depth;
+    val = 1;
+    depth = 2;
+    tree = {4, 2, 6, 3, 1, 5};
+    auto root = create_treenode(tree);
+    auto ans = addOneRow::addOneRow(root, val, depth);
+    cout << TreeNode::print_tree(ans) << endl;
+    val = 1;
+    depth = 3;
+    tree = {4, 2, 0, 3, 1};
+    root = create_treenode(tree);
+    ans = addOneRow::addOneRow(root, val, depth);
+    cout << TreeNode::print_tree(ans) << endl;
+}
+
 int main() {
-    mergeTrees_test();
+    addOneRow_test();
     {
-    //triangleNumber_test();
+        //leastInterval_test();
+
+        //mergeTrees_test();
+
+        //triangleNumber_test();
 
         //findLHS_test();
 
