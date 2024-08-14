@@ -3946,9 +3946,76 @@ void addOneRow_test() {
     cout << TreeNode::print_tree(ans) << endl;
 }
 
+namespace maximumProduct {
+    int maximumProduct(vector<int> &nums) {
+        sort(nums.begin(), nums.end());
+        int ans = 0;
+        int a,b,c;
+        a = nums[nums.size() - 3];
+        b = nums[nums.size() - 2];
+        c = nums[nums.size() - 1];
+        int d,e,f;
+        d = nums[0];
+        e = nums[1];
+        f = nums[2];
+        if (d*e*c > a*b*c){
+            a = d;
+            b = e;
+        }
+        return a*b*c;
+    }
+}
+
+void maximumProduct_test() {
+    vector<int> nums;
+    nums = {1, 2, 3};
+    cout << maximumProduct::maximumProduct(nums) << endl;
+    nums = {1, 2, 3, 4};
+    cout << maximumProduct::maximumProduct(nums) << endl;
+    nums = {-1, -2, -3};
+    cout << maximumProduct::maximumProduct(nums) << endl;
+    nums = {-100,-98,-1,2,3,4};
+    cout << maximumProduct::maximumProduct(nums) << endl;
+    nums = {-8,-7,-2,10,20};
+    cout << maximumProduct::maximumProduct(nums) << endl;
+}
+
+namespace kInversePairs {
+    static constexpr int mod = 1000000007;
+    int kInversePairs(int n, int k) {
+        vector<vector<int>> f(2, vector<int>(k + 1));
+        f[0][0] = 1;
+        for (int i = 1; i <= n; ++i) {
+            for (int j = 0; j <= k; ++j) {
+                int cur = i & 1, prev = cur ^ 1;
+                f[cur][j] = (j - 1 >= 0 ? f[cur][j - 1] : 0) - (j - i >= 0 ? f[prev][j - i] : 0) + f[prev][j];
+                if (f[cur][j] >= mod) {
+                    f[cur][j] -= mod;
+                }
+                else if (f[cur][j] < 0) {
+                    f[cur][j] += mod;
+                }
+            }
+        }
+        return f[n & 1][k];
+    }
+}
+
+void kInversePairs_test(){
+    int n, k;
+    n = 3, k = 0;
+    cout << kInversePairs::kInversePairs(n, k) << endl;
+    n = 3, k = 1;
+    cout << kInversePairs::kInversePairs(n, k) << endl;
+}
+
 int main() {
-    addOneRow_test();
+    kInversePairs_test();
     {
+    //maximumProduct_test();
+
+        //addOneRow_test();
+
         //leastInterval_test();
 
         //mergeTrees_test();
