@@ -3950,19 +3950,19 @@ namespace maximumProduct {
     int maximumProduct(vector<int> &nums) {
         sort(nums.begin(), nums.end());
         int ans = 0;
-        int a,b,c;
+        int a, b, c;
         a = nums[nums.size() - 3];
         b = nums[nums.size() - 2];
         c = nums[nums.size() - 1];
-        int d,e,f;
+        int d, e, f;
         d = nums[0];
         e = nums[1];
         f = nums[2];
-        if (d*e*c > a*b*c){
+        if (d * e * c > a * b * c) {
             a = d;
             b = e;
         }
-        return a*b*c;
+        return a * b * c;
     }
 }
 
@@ -3974,25 +3974,25 @@ void maximumProduct_test() {
     cout << maximumProduct::maximumProduct(nums) << endl;
     nums = {-1, -2, -3};
     cout << maximumProduct::maximumProduct(nums) << endl;
-    nums = {-100,-98,-1,2,3,4};
+    nums = {-100, -98, -1, 2, 3, 4};
     cout << maximumProduct::maximumProduct(nums) << endl;
-    nums = {-8,-7,-2,10,20};
+    nums = {-8, -7, -2, 10, 20};
     cout << maximumProduct::maximumProduct(nums) << endl;
 }
 
 namespace kInversePairs {
     static constexpr int mod = 1000000007;
+
     int kInversePairs(int n, int k) {
         vector<vector<int>> f(2, vector<int>(k + 1));
         f[0][0] = 1;
         for (int i = 1; i <= n; ++i) {
             for (int j = 0; j <= k; ++j) {
-                int cur = i & 1, prev = cur ^ 1;
+                int cur = i & 1, prev = cur ^1;
                 f[cur][j] = (j - 1 >= 0 ? f[cur][j - 1] : 0) - (j - i >= 0 ? f[prev][j - i] : 0) + f[prev][j];
                 if (f[cur][j] >= mod) {
                     f[cur][j] -= mod;
-                }
-                else if (f[cur][j] < 0) {
+                } else if (f[cur][j] < 0) {
                     f[cur][j] += mod;
                 }
             }
@@ -4001,7 +4001,7 @@ namespace kInversePairs {
     }
 }
 
-void kInversePairs_test(){
+void kInversePairs_test() {
     int n, k;
     n = 3, k = 0;
     cout << kInversePairs::kInversePairs(n, k) << endl;
@@ -4009,10 +4009,81 @@ void kInversePairs_test(){
     cout << kInversePairs::kInversePairs(n, k) << endl;
 }
 
+namespace judgeSquareSum {
+    bool judgeSquareSum(int c) {
+        long left = 0;
+        long right = (long) sqrt(c);
+        while (left <= right) {
+            long sum = left * left + right * right;
+            if (sum == c) {
+                return true;
+            } else if (sum > c) {
+                right--;
+            } else {
+                left++;
+            }
+        }
+        return false;
+
+    }
+}
+
+void judgeSquareSum_test() {
+    int c;
+    c = 5;
+    cout << "c:" << c << " 是平方数之和，" << judgeSquareSum::judgeSquareSum(c) << endl;
+    c = 3;
+    cout << "c:" << c << " 是平方数之和，" << judgeSquareSum::judgeSquareSum(c) << endl;
+    c = 4;
+    cout << "c:" << c << " 是平方数之和，" << judgeSquareSum::judgeSquareSum(c) << endl;
+}
+
+namespace averageOfLevels {
+    vector<double> averageOfLevels(TreeNode::TreeNode* root) {
+        auto averages = vector<double>();
+        auto q = queue<TreeNode::TreeNode*>();
+        q.push(root);
+        while (!q.empty()) {
+            double sum = 0;
+            int size = q.size();
+            for (int i = 0; i < size; i++) {
+                auto node = q.front();
+                q.pop();
+                sum += node->val;
+                auto left = node->left, right = node->right;
+                if (left != nullptr) {
+                    q.push(left);
+                }
+                if (right != nullptr) {
+                    q.push(right);
+                }
+            }
+            averages.push_back(sum / size);
+        }
+        return averages;
+    }
+}
+
+void averageOfLevels_test(){
+    vector<int>nums;
+    nums = {3,9,20,0,0,15,7};
+    TreeNode::TreeNode* root = create_treenode(nums);
+    auto ans = averageOfLevels::averageOfLevels(root);
+    print_vector(ans);
+    nums = {3,9,20,15,7};
+    root = create_treenode(nums);
+    ans = averageOfLevels::averageOfLevels(root);
+    print_vector(ans);
+}
+
 int main() {
-    kInversePairs_test();
+    averageOfLevels_test();
     {
-    //maximumProduct_test();
+    //judgeSquareSum_test();
+
+        //kInversePairs_test();
+
+        //maximumProduct_test();
 
         //addOneRow_test();
 
