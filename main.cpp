@@ -4039,9 +4039,9 @@ void judgeSquareSum_test() {
 }
 
 namespace averageOfLevels {
-    vector<double> averageOfLevels(TreeNode::TreeNode* root) {
+    vector<double> averageOfLevels(TreeNode::TreeNode *root) {
         auto averages = vector<double>();
-        auto q = queue<TreeNode::TreeNode*>();
+        auto q = queue<TreeNode::TreeNode *>();
         q.push(root);
         while (!q.empty()) {
             double sum = 0;
@@ -4064,22 +4064,170 @@ namespace averageOfLevels {
     }
 }
 
-void averageOfLevels_test(){
-    vector<int>nums;
-    nums = {3,9,20,0,0,15,7};
-    TreeNode::TreeNode* root = create_treenode(nums);
+void averageOfLevels_test() {
+    vector<int> nums;
+    nums = {3, 9, 20, 0, 0, 15, 7};
+    TreeNode::TreeNode *root = create_treenode(nums);
     auto ans = averageOfLevels::averageOfLevels(root);
     print_vector(ans);
-    nums = {3,9,20,15,7};
+    nums = {3, 9, 20, 15, 7};
     root = create_treenode(nums);
     ans = averageOfLevels::averageOfLevels(root);
     print_vector(ans);
 }
 
+namespace findErrorNums {
+    vector<int> findErrorNums(vector<int> &nums) {
+        vector<int> ans;
+        unordered_set<int> set;
+        int loss = 0;
+        for (int i = 0; i < nums.size(); ++i) {
+            if (set.find(nums[i]) != set.end()) {
+                ans.push_back(nums[i]);
+            } else {
+                set.insert(nums[i]);
+            }
+        }
+        for (int i = 1; i <= nums.size(); ++i) {
+            if (set.find(i) == set.end()) {
+                ans.push_back(i);
+            }
+        }
+        return ans;
+    }
+}
+
+void findErrorNums_test() {
+    vector<int> nums;
+    nums = {1, 2, 2, 4};
+    auto ans = findErrorNums::findErrorNums(nums);
+    print_vector(ans);
+    nums = {1, 1};
+    ans = findErrorNums::findErrorNums(nums);
+    print_vector(ans);
+    nums = {2, 2};
+    ans = findErrorNums::findErrorNums(nums);
+    print_vector(ans);
+}
+
+namespace findLongestChain {
+    int findLongestChain(vector<vector<int>> &pairs) {
+        int n = pairs.size();
+        sort(pairs.begin(), pairs.end());
+        vector<int> dp(n, 1);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < i; j++) {
+                if (pairs[i][0] > pairs[j][1]) {
+                    dp[i] = max(dp[i], dp[j] + 1);
+                }
+            }
+        }
+        return dp[n - 1];
+    }
+}
+
+void findLongestChain_test() {
+    vector<vector<int>> pairs;
+    pairs = {{1, 2},
+             {2, 3},
+             {3, 4}};
+    cout << findLongestChain::findLongestChain(pairs) << endl;
+    pairs = {{1, 2},
+             {7, 8},
+             {4, 5}};
+    cout << findLongestChain::findLongestChain(pairs) << endl;
+    pairs = {{1,2}};
+    cout << findLongestChain::findLongestChain(pairs) << endl;
+}
+
+namespace countSubstrings {
+    int countSubstrings(string s) {
+        int n = s.size(), ans = 0;
+        for (int i = 0; i < 2 * n - 1; ++i) {
+            int l = i / 2, r = i / 2 + i % 2;
+            while (l >= 0 && r < n && s[l] == s[r]) {
+                --l;
+                ++r;
+                ++ans;
+            }
+        }
+        return ans;
+    }
+}
+
+void countSubstrings_test(){
+    string s;
+    s = "abc";
+    cout << s << "的回文子串数：" << countSubstrings::countSubstrings(s) << std::endl;
+    s = "aaa";
+    cout << s << "的回文子串数：" << countSubstrings::countSubstrings(s) << std::endl;
+}
+
+
+#include <regex>
+namespace replaceWords {
+    std::vector<std::string> split(const std::string& str, const std::string& delimiter) {
+        std::regex re(delimiter);
+        std::sregex_token_iterator it(str.begin(), str.end(), re, -1);
+        std::sregex_token_iterator reg_end;
+
+        std::vector<std::string> result(it, reg_end);
+        return result;
+    }
+    string replaceWords(vector<string>& dictionary, string sentence) {
+        string ans;
+        unordered_set<string> set;
+        for (auto s:dictionary){
+            set.insert(s);
+        }
+        vector<string>tokens;
+        tokens = split(sentence, "\\s+");
+        for (int j = 0; j < tokens.size(); ++j) {
+            auto t = tokens[j];
+            bool flag = false;
+            for (int i = 0; i < t.size(); ++i) {
+                string tmp;
+                tmp.assign(t.begin(), t.begin() + i);
+                if (set.find(tmp) != set.end()){
+                    ans += tmp;
+                    flag = true;
+                    break;
+                }
+            }
+            if (!flag) {
+                ans += t;
+            }
+            if (j < tokens.size()- 1)
+                ans+= " ";
+
+        }
+        return ans;
+    }
+}
+
+void replaceWords_test(){
+    vector<string> dictionary;
+    string sentence;
+    dictionary = {"cat","bat","rat"};
+    sentence = "the cattle was rattled by the battery";
+    cout << replaceWords::replaceWords(dictionary, sentence) << endl;
+    dictionary = {"a","b","c"};
+    sentence = "aadsfasf absbs bbab cadsfafs";
+    cout << replaceWords::replaceWords(dictionary, sentence) << endl;
+}
+
 int main() {
-    averageOfLevels_test();
+    replaceWords_test();
     {
-    //judgeSquareSum_test();
+    //countSubstrings_test();
+
+    //findLongestChain_test();
+
+        //findErrorNums_test();
+
+        //averageOfLevels_test();
+
+        //judgeSquareSum_test();
 
         //kInversePairs_test();
 
