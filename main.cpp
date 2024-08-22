@@ -4216,9 +4216,45 @@ void replaceWords_test(){
     cout << replaceWords::replaceWords(dictionary, sentence) << endl;
 }
 
+namespace minSteps {
+    int minSteps(int n) {
+        // dp[i]表示打印出i个A的最少操作次数
+        vector<int> dp(n + 1, INT_MAX);
+        // 根据题目的描述
+        dp[1] = dp[0] = 0;
+        for (int i = 2; i <= n; i++) {
+            for (int j = 1; j * j <= i; j++) {
+                if (i % j == 0) {
+                    // i = 6, j = 2
+                    // 2个A加上3次复印
+                    // dp[6] = min(dp[6], dp[2] + 3)
+                    dp[i] = min(dp[i], dp[j] + i / j);
+                    // 3个A加上2次复印
+                    // dp[6] = min(dp[6], dp[3] + 2)
+                    dp[i] = min(dp[i], dp[i / j] + j);
+                }
+            }
+        }
+
+        return dp[n];
+    }
+}
+
+void minSteps_test(){
+    int n;
+    n = 4;
+    cout << minSteps::minSteps(n) << endl;
+    n = 3;
+    cout << minSteps::minSteps(n) << endl;
+    n = 1;
+    cout << minSteps::minSteps(n) << endl;
+}
+
 int main() {
-    replaceWords_test();
+    minSteps_test();
     {
+    //replaceWords_test();
+
     //countSubstrings_test();
 
     //findLongestChain_test();
