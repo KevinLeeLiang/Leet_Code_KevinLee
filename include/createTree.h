@@ -71,12 +71,13 @@ namespace TreeNode {
                 break;
             auto p = q.front();
             q.pop();
-            if (tree_vals[index] != 0) {
+            if (index < tree_vals.size() && tree_vals[index] != 0) {
                 p->left = new TreeNode(tree_vals[index]);
                 q.push(p->left);
             }
             index++;
-            if (tree_vals[index] != 0) {
+            if (index < tree_vals.size() && tree_vals[index] != 0) {
+
                 p->right = new TreeNode(tree_vals[index]);
                 q.push(p->right);
             }
@@ -101,6 +102,13 @@ namespace TreeNode {
                     q.push(node->left);
                     q.push(node->right);
                 }
+            }
+        }
+        for (int i = s.size() - 1; i >=0; --i) {
+            if (s[i] == '0') {
+                s.pop_back();
+            } else {
+                break;
             }
         }
         return s;

@@ -4136,7 +4136,7 @@ void findLongestChain_test() {
              {7, 8},
              {4, 5}};
     cout << findLongestChain::findLongestChain(pairs) << endl;
-    pairs = {{1,2}};
+    pairs = {{1, 2}};
     cout << findLongestChain::findLongestChain(pairs) << endl;
 }
 
@@ -4155,7 +4155,7 @@ namespace countSubstrings {
     }
 }
 
-void countSubstrings_test(){
+void countSubstrings_test() {
     string s;
     s = "abc";
     cout << s << "的回文子串数：" << countSubstrings::countSubstrings(s) << std::endl;
@@ -4165,8 +4165,9 @@ void countSubstrings_test(){
 
 
 #include <regex>
+
 namespace replaceWords {
-    std::vector<std::string> split(const std::string& str, const std::string& delimiter) {
+    std::vector<std::string> split(const std::string &str, const std::string &delimiter) {
         std::regex re(delimiter);
         std::sregex_token_iterator it(str.begin(), str.end(), re, -1);
         std::sregex_token_iterator reg_end;
@@ -4174,13 +4175,14 @@ namespace replaceWords {
         std::vector<std::string> result(it, reg_end);
         return result;
     }
-    string replaceWords(vector<string>& dictionary, string sentence) {
+
+    string replaceWords(vector<string> &dictionary, string sentence) {
         string ans;
         unordered_set<string> set;
-        for (auto s:dictionary){
+        for (auto s:dictionary) {
             set.insert(s);
         }
-        vector<string>tokens;
+        vector<string> tokens;
         tokens = split(sentence, "\\s+");
         for (int j = 0; j < tokens.size(); ++j) {
             auto t = tokens[j];
@@ -4188,7 +4190,7 @@ namespace replaceWords {
             for (int i = 0; i < t.size(); ++i) {
                 string tmp;
                 tmp.assign(t.begin(), t.begin() + i);
-                if (set.find(tmp) != set.end()){
+                if (set.find(tmp) != set.end()) {
                     ans += tmp;
                     flag = true;
                     break;
@@ -4197,21 +4199,21 @@ namespace replaceWords {
             if (!flag) {
                 ans += t;
             }
-            if (j < tokens.size()- 1)
-                ans+= " ";
+            if (j < tokens.size() - 1)
+                ans += " ";
 
         }
         return ans;
     }
 }
 
-void replaceWords_test(){
+void replaceWords_test() {
     vector<string> dictionary;
     string sentence;
-    dictionary = {"cat","bat","rat"};
+    dictionary = {"cat", "bat", "rat"};
     sentence = "the cattle was rattled by the battery";
     cout << replaceWords::replaceWords(dictionary, sentence) << endl;
-    dictionary = {"a","b","c"};
+    dictionary = {"a", "b", "c"};
     sentence = "aadsfasf absbs bbab cadsfafs";
     cout << replaceWords::replaceWords(dictionary, sentence) << endl;
 }
@@ -4240,7 +4242,7 @@ namespace minSteps {
     }
 }
 
-void minSteps_test(){
+void minSteps_test() {
     int n;
     n = 4;
     cout << minSteps::minSteps(n) << endl;
@@ -4250,14 +4252,108 @@ void minSteps_test(){
     cout << minSteps::minSteps(n) << endl;
 }
 
+namespace findDuplicateSubtrees {
+    unordered_map<string, TreeNode::TreeNode*> seen;
+    unordered_set<TreeNode::TreeNode*> repeat;
+    string dfs(TreeNode::TreeNode* node) {
+        if (!node) {
+            return "";
+        }
+        string serial = to_string(node->val) + "(" + dfs(node->left) + ")(" + dfs(node->right) + ")";
+        if (auto it = seen.find(serial); it != seen.end()) {
+            repeat.insert(it->second);
+        }
+        else {
+            seen[serial] = node;
+        }
+        return serial;
+    }
+    vector<TreeNode::TreeNode*> findDuplicateSubtrees(TreeNode::TreeNode* root) {
+        seen.clear();
+        repeat.clear();
+        dfs(root);
+        return {repeat.begin(), repeat.end()};
+    }
+}
+
+void findDuplicateSubtrees_test() {
+    vector<int>vals;
+    TreeNode::TreeNode* root;
+    vector<TreeNode::TreeNode *>ans;
+    vals = {1,2,3,4,0,2,4,0,0,4};
+    root = create_treenode(vals);
+    ans = findDuplicateSubtrees::findDuplicateSubtrees(root);
+    for (auto tree : ans) {
+        cout << TreeNode::print_tree(tree) << endl;
+    }
+    cout << "________________" << endl;
+
+    vals = {2,1,1};
+    root = create_treenode(vals);
+    ans = findDuplicateSubtrees::findDuplicateSubtrees(root);
+    for (auto tree : ans) {
+        cout << TreeNode::print_tree(tree) << endl;
+    }
+    cout << "________________" << endl;
+
+    vals = {2,2,2,3,0,3,0};
+    root = create_treenode(vals);
+    ans = findDuplicateSubtrees::findDuplicateSubtrees(root);
+    for (auto tree : ans) {
+        cout << TreeNode::print_tree(tree) << endl;
+    }
+    cout << "________________" << endl;
+}
+
+namespace findTarget {
+    unordered_map<int, int>map;
+    bool ans = false;
+    void dfs(TreeNode::TreeNode* root, int k) {
+        if (root == nullptr)
+            return;
+        if (map.find(root->val) != map.end()){
+            ans = true;
+            return;
+        } else {
+            map[k - root->val] = root->val;
+        }
+        dfs(root->left, k);
+        dfs(root->right, k);
+    }
+    bool findTarget(TreeNode::TreeNode* root, int k) {
+        map.clear();
+        ans = false;
+        dfs(root, k);
+        return ans;
+    }
+}
+
+void findTarget_test(){
+    vector<int>nums;
+    int k;
+    TreeNode::TreeNode* root;
+    nums = {5,3,6,2,4,0,7};
+    k = 9;
+    root = create_treenode(nums);
+    cout << findTarget::findTarget(root, k) << endl;
+    nums = {5,3,6,2,4,0,7};
+    k = 20;
+    root = create_treenode(nums);
+    cout << findTarget::findTarget(root, k) << endl;
+}
+
 int main() {
-    minSteps_test();
+    findTarget_test();
     {
-    //replaceWords_test();
+    //findDuplicateSubtrees_test();
 
-    //countSubstrings_test();
+        //minSteps_test();
 
-    //findLongestChain_test();
+        //replaceWords_test();
+
+        //countSubstrings_test();
+
+        //findLongestChain_test();
 
         //findErrorNums_test();
 
