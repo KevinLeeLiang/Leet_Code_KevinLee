@@ -4253,22 +4253,23 @@ void minSteps_test() {
 }
 
 namespace findDuplicateSubtrees {
-    unordered_map<string, TreeNode::TreeNode*> seen;
-    unordered_set<TreeNode::TreeNode*> repeat;
-    string dfs(TreeNode::TreeNode* node) {
+    unordered_map<string, TreeNode::TreeNode *> seen;
+    unordered_set<TreeNode::TreeNode *> repeat;
+
+    string dfs(TreeNode::TreeNode *node) {
         if (!node) {
             return "";
         }
         string serial = to_string(node->val) + "(" + dfs(node->left) + ")(" + dfs(node->right) + ")";
         if (auto it = seen.find(serial); it != seen.end()) {
             repeat.insert(it->second);
-        }
-        else {
+        } else {
             seen[serial] = node;
         }
         return serial;
     }
-    vector<TreeNode::TreeNode*> findDuplicateSubtrees(TreeNode::TreeNode* root) {
+
+    vector<TreeNode::TreeNode *> findDuplicateSubtrees(TreeNode::TreeNode *root) {
         seen.clear();
         repeat.clear();
         dfs(root);
@@ -4277,10 +4278,10 @@ namespace findDuplicateSubtrees {
 }
 
 void findDuplicateSubtrees_test() {
-    vector<int>vals;
-    TreeNode::TreeNode* root;
-    vector<TreeNode::TreeNode *>ans;
-    vals = {1,2,3,4,0,2,4,0,0,4};
+    vector<int> vals;
+    TreeNode::TreeNode *root;
+    vector<TreeNode::TreeNode *> ans;
+    vals = {1, 2, 3, 4, 0, 2, 4, 0, 0, 4};
     root = create_treenode(vals);
     ans = findDuplicateSubtrees::findDuplicateSubtrees(root);
     for (auto tree : ans) {
@@ -4288,7 +4289,7 @@ void findDuplicateSubtrees_test() {
     }
     cout << "________________" << endl;
 
-    vals = {2,1,1};
+    vals = {2, 1, 1};
     root = create_treenode(vals);
     ans = findDuplicateSubtrees::findDuplicateSubtrees(root);
     for (auto tree : ans) {
@@ -4296,7 +4297,7 @@ void findDuplicateSubtrees_test() {
     }
     cout << "________________" << endl;
 
-    vals = {2,2,2,3,0,3,0};
+    vals = {2, 2, 2, 3, 0, 3, 0};
     root = create_treenode(vals);
     ans = findDuplicateSubtrees::findDuplicateSubtrees(root);
     for (auto tree : ans) {
@@ -4306,12 +4307,13 @@ void findDuplicateSubtrees_test() {
 }
 
 namespace findTarget {
-    unordered_map<int, int>map;
+    unordered_map<int, int> map;
     bool ans = false;
-    void dfs(TreeNode::TreeNode* root, int k) {
+
+    void dfs(TreeNode::TreeNode *root, int k) {
         if (root == nullptr)
             return;
-        if (map.find(root->val) != map.end()){
+        if (map.find(root->val) != map.end()) {
             ans = true;
             return;
         } else {
@@ -4320,7 +4322,8 @@ namespace findTarget {
         dfs(root->left, k);
         dfs(root->right, k);
     }
-    bool findTarget(TreeNode::TreeNode* root, int k) {
+
+    bool findTarget(TreeNode::TreeNode *root, int k) {
         map.clear();
         ans = false;
         dfs(root, k);
@@ -4328,24 +4331,97 @@ namespace findTarget {
     }
 }
 
-void findTarget_test(){
-    vector<int>nums;
+void findTarget_test() {
+    vector<int> nums;
     int k;
-    TreeNode::TreeNode* root;
-    nums = {5,3,6,2,4,0,7};
+    TreeNode::TreeNode *root;
+    nums = {5, 3, 6, 2, 4, 0, 7};
     k = 9;
     root = create_treenode(nums);
     cout << findTarget::findTarget(root, k) << endl;
-    nums = {5,3,6,2,4,0,7};
+    nums = {5, 3, 6, 2, 4, 0, 7};
     k = 20;
     root = create_treenode(nums);
     cout << findTarget::findTarget(root, k) << endl;
 }
 
+namespace printTree{
+    int calDepth(TreeNode::TreeNode* root) {
+        int res = -1;
+        queue<TreeNode::TreeNode*> q;
+        q.push(root);
+        while (!q.empty()) {
+            int len = q.size();
+            res++;
+            while (len) {
+                len--;
+                auto t = q.front();
+                q.pop();
+                if (t->left) {
+                    q.push(t->left);
+                }
+                if (t->right) {
+                    q.push(t->right);
+                }
+            }
+        }
+        return res;
+    }
+
+    vector<vector<string>> printTree(TreeNode::TreeNode* root) {
+        int height = calDepth(root);
+        int m = height + 1;
+        int n = (1 << (height + 1)) - 1;
+        vector<vector<string>> res(m, vector<string>(n, ""));
+        queue<tuple<TreeNode::TreeNode*, int, int>> q;
+        q.push({root, 0, (n - 1) / 2});
+        while (!q.empty()) {
+            auto t = q.front();
+            q.pop();
+            int r = get<1>(t), c = get<2>(t);
+            res[r][c] = to_string(get<0>(t)->val);
+            if (get<0>(t)->left) {
+                q.push({get<0>(t)->left, r + 1, c - (1 << (height - r - 1))});
+            }
+            if (get<0>(t)->right) {
+                q.push({get<0>(t)->right, r + 1, c + (1 << (height - r - 1))});
+            }
+        }
+        return res;
+    }
+}
+
+void printTree_test(){
+    vector<vector<string>>ans;
+    vector<int>nums;
+    TreeNode::TreeNode* root;
+    nums = {1,2};
+    root = create_treenode(nums);
+    ans = printTree::printTree(root);
+    for (auto s : ans) {
+        for (auto t : s ) {
+            cout << t ;
+        }
+        cout << endl;
+    }
+    cout << "_______" <<endl;
+    nums = {1,2,3,0,4};
+    root = create_treenode(nums);
+    ans = printTree::printTree(root);
+    for (auto s : ans) {
+        for (auto t : s ) {
+            cout << t ;
+        }
+        cout << endl;
+    }
+}
+
 int main() {
-    findTarget_test();
+    printTree_test();
     {
-    //findDuplicateSubtrees_test();
+        //findTarget_test();
+
+        //findDuplicateSubtrees_test();
 
         //minSteps_test();
 
