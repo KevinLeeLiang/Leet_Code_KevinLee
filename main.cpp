@@ -4345,10 +4345,10 @@ void findTarget_test() {
     cout << findTarget::findTarget(root, k) << endl;
 }
 
-namespace printTree{
-    int calDepth(TreeNode::TreeNode* root) {
+namespace printTree {
+    int calDepth(TreeNode::TreeNode *root) {
         int res = -1;
-        queue<TreeNode::TreeNode*> q;
+        queue<TreeNode::TreeNode *> q;
         q.push(root);
         while (!q.empty()) {
             int len = q.size();
@@ -4368,12 +4368,12 @@ namespace printTree{
         return res;
     }
 
-    vector<vector<string>> printTree(TreeNode::TreeNode* root) {
+    vector<vector<string>> printTree(TreeNode::TreeNode *root) {
         int height = calDepth(root);
         int m = height + 1;
         int n = (1 << (height + 1)) - 1;
         vector<vector<string>> res(m, vector<string>(n, ""));
-        queue<tuple<TreeNode::TreeNode*, int, int>> q;
+        queue<tuple<TreeNode::TreeNode *, int, int>> q;
         q.push({root, 0, (n - 1) / 2});
         while (!q.empty()) {
             auto t = q.front();
@@ -4391,34 +4391,123 @@ namespace printTree{
     }
 }
 
-void printTree_test(){
-    vector<vector<string>>ans;
-    vector<int>nums;
-    TreeNode::TreeNode* root;
-    nums = {1,2};
+void printTree_test() {
+    vector<vector<string>> ans;
+    vector<int> nums;
+    TreeNode::TreeNode *root;
+    nums = {1, 2};
     root = create_treenode(nums);
     ans = printTree::printTree(root);
     for (auto s : ans) {
-        for (auto t : s ) {
-            cout << t ;
+        for (auto t : s) {
+            cout << t;
         }
         cout << endl;
     }
-    cout << "_______" <<endl;
-    nums = {1,2,3,0,4};
+    cout << "_______" << endl;
+    nums = {1, 2, 3, 0, 4};
     root = create_treenode(nums);
     ans = printTree::printTree(root);
     for (auto s : ans) {
-        for (auto t : s ) {
-            cout << t ;
+        for (auto t : s) {
+            cout << t;
         }
         cout << endl;
     }
 }
 
+namespace isPossible {
+    bool isPossible(vector<int> &nums) {
+        unordered_map<int, priority_queue<int, vector<int>,greater<int>>> mp;
+        for (auto& x : nums) {
+            if (mp.find(x) == mp.end()) {
+                mp[x] = priority_queue<int, vector<int>,greater<int>>();
+            }
+            if (mp.find(x - 1) != mp.end()) {
+                int prevLength = mp[x - 1].top();
+                mp[x - 1].pop();
+                if (mp[x - 1].empty()) {
+                    mp.erase(x - 1);
+                }
+                mp[x].push(prevLength + 1);
+            } else {
+                mp[x].push(1);
+            }
+        }
+        for (auto it = mp.begin(); it != mp.end(); ++it) {
+            priority_queue<int, vector<int>,greater<int>> queue = it->second;
+            if (queue.top() < 3) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+void isPossible_test() {
+    vector<int> nums;
+    nums = {1, 2, 3, 3, 4, 5};
+    cout << isPossible::isPossible(nums) << endl;
+    nums = {1, 2, 3, 3, 4, 4, 5, 5};
+    cout << isPossible::isPossible(nums) << endl;
+    nums = {1, 2, 3, 4, 4, 5};
+    cout << isPossible::isPossible(nums) << endl;
+}
+
+namespace imageSmoother {
+    vector<vector<int>> imageSmoother(vector<vector<int>>& img) {
+        vector<vector<int>>ans;
+        ans = img;
+        int cols, rows;
+        rows = img.size();
+        cols = img[0].size();
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                int sum = 0;
+                int count=0;
+                for (int k = -1; k <= 1; ++k) {
+                    if (i + k < 0 || i + k >= rows) {
+                        continue;
+                    }
+                    for (int l = -1; l <= 1; ++l) {
+                        if (j + l < 0 || j + l >= cols){
+                            continue;
+                        }
+                        count ++;
+                        sum += img[i + k][j + l];
+                    }
+                }
+                ans[i][j] = (int)(sum/count);
+            }
+        }
+        return ans;
+    }
+}
+
+void imageSmoother_test(){
+    vector<vector<int>>img, ans;
+    img = {{1,1,1}, {1,0,1}, {1,1,1}};
+    ans = imageSmoother::imageSmoother(img);
+    for (auto line : ans) {
+        print_vector(line);
+    }
+    cout << "_________" <<endl;
+
+    img = {{100,200,100},{200,50,200},{100,200,100}};
+    ans = imageSmoother::imageSmoother(img);
+    for (auto line : ans) {
+        print_vector(line);
+    }
+    cout << "_________" <<endl;
+}
+
 int main() {
-    printTree_test();
+    imageSmoother_test();
     {
+    //isPossible_test();
+
+        //printTree_test();
+
         //findTarget_test();
 
         //findDuplicateSubtrees_test();
