@@ -4418,10 +4418,10 @@ void printTree_test() {
 
 namespace isPossible {
     bool isPossible(vector<int> &nums) {
-        unordered_map<int, priority_queue<int, vector<int>,greater<int>>> mp;
-        for (auto& x : nums) {
+        unordered_map<int, priority_queue<int, vector<int>, greater<int>>> mp;
+        for (auto &x : nums) {
             if (mp.find(x) == mp.end()) {
-                mp[x] = priority_queue<int, vector<int>,greater<int>>();
+                mp[x] = priority_queue<int, vector<int>, greater<int>>();
             }
             if (mp.find(x - 1) != mp.end()) {
                 int prevLength = mp[x - 1].top();
@@ -4435,7 +4435,7 @@ namespace isPossible {
             }
         }
         for (auto it = mp.begin(); it != mp.end(); ++it) {
-            priority_queue<int, vector<int>,greater<int>> queue = it->second;
+            priority_queue<int, vector<int>, greater<int>> queue = it->second;
             if (queue.top() < 3) {
                 return false;
             }
@@ -4455,8 +4455,8 @@ void isPossible_test() {
 }
 
 namespace imageSmoother {
-    vector<vector<int>> imageSmoother(vector<vector<int>>& img) {
-        vector<vector<int>>ans;
+    vector<vector<int>> imageSmoother(vector<vector<int>> &img) {
+        vector<vector<int>> ans;
         ans = img;
         int cols, rows;
         rows = img.size();
@@ -4464,47 +4464,121 @@ namespace imageSmoother {
         for (int i = 0; i < rows; ++i) {
             for (int j = 0; j < cols; ++j) {
                 int sum = 0;
-                int count=0;
+                int count = 0;
                 for (int k = -1; k <= 1; ++k) {
                     if (i + k < 0 || i + k >= rows) {
                         continue;
                     }
                     for (int l = -1; l <= 1; ++l) {
-                        if (j + l < 0 || j + l >= cols){
+                        if (j + l < 0 || j + l >= cols) {
                             continue;
                         }
-                        count ++;
+                        count++;
                         sum += img[i + k][j + l];
                     }
                 }
-                ans[i][j] = (int)(sum/count);
+                ans[i][j] = (int) (sum / count);
             }
         }
         return ans;
     }
 }
 
-void imageSmoother_test(){
-    vector<vector<int>>img, ans;
-    img = {{1,1,1}, {1,0,1}, {1,1,1}};
+void imageSmoother_test() {
+    vector<vector<int>> img, ans;
+    img = {{1, 1, 1},
+           {1, 0, 1},
+           {1, 1, 1}};
     ans = imageSmoother::imageSmoother(img);
     for (auto line : ans) {
         print_vector(line);
     }
-    cout << "_________" <<endl;
+    cout << "_________" << endl;
 
-    img = {{100,200,100},{200,50,200},{100,200,100}};
+    img = {{100, 200, 100},
+           {200, 50,  200},
+           {100, 200, 100}};
     ans = imageSmoother::imageSmoother(img);
     for (auto line : ans) {
         print_vector(line);
     }
-    cout << "_________" <<endl;
+    cout << "_________" << endl;
+}
+
+namespace widthOfBinaryTree {
+    int widthOfBinaryTree(TreeNode::TreeNode *root) {
+        unsigned long long res = 1;
+        vector<pair<TreeNode::TreeNode *, unsigned long long>> arr;
+        arr.emplace_back(root, 1L);
+        while (!arr.empty()) {
+            vector<pair<TreeNode::TreeNode *, unsigned long long>> tmp;
+            for (auto &[node, index] : arr) {
+                if (node->left) {
+                    tmp.emplace_back(node->left, index * 2);
+                }
+                if (node->right) {
+                    tmp.emplace_back(node->right, index * 2 + 1);
+                }
+            }
+            res = max(res, arr.back().second - arr[0].second + 1);
+            arr = move(tmp);
+        }
+        return res;
+    }
+};
+
+void widthOfBinaryTree_test() {
+    vector<int> nums;
+    TreeNode::TreeNode *root;
+    nums = {1, 3, 2, 5, 3, 0, 9};
+    root = create_treenode(nums);
+    cout << widthOfBinaryTree::widthOfBinaryTree(root) << endl;
+    nums = {1, 3, 2, 5, 0, 0, 9, 6, 0, 7};
+    root = create_treenode(nums);
+    cout << widthOfBinaryTree::widthOfBinaryTree(root) << endl;
+    nums = {1, 3, 2, 5};
+    root = create_treenode(nums);
+    cout << widthOfBinaryTree::widthOfBinaryTree(root) << endl;
+}
+
+namespace strangePrinter {
+    int strangePrinter(string s) {
+        int n = s.length();
+        vector<vector<int>> f(n, vector<int>(n));
+        for (int i = n - 1; i >= 0; i--) {
+            f[i][i] = 1;
+            for (int j = i + 1; j < n; j++) {
+                if (s[i] == s[j]) {
+                    f[i][j] = f[i][j - 1];
+                } else {
+                    int minn = INT_MAX;
+                    for (int k = i; k < j; k++) {
+                        minn = min(minn, f[i][k] + f[k + 1][j]);
+                    }
+                    f[i][j] = minn;
+                }
+            }
+        }
+        return f[0][n - 1];
+    }
+}
+
+void strangePrinter_test(){
+    string s;
+    s = "aaabbb";
+    cout << strangePrinter::strangePrinter(s) << endl;
+    s = "aba";
+    cout << strangePrinter::strangePrinter(s) << endl;
 }
 
 int main() {
-    imageSmoother_test();
+    strangePrinter_test();
     {
-    //isPossible_test();
+    //widthOfBinaryTree_test();
+
+        //imageSmoother_test();
+
+        //isPossible_test();
 
         //printTree_test();
 
