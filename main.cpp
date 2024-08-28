@@ -4563,7 +4563,7 @@ namespace strangePrinter {
     }
 }
 
-void strangePrinter_test(){
+void strangePrinter_test() {
     string s;
     s = "aaabbb";
     cout << strangePrinter::strangePrinter(s) << endl;
@@ -4571,10 +4571,69 @@ void strangePrinter_test(){
     cout << strangePrinter::strangePrinter(s) << endl;
 }
 
+namespace checkPossibility {
+    bool checkPossibility(vector<int> &nums) {
+        int n = nums.size();
+        for (int i = 0; i < n - 1; ++i) {
+            int x = nums[i], y = nums[i + 1];
+            if (x > y) {
+                nums[i] = y;
+                if (is_sorted(nums.begin(), nums.end())) {
+                    return true;
+                }
+                nums[i] = x; // 复原
+                nums[i + 1] = x;
+                return is_sorted(nums.begin(), nums.end());
+            }
+        }
+        return true;
+    }
+}
+
+void checkPossibility_test() {
+    vector<int> nums;
+    nums = {4, 2, 3};
+    cout << checkPossibility::checkPossibility(nums) << endl;
+    nums = {4, 2, 1};
+    cout << checkPossibility::checkPossibility(nums) << endl;
+    nums = {3,4,2,3};
+    cout << checkPossibility::checkPossibility(nums) << endl;
+}
+
+namespace constructArray {
+    vector<int> constructArray(int n, int k) {
+        vector<int> answer;
+        for (int i = 1; i < n - k; ++i) {
+            answer.push_back(i);
+        }
+        for (int i = n - k, j = n; i <= j; ++i, --j) {
+            answer.push_back(i);
+            if (i != j) {
+                answer.push_back(j);
+            }
+        }
+        return answer;
+    }
+}
+
+void constructArray_test(){
+    int n = 3, k = 1;
+    vector<int>ans;
+    ans = constructArray::constructArray(n, k);
+    print_vector(ans);
+    n = 3, k = 2;
+    ans = constructArray::constructArray(n, k);
+    print_vector(ans);
+}
+
 int main() {
-    strangePrinter_test();
+    constructArray_test();
     {
-    //widthOfBinaryTree_test();
+    //checkPossibility_test();
+
+        //strangePrinter_test();
+
+        //widthOfBinaryTree_test();
 
         //imageSmoother_test();
 
