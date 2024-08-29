@@ -1134,7 +1134,7 @@ TreeNode::TreeNode *create_treenode(vector<int> tree_vals) {
     return tree;
 }
 
-TreeNode::TreeNode *create_treenode(vector<int>tree_vals, bool is_include_zero) {
+TreeNode::TreeNode *create_treenode(vector<int> tree_vals, bool is_include_zero) {
     if (is_include_zero) {
         auto *tree = TreeNode::createTree2(tree_vals);
         return tree;
@@ -4607,7 +4607,7 @@ void checkPossibility_test() {
     cout << checkPossibility::checkPossibility(nums) << endl;
     nums = {4, 2, 1};
     cout << checkPossibility::checkPossibility(nums) << endl;
-    nums = {3,4,2,3};
+    nums = {3, 4, 2, 3};
     cout << checkPossibility::checkPossibility(nums) << endl;
 }
 
@@ -4627,9 +4627,9 @@ namespace constructArray {
     }
 }
 
-void constructArray_test(){
+void constructArray_test() {
     int n = 3, k = 1;
-    vector<int>ans;
+    vector<int> ans;
     ans = constructArray::constructArray(n, k);
     print_vector(ans);
     n = 3, k = 2;
@@ -4656,18 +4656,18 @@ namespace findKthNumber668 {
     }
 }
 
-void findKthNumber668_test(){
+void findKthNumber668_test() {
     int m, n, k;
     m = 3, n = 3, k = 5;
-    cout << findKthNumber668::findKthNumber(m,n, k) << endl;
+    cout << findKthNumber668::findKthNumber(m, n, k) << endl;
     m = 2, n = 3, k = 6;
-    cout << findKthNumber668::findKthNumber(m,n, k) << endl;
+    cout << findKthNumber668::findKthNumber(m, n, k) << endl;
     m = 9895, n = 28405, k = 100787757;
-    cout << findKthNumber668::findKthNumber(m,n, k) << endl;
+    cout << findKthNumber668::findKthNumber(m, n, k) << endl;
 }
 
 namespace trimBST {
-    TreeNode::TreeNode* trimBST(TreeNode::TreeNode* root, int low, int high) {
+    TreeNode::TreeNode *trimBST(TreeNode::TreeNode *root, int low, int high) {
         if (root == nullptr) {
             return nullptr;
         }
@@ -4683,30 +4683,63 @@ namespace trimBST {
     }
 }
 
-void trimBST_test(){
-    vector<int>nums;
+void trimBST_test() {
+    vector<int> nums;
     int low, high;
-    TreeNode::TreeNode* root, *ans;
-    nums = {1,0,2};
+    TreeNode::TreeNode *root, *ans;
+    nums = {1, 0, 2};
     low = 1, high = 2;
     root = create_treenode(nums, true);
     ans = trimBST::trimBST(root, low, high);
     cout << TreeNode::print_tree(ans) << endl;
-    nums = {3,0,4,-1,2,-1,-1,1};
+    nums = {3, 0, 4, -1, 2, -1, -1, 1};
     low = 1, high = 3;
     root = create_treenode(nums, true);
     ans = trimBST::trimBST(root, low, high);
     cout << TreeNode::print_tree(ans) << endl;
 }
 
+namespace maximumSwap {
+    int maximumSwap(int num) {
+        string char_array = to_string(num);
+        int n = char_array.size();
+        int maxIdx = n - 1;
+        int idx1 = -1, idx2 = -1;
+        for (int i = n - 1; i >= 0; i--) {
+            if (char_array[i] > char_array[maxIdx]) {
+                maxIdx = i;
+            } else if (char_array[i] < char_array[maxIdx]) {
+                idx1 = i;
+                idx2 = maxIdx;
+            }
+        }
+        if (idx1 >= 0) {
+            swap(char_array[idx1], char_array[idx2]);
+            return stoi(char_array);
+        } else {
+            return num;
+        }
+    }
+}
+
+void maximumSwap_test(){
+    int num;
+    num = 2736;
+    cout << maximumSwap::maximumSwap(num) << endl;
+    num = 9973;
+    cout << maximumSwap::maximumSwap(num) << endl;
+}
+
 int main() {
-    trimBST_test();
+    maximumSwap_test();
     {
-    //findKthNumber668_test();
+        //trimBST_test();
 
-    //constructArray_test();
+        //findKthNumber668_test();
 
-    //checkPossibility_test();
+        //constructArray_test();
+
+        //checkPossibility_test();
 
         //strangePrinter_test();
 
