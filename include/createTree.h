@@ -86,6 +86,34 @@ namespace TreeNode {
         return root;
     }
 
+    TreeNode *createTree2(vector<int> tree_vals) {
+        if (tree_vals.size() == 0)
+            return nullptr;
+        queue<TreeNode *> q;
+        TreeNode *root = new TreeNode(tree_vals[0]);
+        int index = 0;
+        q.push(root);
+        index++;
+        while (!q.empty()) {
+            if (index >= tree_vals.size())
+                break;
+            auto p = q.front();
+            q.pop();
+            if (index < tree_vals.size() && tree_vals[index] >= 0) {
+                p->left = new TreeNode(tree_vals[index]);
+                q.push(p->left);
+            }
+            index++;
+            if (index < tree_vals.size() && tree_vals[index] >= 0) {
+
+                p->right = new TreeNode(tree_vals[index]);
+                q.push(p->right);
+            }
+            index++;
+        }
+        return root;
+    }
+
     string print_tree(TreeNode *root) {
         string s;
         queue<TreeNode *> q;
