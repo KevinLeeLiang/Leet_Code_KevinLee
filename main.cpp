@@ -4730,9 +4730,85 @@ void maximumSwap_test(){
     cout << maximumSwap::maximumSwap(num) << endl;
 }
 
+namespace findSecondMinimumValue {
+    int findSecondMinimumValue(TreeNode::TreeNode* root) {
+        int ans = -1;
+        int rootvalue = root->val;
+
+        function<void(TreeNode::TreeNode*)> dfs = [&](TreeNode::TreeNode* node) {
+            if (!node) {
+                return;
+            }
+            if (ans != -1 && node->val >= ans) {
+                return;
+            }
+            if (node->val > rootvalue) {
+                ans = node->val;
+            }
+            dfs(node->left);
+            dfs(node->right);
+        };
+
+        dfs(root);
+        return ans;
+    }
+}
+
+void findSecondMinimumValue_test(){
+    vector<int>nums;
+    TreeNode::TreeNode* root;
+    nums = {2,2,5,0,0,5,7};
+    root = create_treenode(nums);
+    cout << findSecondMinimumValue::findSecondMinimumValue(root) << endl;
+    nums = {2,2,2};
+    root = create_treenode(nums);
+    cout << findSecondMinimumValue::findSecondMinimumValue(root) << endl;
+}
+
+namespace flipLights {
+    int flipLights(int n, int presses) {
+        unordered_set<int> seen;
+        for (int i = 0; i < 1 << 4; i++) {
+            vector<int> pressArr(4);
+            for (int j = 0; j < 4; j++) {
+                pressArr[j] = (i >> j) & 1;
+            }
+            int sum = accumulate(pressArr.begin(), pressArr.end(), 0);
+            if (sum % 2 == presses % 2 && sum <= presses) {
+                int status = pressArr[0] ^ pressArr[2] ^ pressArr[3];
+                if (n >= 2) {
+                    status |= (pressArr[0] ^ pressArr[1]) << 1;
+                }
+                if (n >= 3) {
+                    status |= (pressArr[0] ^ pressArr[2]) << 2;
+                }
+                if (n >= 4) {
+                    status |= (pressArr[0] ^ pressArr[1] ^ pressArr[3]) << 3;
+                }
+                seen.emplace(status);
+            }
+        }
+        return seen.size();
+    }
+}
+
+void flipLights_test() {
+    int n, presses;
+    n = 1, presses = 1;
+    cout << flipLights::flipLights(n, presses) << endl;
+    n = 2, presses = 1;
+    cout << flipLights::flipLights(n, presses) << endl;
+    n = 3, presses = 1;
+    cout << flipLights::flipLights(n, presses) << endl;
+}
+
 int main() {
-    maximumSwap_test();
+    flipLights_test();
     {
+    //findSecondMinimumValue_test();
+
+    //maximumSwap_test();
+
         //trimBST_test();
 
         //findKthNumber668_test();
