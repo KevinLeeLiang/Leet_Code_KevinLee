@@ -4722,7 +4722,7 @@ namespace maximumSwap {
     }
 }
 
-void maximumSwap_test(){
+void maximumSwap_test() {
     int num;
     num = 2736;
     cout << maximumSwap::maximumSwap(num) << endl;
@@ -4731,11 +4731,11 @@ void maximumSwap_test(){
 }
 
 namespace findSecondMinimumValue {
-    int findSecondMinimumValue(TreeNode::TreeNode* root) {
+    int findSecondMinimumValue(TreeNode::TreeNode *root) {
         int ans = -1;
         int rootvalue = root->val;
 
-        function<void(TreeNode::TreeNode*)> dfs = [&](TreeNode::TreeNode* node) {
+        function<void(TreeNode::TreeNode *)> dfs = [&](TreeNode::TreeNode *node) {
             if (!node) {
                 return;
             }
@@ -4754,13 +4754,13 @@ namespace findSecondMinimumValue {
     }
 }
 
-void findSecondMinimumValue_test(){
-    vector<int>nums;
-    TreeNode::TreeNode* root;
-    nums = {2,2,5,0,0,5,7};
+void findSecondMinimumValue_test() {
+    vector<int> nums;
+    TreeNode::TreeNode *root;
+    nums = {2, 2, 5, 0, 0, 5, 7};
     root = create_treenode(nums);
     cout << findSecondMinimumValue::findSecondMinimumValue(root) << endl;
-    nums = {2,2,2};
+    nums = {2, 2, 2};
     root = create_treenode(nums);
     cout << findSecondMinimumValue::findSecondMinimumValue(root) << endl;
 }
@@ -4775,7 +4775,7 @@ namespace flipLights {
             }
             int sum = accumulate(pressArr.begin(), pressArr.end(), 0);
             if (sum % 2 == presses % 2 && sum <= presses) {
-                int status = pressArr[0] ^ pressArr[2] ^ pressArr[3];
+                int status = pressArr[0] ^pressArr[2] ^pressArr[3];
                 if (n >= 2) {
                     status |= (pressArr[0] ^ pressArr[1]) << 1;
                 }
@@ -4802,12 +4802,75 @@ void flipLights_test() {
     cout << flipLights::flipLights(n, presses) << endl;
 }
 
-int main() {
-    flipLights_test();
-    {
-    //findSecondMinimumValue_test();
+namespace findNumberOfLIS {
+    int findNumberOfLIS(vector<int> &nums) {
+        int n = nums.size(), maxLen = 0, ans = 0;
+        vector<int> dp(n), cnt(n);
+        for (int i = 0; i < n; ++i) {
+            dp[i] = 1;
+            cnt[i] = 1;
+            for (int j = 0; j < i; ++j) {
+                if (nums[i] > nums[j]) {
+                    if (dp[j] + 1 > dp[i]) {
+                        dp[i] = dp[j] + 1;
+                        cnt[i] = cnt[j]; // 重置计数
+                    } else if (dp[j] + 1 == dp[i]) {
+                        cnt[i] += cnt[j];
+                    }
+                }
+            }
+            if (dp[i] > maxLen) {
+                maxLen = dp[i];
+                ans = cnt[i]; // 重置计数
+            } else if (dp[i] == maxLen) {
+                ans += cnt[i];
+            }
+        }
+        return ans;
+    }
+}
 
-    //maximumSwap_test();
+void findNumberOfLIS_test() {
+    vector<int> nums;
+    nums = {1, 3, 5, 4, 7};
+    cout << findNumberOfLIS::findNumberOfLIS(nums) << endl;
+    nums = {2, 2, 2, 2, 2};
+    cout << findNumberOfLIS::findNumberOfLIS(nums) << endl;
+}
+
+namespace findLengthOfLCIS{
+    int findLengthOfLCIS(vector<int>& nums) {
+        int ans = 0;
+        int n = nums.size();
+        int start = 0;
+        for (int i = 0; i < n; ++i) {
+            if (i > 0 && nums[i] <= nums[i - 1]) {
+                start = i;
+            }
+            ans = max(ans, i - start + 1);
+        }
+        return ans;
+    }
+}
+
+void findLengthOfLCIS_test(){
+    vector<int>nums;
+    nums = {1, 3, 5, 4, 7};
+    cout << findLengthOfLCIS::findLengthOfLCIS(nums) << endl;
+    nums = {2, 2, 2, 2, 2};
+    cout << findLengthOfLCIS::findLengthOfLCIS(nums) << endl;
+}
+
+int main() {
+    findLengthOfLCIS_test();
+    {
+    //findNumberOfLIS_test();
+
+        //flipLights_test();
+
+        //findSecondMinimumValue_test();
+
+        //maximumSwap_test();
 
         //trimBST_test();
 
