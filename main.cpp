@@ -4838,8 +4838,8 @@ void findNumberOfLIS_test() {
     cout << findNumberOfLIS::findNumberOfLIS(nums) << endl;
 }
 
-namespace findLengthOfLCIS{
-    int findLengthOfLCIS(vector<int>& nums) {
+namespace findLengthOfLCIS {
+    int findLengthOfLCIS(vector<int> &nums) {
         int ans = 0;
         int n = nums.size();
         int start = 0;
@@ -4853,18 +4853,113 @@ namespace findLengthOfLCIS{
     }
 }
 
-void findLengthOfLCIS_test(){
-    vector<int>nums;
+void findLengthOfLCIS_test() {
+    vector<int> nums;
     nums = {1, 3, 5, 4, 7};
     cout << findLengthOfLCIS::findLengthOfLCIS(nums) << endl;
     nums = {2, 2, 2, 2, 2};
     cout << findLengthOfLCIS::findLengthOfLCIS(nums) << endl;
 }
 
+namespace MapSum {
+    class MapSum {
+    public:
+        MapSum() {
+
+        }
+
+        void insert(string key, int val) {
+            int delta = val;
+            if (map.count(key)) {
+                delta -= map[key];
+            }
+            map[key] = val;
+            for (int i = 1; i <= key.size(); ++i) {
+                prefixmap[key.substr(0, i)] += delta;
+            }
+        }
+
+        int sum(string prefix) {
+            return prefixmap[prefix];
+        }
+
+    private:
+        unordered_map<string, int> map;
+        unordered_map<string, int> prefixmap;
+    };
+}
+
+void MapSum_test() {
+    std::shared_ptr<MapSum::MapSum> map_sum = std::make_shared<MapSum::MapSum>();
+    map_sum->insert("apple", 3);
+    cout << map_sum->sum("ap") << endl;
+    map_sum->insert("app", 2);
+    cout << map_sum->sum("app") << endl;
+    map_sum->insert("app", 2);
+    cout << map_sum->sum("app") << endl;
+    cout << "++++++++++++++++++" << endl;
+
+}
+
+namespace checkValidString {
+    bool checkValidString(string s) {
+        stack<int> leftStack;
+        stack<int> asteriskStack;
+        int n = s.size();
+
+        for (int i = 0; i < n; i++) {
+            char c = s[i];
+            if (c == '(') {
+                leftStack.push(i);
+            } else if (c == '*') {
+                asteriskStack.push(i);
+            } else {
+                if (!leftStack.empty()) {
+                    leftStack.pop();
+                } else if (!asteriskStack.empty()) {
+                    asteriskStack.pop();
+                } else {
+                    return false;
+                }
+            }
+        }
+
+        while (!leftStack.empty() && !asteriskStack.empty()) {
+            int leftIndex = leftStack.top();
+            leftStack.pop();
+            int asteriskIndex = asteriskStack.top();
+            asteriskStack.pop();
+            if (leftIndex > asteriskIndex) {
+                return false;
+            }
+        }
+
+        return leftStack.empty();
+    }
+}
+
+void checkValidString_test() {
+    string s;
+    s = "(((((*(()((((*((**(((()()*)()()()*((((**)())*)*)))))))(())(()))())((*()()(((()((()*(())*(()**)()(())";
+    cout << checkValidString::checkValidString(s) << endl;
+    s = "((((()(()()()*()(((((*)()*(**(())))))(())()())(((())())())))))))(((((())*)))()))(()((*()*(*)))(*)()";
+    cout << checkValidString::checkValidString(s) << endl;
+    s = "()";
+    cout << checkValidString::checkValidString(s) << endl;
+    s = "(*)";
+    cout << checkValidString::checkValidString(s) << endl;
+    s = "(*))";
+    cout << checkValidString::checkValidString(s) << endl;
+}
+
 int main() {
-    findLengthOfLCIS_test();
+    checkValidString_test();
     {
-    //findNumberOfLIS_test();
+        //MapSum_test();
+
+        //findLengthOfLCIS_test();
+
+        //findNumberOfLIS_test();
 
         //flipLights_test();
 
