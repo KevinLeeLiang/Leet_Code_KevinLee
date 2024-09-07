@@ -4838,8 +4838,8 @@ void findNumberOfLIS_test() {
     cout << findNumberOfLIS::findNumberOfLIS(nums) << endl;
 }
 
-namespace findLengthOfLCIS{
-    int findLengthOfLCIS(vector<int>& nums) {
+namespace findLengthOfLCIS {
+    int findLengthOfLCIS(vector<int> &nums) {
         int ans = 0;
         int n = nums.size();
         int start = 0;
@@ -4853,18 +4853,98 @@ namespace findLengthOfLCIS{
     }
 }
 
-void findLengthOfLCIS_test(){
-    vector<int>nums;
+void findLengthOfLCIS_test() {
+    vector<int> nums;
     nums = {1, 3, 5, 4, 7};
     cout << findLengthOfLCIS::findLengthOfLCIS(nums) << endl;
     nums = {2, 2, 2, 2, 2};
     cout << findLengthOfLCIS::findLengthOfLCIS(nums) << endl;
 }
 
+namespace cutOffTree {
+    int dirs[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+
+    int bfs(vector<vector<int>>& forest, int sx, int sy, int tx, int ty) {
+        if (sx == tx && sy == ty) {
+            return 0;
+        }
+
+        int row = forest.size();
+        int col = forest[0].size();
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+        vector<vector<bool>> visited(row, vector<bool>(col, false));
+        pq.emplace(0, sx * col + sy);
+        visited[sx][sy] = true;
+        while (!pq.empty()) {
+            auto [dist, loc] = pq.top();
+            pq.pop();
+            for (int j = 0; j < 4; ++j) {
+                int nx = loc / col + dirs[j][0];
+                int ny = loc % col + dirs[j][1];
+                if (nx >= 0 && nx < row && ny >= 0 && ny < col) {
+                    if (!visited[nx][ny] && forest[nx][ny] > 0) {
+                        if (nx == tx && ny == ty) {
+                            return dist + 1;
+                        }
+                        pq.emplace(dist + 1, nx * col + ny);
+                        visited[nx][ny] = true;
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+
+    int cutOffTree(vector<vector<int>>& forest) {
+        vector<pair<int, int>> trees;
+        int row = forest.size();
+        int col = forest[0].size();
+        for (int i = 0; i < row; ++i) {
+            for (int j = 0; j < col; ++j) {
+                if (forest[i][j] > 1) {
+                    trees.emplace_back(i, j);
+                }
+            }
+        }
+        sort(trees.begin(), trees.end(), [&](const pair<int, int> & a, const pair<int, int> & b) {
+            return forest[a.first][a.second] < forest[b.first][b.second];
+        });
+
+        int cx = 0;
+        int cy = 0;
+        int ans = 0;
+        for (auto & tree : trees) {
+            int steps = bfs(forest, cx, cy, tree.first, tree.second);
+            if (steps == -1) {
+                return -1;
+            }
+            ans += steps;
+            cx = tree.first;
+            cy = tree.second;
+        }
+        return ans;
+    }
+}
+
+void cutOffTree_test() {
+    vector<vector<int>> forest;
+    forest = {{1, 2, 3},
+              {0, 0, 4},
+              {7, 6, 5}};
+    cout << cutOffTree::cutOffTree(forest) << endl;
+    forest = {{1, 2, 3},
+              {0, 0, 0},
+              {7, 6, 5}};
+    cout << cutOffTree::cutOffTree(forest) << endl;
+
+}
+
 int main() {
-    findLengthOfLCIS_test();
+    cutOffTree_test();
     {
-    //findNumberOfLIS_test();
+        //findLengthOfLCIS_test();
+
+        //findNumberOfLIS_test();
 
         //flipLights_test();
 
