@@ -5452,8 +5452,8 @@ namespace maxAreaOfIslan {
             return 0;
         }
         grid[cur_i][cur_j] = 0;
-        int di[4] = {0,0,1,-1};
-        int dj[4] = {1,-1,0,0};
+        int di[4] = {0, 0, 1, -1};
+        int dj[4] = {1, -1, 0, 0};
         int ans = 1;
         for (int index = 0; index != 4; ++index) {
             int next_i = cur_i + di[index], next_j = cur_j + dj[index];
@@ -5461,6 +5461,7 @@ namespace maxAreaOfIslan {
         }
         return ans;
     }
+
     int maxAreaOfIsland(vector<vector<int>> &grid) {
         int ans = 0;
         for (int i = 0; i != grid.size(); ++i) {
