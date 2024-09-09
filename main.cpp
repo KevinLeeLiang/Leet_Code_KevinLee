@@ -4862,9 +4862,12 @@ void findLengthOfLCIS_test() {
 }
 
 namespace cutOffTree {
-    int dirs[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+    int dirs[4][2] = {{-1, 0},
+                      {1,  0},
+                      {0,  -1},
+                      {0,  1}};
 
-    int bfs(vector<vector<int>>& forest, int sx, int sy, int tx, int ty) {
+    int bfs(vector<vector<int>> &forest, int sx, int sy, int tx, int ty) {
         if (sx == tx && sy == ty) {
             return 0;
         }
@@ -4876,7 +4879,7 @@ namespace cutOffTree {
         pq.emplace(0, sx * col + sy);
         visited[sx][sy] = true;
         while (!pq.empty()) {
-            auto [dist, loc] = pq.top();
+            auto[dist, loc] = pq.top();
             pq.pop();
             for (int j = 0; j < 4; ++j) {
                 int nx = loc / col + dirs[j][0];
@@ -4895,7 +4898,7 @@ namespace cutOffTree {
         return -1;
     }
 
-    int cutOffTree(vector<vector<int>>& forest) {
+    int cutOffTree(vector<vector<int>> &forest) {
         vector<pair<int, int>> trees;
         int row = forest.size();
         int col = forest[0].size();
@@ -4906,14 +4909,14 @@ namespace cutOffTree {
                 }
             }
         }
-        sort(trees.begin(), trees.end(), [&](const pair<int, int> & a, const pair<int, int> & b) {
+        sort(trees.begin(), trees.end(), [&](const pair<int, int> &a, const pair<int, int> &b) {
             return forest[a.first][a.second] < forest[b.first][b.second];
         });
 
         int cx = 0;
         int cy = 0;
         int ans = 0;
-        for (auto & tree : trees) {
+        for (auto &tree : trees) {
             int steps = bfs(forest, cx, cy, tree.first, tree.second);
             if (steps == -1) {
                 return -1;
@@ -5285,7 +5288,7 @@ void findRedundantConnection_test() {
 }
 
 namespace maxSumOfThreeSubarrays {
-    vector<int> maxSumOfThreeSubarrays(vector<int>& nums, int k) {
+    vector<int> maxSumOfThreeSubarrays(vector<int> &nums, int k) {
         vector<int> ans;
         int sum1 = 0, maxSum1 = 0, maxSum1Idx = 0;
         int sum2 = 0, maxSum12 = 0, maxSum12Idx1 = 0, maxSum12Idx2 = 0;
@@ -5317,51 +5320,51 @@ namespace maxSumOfThreeSubarrays {
     }
 }
 
-void maxSumOfThreeSubarrays_test(){
-    vector<int>nums, ans;
+void maxSumOfThreeSubarrays_test() {
+    vector<int> nums, ans;
     int k;
-    nums = {1,2,1,2,6,7,5,1};
+    nums = {1, 2, 1, 2, 6, 7, 5, 1};
     k = 2;
-    ans = maxSumOfThreeSubarrays::maxSumOfThreeSubarrays(nums, k) ;
+    ans = maxSumOfThreeSubarrays::maxSumOfThreeSubarrays(nums, k);
     print_vector(ans);
-    nums = {1,2,1,2,1,2,1,2,1};
+    nums = {1, 2, 1, 2, 1, 2, 1, 2, 1};
     k = 2;
-    ans = maxSumOfThreeSubarrays::maxSumOfThreeSubarrays(nums, k) ;
+    ans = maxSumOfThreeSubarrays::maxSumOfThreeSubarrays(nums, k);
     print_vector(ans);
 }
 
 namespace minStickers {
-    int minStickers(vector<string>& stickers, string target) {
-        int m=target.size();//首先获取target的长度，记m,mask为二进制表示的target的每一位
+    int minStickers(vector<string> &stickers, string target) {
+        int m = target.size();//首先获取target的长度，记m,mask为二进制表示的target的每一位
         //给定一个1<<m大小的vector每个位置来表示当选用mask为当前值时候（这个可能没表述好，看官方解答
         //所对应的最少的stricker的个数
         //初值给-1，方便下面判断
-        vector<int> dp(1<<m,-1);
-        dp[0]=0;//表示空的子串需要0个sticker就可以完成
+        vector<int> dp(1 << m, -1);
+        dp[0] = 0;//表示空的子串需要0个sticker就可以完成
         //function c++11,表示一个函数指针？（我也刚刚看不确定)表示类模板，模板参数为int(int),外层int表示返回值，内层
         //int表示参数类型，用lambda来构建该函数
-        function<int(int)> helper = [&](int mask){
-            if(dp[mask]!=-1){
+        function<int(int)> helper = [&](int mask) {
+            if (dp[mask] != -1) {
                 return dp[mask];//记忆化搜索需要，如果已经算到过当前mask所对应的所需要的最小stricker数，直接返回
                 //当然，以案例 strickers="a" ,target="aa"来说，需要"a"2次，当搜索到最后一轮的时候，初值起作用，直接返回0
             }
             //关于这个，我尝试了一下给一个比较大的数都可以，因为最多拼接次数可以为当前字符串的长度m
             //m+1之后dp在每次min求解时会被更新，min求解见43行，
-            dp[mask]=m+1;
-            for(auto& stricker:stickers){//既然要求出最少的次数，那么对每个stricker都需要进行求解
+            dp[mask] = m + 1;
+            for (auto &stricker:stickers) {//既然要求出最少的次数，那么对每个stricker都需要进行求解
                 //mask为传入这个函数的时候所拥有的，对于target来说，也就是当前还剩下的东西，因为对于每个stricker求解都需要
                 //mask作为初始状态，为了不改变这个初始状态，再给一个参数left，这个left也会用在之后的递归中，
                 //不给那就没办法作为递归参数传给下一层的mask了
-                int left=mask;
-                vector<int> count(26,0);//没啥好说的，（总不可能是24个字母吧 :)
-                for(auto& cr:stricker){
-                    count[cr-'a']++;//记录当前的stricker有多少字母组成，每个字母的个数
+                int left = mask;
+                vector<int> count(26, 0);//没啥好说的，（总不可能是24个字母吧 :)
+                for (auto &cr:stricker) {
+                    count[cr - 'a']++;//记录当前的stricker有多少字母组成，每个字母的个数
                 }
                 //有了上述条件之后对left可以进行求解了,m已经在开头说了，表示为target长度，那么对整个长度里所有的字母进行遍历呗
-                for(int i=0;i<m;i++){
+                for (int i = 0; i < m; i++) {
                     //条件是mask里当前位置的字母存在，并且stricker里对应的字母出现次数还够
-                    if( ((mask>>i)&1) && count[target[i]-'a']>0){
-                        count[target[i]-'a']--;//用掉了嘛，那就--
+                    if (((mask >> i) & 1) && count[target[i] - 'a'] > 0) {
+                        count[target[i] - 'a']--;//用掉了嘛，那就--
                         left ^= 1 << i;//left在之前和mask一样，只是left用来表示被裁剪之后，因此某个字母被剪掉了
                         //可以用异或运算，相同为0，相异为1，当前字母在mask里存在，为1，1<<i表示该字母的位置，异或一下，就为0了
                         //这时候left可以表示除掉该字母之后的情况
@@ -5370,42 +5373,42 @@ namespace minStickers {
                     //可能还没全部归0，因此要进行递归求解，在求解之前先判断当前的剩下的left是否小于mask，没变化的话就不需要继续递归啦，
                     //因为stricker里面完全没有对应的可以删去的字符，那就直接下一个
                 }
-                if(left<mask){
+                if (left < mask) {
                     //求个最小，要么当前状态，要么剩下的字母去求解，得到的stricker的次数再加上当前次，也就是+1
-                    dp[mask]=min(dp[mask],helper(left)+1);
+                    dp[mask] = min(dp[mask], helper(left) + 1);
                 }
             }
             return dp[mask];//返回目标需要次数
         };//lambda函数是个表达式，得加;
         //一开始传入多少呢？以target="aa"来说，m=2, 1<<2=4,(1<<2)-1=3,mask=3,换成二进制也就是11表示的是当前aa这两位的情况
         //同理对于其他的，比如target="aaaaa" m=5, 1<<5=32,(1<<2)-1=31,二进制表示11111，表示所有都存在的情况
-        int ans=helper((1<<m)-1);
-        return ans>m?-1:ans;
+        int ans = helper((1 << m) - 1);
+        return ans > m ? -1 : ans;
     }
 }
 
-void minStickers_test(){
-    vector<string>stickers;
+void minStickers_test() {
+    vector<string> stickers;
     string target;
-    stickers = {"with","example","science"};
+    stickers = {"with", "example", "science"};
     target = "thehat";
     cout << minStickers::minStickers(stickers, target) << endl;
-    stickers = {"notice","possible"};
+    stickers = {"notice", "possible"};
     target = "basicbasic";
     cout << minStickers::minStickers(stickers, target) << endl;
 }
 
 namespace topKFrequent {
-    vector<string> topKFrequent(vector<string>& words, int k) {
-        unordered_map<string, int>cnt;
+    vector<string> topKFrequent(vector<string> &words, int k) {
+        unordered_map<string, int> cnt;
         for (auto &word : words) {
             ++cnt[word];
         }
-        vector<string>rec;
-        for (auto& [key, value] : cnt) {
+        vector<string> rec;
+        for (auto&[key, value] : cnt) {
             rec.emplace_back(key);
         }
-        sort(rec.begin(), rec.end(), [&](const string&a, const string& b)->bool{
+        sort(rec.begin(), rec.end(), [&](const string &a, const string &b) -> bool {
             return cnt[a] == cnt[b] ? a < b : cnt[a] > cnt[b];
         });
         rec.erase(rec.begin() + k, rec.end());
@@ -5413,8 +5416,8 @@ namespace topKFrequent {
     }
 }
 
-void topKFrequent692_test(){
-    vector<string>words, ans;
+void topKFrequent692_test() {
+    vector<string> words, ans;
     int k;
     words = {"i", "love", "leetcode", "i", "love", "coding"};
     k = 2;
@@ -5428,12 +5431,12 @@ void topKFrequent692_test(){
 
 namespace hasAlternatingBits {
     bool hasAlternatingBits(int n) {
-        long a = n ^ (n >> 1);
-        return (a&(a+1))== 0;
+        long a = n ^(n >> 1);
+        return (a & (a + 1)) == 0;
     }
 }
 
-void hasAlternatingBits_test(){
+void hasAlternatingBits_test() {
     int n;
     n = 5;
     cout << hasAlternatingBits::hasAlternatingBits(n) << endl;
@@ -5443,12 +5446,55 @@ void hasAlternatingBits_test(){
     cout << hasAlternatingBits::hasAlternatingBits(n) << endl;
 }
 
-int main() {
-    hasAlternatingBits_test();
-    {
-    //topKFrequent692_test();
+namespace maxAreaOfIslan {
+    int dfs(vector<vector<int>> &grid, int cur_i, int cur_j) {
+        if (cur_i < 0 || cur_j < 0 || cur_i == grid.size() || cur_j == grid[0].size() || grid[cur_i][cur_j] != 1) {
+            return 0;
+        }
+        grid[cur_i][cur_j] = 0;
+        int di[4] = {0,0,1,-1};
+        int dj[4] = {1,-1,0,0};
+        int ans = 1;
+        for (int index = 0; index != 4; ++index) {
+            int next_i = cur_i + di[index], next_j = cur_j + dj[index];
+            ans += dfs(grid, next_i, next_j);
+        }
+        return ans;
+    }
+    int maxAreaOfIsland(vector<vector<int>> &grid) {
+        int ans = 0;
+        for (int i = 0; i != grid.size(); ++i) {
+            for (int j = 0; j != grid[0].size(); ++j) {
+                ans = max(ans, dfs(grid, i, j));
+            }
+        }
+        return ans;
+    }
+}
 
-    //minStickers_test();
+void maxAreaOfIsland_test() {
+    vector<vector<int>> grid;
+    grid = {{0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0},
+            {0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0},
+            {0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0}};
+    cout << maxAreaOfIslan::maxAreaOfIsland(grid) << endl;
+    grid = {{0, 0, 0, 0, 0, 0, 0, 0}};
+    cout << maxAreaOfIslan::maxAreaOfIsland(grid) << endl;
+}
+
+int main() {
+    maxAreaOfIsland_test();
+    {
+        //hasAlternatingBits_test();
+
+        //topKFrequent692_test();
+
+        //minStickers_test();
 
         //maxSumOfThreeSubarrays_test();
 
