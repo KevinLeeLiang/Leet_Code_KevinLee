@@ -5426,9 +5426,28 @@ void topKFrequent692_test(){
     print_vector(ans);
 }
 
+namespace hasAlternatingBits {
+    bool hasAlternatingBits(int n) {
+        long a = n ^ (n >> 1);
+        return (a&(a+1))== 0;
+    }
+}
+
+void hasAlternatingBits_test(){
+    int n;
+    n = 5;
+    cout << hasAlternatingBits::hasAlternatingBits(n) << endl;
+    n = 7;
+    cout << hasAlternatingBits::hasAlternatingBits(n) << endl;
+    n = 11;
+    cout << hasAlternatingBits::hasAlternatingBits(n) << endl;
+}
+
 int main() {
-    topKFrequent692_test();
+    hasAlternatingBits_test();
     {
+    //topKFrequent692_test();
+
     //minStickers_test();
 
         //maxSumOfThreeSubarrays_test();
