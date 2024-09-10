@@ -4861,6 +4861,87 @@ void findLengthOfLCIS_test() {
     cout << findLengthOfLCIS::findLengthOfLCIS(nums) << endl;
 }
 
+namespace cutOffTree {
+    int dirs[4][2] = {{-1, 0},
+                      {1,  0},
+                      {0,  -1},
+                      {0,  1}};
+
+    int bfs(vector<vector<int>> &forest, int sx, int sy, int tx, int ty) {
+        if (sx == tx && sy == ty) {
+            return 0;
+        }
+
+        int row = forest.size();
+        int col = forest[0].size();
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+        vector<vector<bool>> visited(row, vector<bool>(col, false));
+        pq.emplace(0, sx * col + sy);
+        visited[sx][sy] = true;
+        while (!pq.empty()) {
+            auto[dist, loc] = pq.top();
+            pq.pop();
+            for (int j = 0; j < 4; ++j) {
+                int nx = loc / col + dirs[j][0];
+                int ny = loc % col + dirs[j][1];
+                if (nx >= 0 && nx < row && ny >= 0 && ny < col) {
+                    if (!visited[nx][ny] && forest[nx][ny] > 0) {
+                        if (nx == tx && ny == ty) {
+                            return dist + 1;
+                        }
+                        pq.emplace(dist + 1, nx * col + ny);
+                        visited[nx][ny] = true;
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+
+    int cutOffTree(vector<vector<int>> &forest) {
+        vector<pair<int, int>> trees;
+        int row = forest.size();
+        int col = forest[0].size();
+        for (int i = 0; i < row; ++i) {
+            for (int j = 0; j < col; ++j) {
+                if (forest[i][j] > 1) {
+                    trees.emplace_back(i, j);
+                }
+            }
+        }
+        sort(trees.begin(), trees.end(), [&](const pair<int, int> &a, const pair<int, int> &b) {
+            return forest[a.first][a.second] < forest[b.first][b.second];
+        });
+
+        int cx = 0;
+        int cy = 0;
+        int ans = 0;
+        for (auto &tree : trees) {
+            int steps = bfs(forest, cx, cy, tree.first, tree.second);
+            if (steps == -1) {
+                return -1;
+            }
+            ans += steps;
+            cx = tree.first;
+            cy = tree.second;
+        }
+        return ans;
+    }
+}
+
+void cutOffTree_test() {
+    vector<vector<int>> forest;
+    forest = {{1, 2, 3},
+              {0, 0, 4},
+              {7, 6, 5}};
+    cout << cutOffTree::cutOffTree(forest) << endl;
+    forest = {{1, 2, 3},
+              {0, 0, 0},
+              {7, 6, 5}};
+    cout << cutOffTree::cutOffTree(forest) << endl;
+
+}
+
 namespace MapSum {
     class MapSum {
     public:
@@ -5003,6 +5084,7 @@ namespace judgePoint24 {
             }
         }
 
+
         return false;
     }
 
@@ -5130,21 +5212,21 @@ void validPalindrome_test() {
 
 namespace calPoints {
     int calPoints(vector<string> &operations) {
-        vector<int>nums;
+        vector<int> nums;
         for (auto s : operations) {
-            if (s != "C" && s!= "D" && s!="+") {
+            if (s != "C" && s != "D" && s != "+") {
                 nums.push_back(atoi(s.c_str()));
             } else {
                 if (s == "C") {
                     nums.pop_back();
                 } else if (s == "D") {
-                    nums.push_back(nums.back()*2);
+                    nums.push_back(nums.back() * 2);
                 } else {
                     nums.push_back(nums[nums.size() - 1] + nums[nums.size() - 2]);
                 }
             }
         }
-        return accumulate(nums.begin() , nums.end(), 0);
+        return accumulate(nums.begin(), nums.end(), 0);
     }
 }
 
@@ -5159,24 +5241,24 @@ void calPoints_test() {
 }
 
 namespace findRedundantConnection {
-    int Find(vector<int>& parent, int index) {
+    int Find(vector<int> &parent, int index) {
         if (parent[index] != index) {
             parent[index] = Find(parent, parent[index]);
         }
         return parent[index];
     }
 
-    void Union(vector<int>& parent, int index1, int index2) {
+    void Union(vector<int> &parent, int index1, int index2) {
         parent[Find(parent, index1)] = Find(parent, index2);
     }
 
-    vector<int> findRedundantConnection(vector<vector<int>>& edges) {
+    vector<int> findRedundantConnection(vector<vector<int>> &edges) {
         int n = edges.size();
         vector<int> parent(n + 1);
         for (int i = 1; i <= n; ++i) {
             parent[i] = i;
         }
-        for (auto& edge: edges) {
+        for (auto &edge: edges) {
             int node1 = edge[0], node2 = edge[1];
             if (Find(parent, node1) != Find(parent, node2)) {
                 Union(parent, node1, node2);
@@ -5188,20 +5270,26 @@ namespace findRedundantConnection {
     }
 }
 
-void findRedundantConnection_test(){
-    vector<vector<int>>edges;
-    vector<int>ans;
-    edges = {{1,2}, {1,3}, {2,3}};
+void findRedundantConnection_test() {
+    vector<vector<int>> edges;
+    vector<int> ans;
+    edges = {{1, 2},
+             {1, 3},
+             {2, 3}};
     ans = findRedundantConnection::findRedundantConnection(edges);
     print_vector(ans);
-    edges = {{1,2}, {2,3}, {3,4}, {1,4}, {1,5}};
+    edges = {{1, 2},
+             {2, 3},
+             {3, 4},
+             {1, 4},
+             {1, 5}};
     ans = findRedundantConnection::findRedundantConnection(edges);
     print_vector(ans);
 }
 
 namespace findRedundantDirectedConnection {
     struct UnionFind {
-        vector <int> ancestor;
+        vector<int> ancestor;
 
         UnionFind(int n) {
             ancestor.resize(n);
@@ -5219,7 +5307,7 @@ namespace findRedundantDirectedConnection {
         }
     };
 
-    vector<int> findRedundantDirectedConnection(vector<vector<int>>& edges) {
+    vector<int> findRedundantDirectedConnection(vector<vector<int>> &edges) {
         int n = edges.size();
         UnionFind uf = UnionFind(n + 1);
         auto parent = vector<int>(n + 1);
@@ -5243,15 +5331,15 @@ namespace findRedundantDirectedConnection {
             }
         }
         if (conflict < 0) {
-            auto redundant = vector<int> {edges[cycle][0], edges[cycle][1]};
+            auto redundant = vector<int>{edges[cycle][0], edges[cycle][1]};
             return redundant;
         } else {
             auto conflictEdge = edges[conflict];
             if (cycle >= 0) {
-                auto redundant = vector<int> {parent[conflictEdge[1]], conflictEdge[1]};
+                auto redundant = vector<int>{parent[conflictEdge[1]], conflictEdge[1]};
                 return redundant;
             } else {
-                auto redundant = vector<int> {conflictEdge[0], conflictEdge[1]};
+                auto redundant = vector<int>{conflictEdge[0], conflictEdge[1]};
                 return redundant;
             }
         }
@@ -5259,19 +5347,25 @@ namespace findRedundantDirectedConnection {
 
 }
 
-void findRedundantDirectedConnection_test(){
+void findRedundantDirectedConnection_test() {
     vector<vector<int>> edges;
-    vector<int>ans;
-    edges = {{1,2},{1,3},{2,3}};
+    vector<int> ans;
+    edges = {{1, 2},
+             {1, 3},
+             {2, 3}};
     ans = findRedundantDirectedConnection::findRedundantDirectedConnection(edges);
     print_vector(ans);
     cout << "++++++++++++++" << endl;
-    edges = {{1,2},{2,3},{3,4},{4,1},{1,5}};
+    edges = {{1, 2},
+             {2, 3},
+             {3, 4},
+             {4, 1},
+             {1, 5}};
     ans = findRedundantDirectedConnection::findRedundantDirectedConnection(edges);
     print_vector(ans);
 }
 
-namespace repeatedStringMatch{
+namespace repeatedStringMatch {
     int strStr(string haystack, string needle) {
         int n = haystack.size(), m = needle.size();
         if (m == 0) {
@@ -5280,7 +5374,7 @@ namespace repeatedStringMatch{
 
         long long k1 = 1e9 + 7;
         long long k2 = 1337;
-        srand((unsigned)time(NULL));
+        srand((unsigned) time(NULL));
         long long kMod1 = rand() % k1 + k1;
         long long kMod2 = rand() % k2 + k2;
 
@@ -5317,7 +5411,7 @@ namespace repeatedStringMatch{
     }
 }
 
-void repeatedStringMatch_test(){
+void repeatedStringMatch_test() {
     string a, b;
     a = "abcd";
     b = "cdabcdab";
@@ -5333,18 +5427,295 @@ void repeatedStringMatch_test(){
     cout << repeatedStringMatch::repeatedStringMatch(a, b) << endl;
 }
 
-int main() {
-    repeatedStringMatch_test();
-    {
-    //findRedundantDirectedConnection_test();
+namespace maxSumOfThreeSubarrays {
+    vector<int> maxSumOfThreeSubarrays(vector<int> &nums, int k) {
+        vector<int> ans;
+        int sum1 = 0, maxSum1 = 0, maxSum1Idx = 0;
+        int sum2 = 0, maxSum12 = 0, maxSum12Idx1 = 0, maxSum12Idx2 = 0;
+        int sum3 = 0, maxTotal = 0;
+        for (int i = k * 2; i < nums.size(); ++i) {
+            sum1 += nums[i - k * 2];
+            sum2 += nums[i - k];
+            sum3 += nums[i];
+            if (i >= k * 3 - 1) {
+                if (sum1 > maxSum1) {
+                    maxSum1 = sum1;
+                    maxSum1Idx = i - k * 3 + 1;
+                }
+                if (maxSum1 + sum2 > maxSum12) {
+                    maxSum12 = maxSum1 + sum2;
+                    maxSum12Idx1 = maxSum1Idx;
+                    maxSum12Idx2 = i - k * 2 + 1;
+                }
+                if (maxSum12 + sum3 > maxTotal) {
+                    maxTotal = maxSum12 + sum3;
+                    ans = {maxSum12Idx1, maxSum12Idx2, i - k + 1};
+                }
+                sum1 -= nums[i - k * 3 + 1];
+                sum2 -= nums[i - k * 2 + 1];
+                sum3 -= nums[i - k + 1];
+            }
+        }
+        return ans;
+    }
+}
 
-    //findRedundantConnection_test();
+void maxSumOfThreeSubarrays_test() {
+    vector<int> nums, ans;
+    int k;
+    nums = {1, 2, 1, 2, 6, 7, 5, 1};
+    k = 2;
+    ans = maxSumOfThreeSubarrays::maxSumOfThreeSubarrays(nums, k);
+    print_vector(ans);
+    nums = {1, 2, 1, 2, 1, 2, 1, 2, 1};
+    k = 2;
+    ans = maxSumOfThreeSubarrays::maxSumOfThreeSubarrays(nums, k);
+    print_vector(ans);
+}
+
+namespace minStickers {
+    int minStickers(vector<string> &stickers, string target) {
+        int m = target.size();//首先获取target的长度，记m,mask为二进制表示的target的每一位
+        //给定一个1<<m大小的vector每个位置来表示当选用mask为当前值时候（这个可能没表述好，看官方解答
+        //所对应的最少的stricker的个数
+        //初值给-1，方便下面判断
+        vector<int> dp(1 << m, -1);
+        dp[0] = 0;//表示空的子串需要0个sticker就可以完成
+        //function c++11,表示一个函数指针？（我也刚刚看不确定)表示类模板，模板参数为int(int),外层int表示返回值，内层
+        //int表示参数类型，用lambda来构建该函数
+        function<int(int)> helper = [&](int mask) {
+            if (dp[mask] != -1) {
+                return dp[mask];//记忆化搜索需要，如果已经算到过当前mask所对应的所需要的最小stricker数，直接返回
+                //当然，以案例 strickers="a" ,target="aa"来说，需要"a"2次，当搜索到最后一轮的时候，初值起作用，直接返回0
+            }
+            //关于这个，我尝试了一下给一个比较大的数都可以，因为最多拼接次数可以为当前字符串的长度m
+            //m+1之后dp在每次min求解时会被更新，min求解见43行，
+            dp[mask] = m + 1;
+            for (auto &stricker:stickers) {//既然要求出最少的次数，那么对每个stricker都需要进行求解
+                //mask为传入这个函数的时候所拥有的，对于target来说，也就是当前还剩下的东西，因为对于每个stricker求解都需要
+                //mask作为初始状态，为了不改变这个初始状态，再给一个参数left，这个left也会用在之后的递归中，
+                //不给那就没办法作为递归参数传给下一层的mask了
+                int left = mask;
+                vector<int> count(26, 0);//没啥好说的，（总不可能是24个字母吧 :)
+                for (auto &cr:stricker) {
+                    count[cr - 'a']++;//记录当前的stricker有多少字母组成，每个字母的个数
+                }
+                //有了上述条件之后对left可以进行求解了,m已经在开头说了，表示为target长度，那么对整个长度里所有的字母进行遍历呗
+                for (int i = 0; i < m; i++) {
+                    //条件是mask里当前位置的字母存在，并且stricker里对应的字母出现次数还够
+                    if (((mask >> i) & 1) && count[target[i] - 'a'] > 0) {
+                        count[target[i] - 'a']--;//用掉了嘛，那就--
+                        left ^= 1 << i;//left在之前和mask一样，只是left用来表示被裁剪之后，因此某个字母被剪掉了
+                        //可以用异或运算，相同为0，相异为1，当前字母在mask里存在，为1，1<<i表示该字母的位置，异或一下，就为0了
+                        //这时候left可以表示除掉该字母之后的情况
+                    }
+                    //经过上述的操作，left和mask的区别是left已经除去了16行开始的循环里的某个stricker里的字母了，但是
+                    //可能还没全部归0，因此要进行递归求解，在求解之前先判断当前的剩下的left是否小于mask，没变化的话就不需要继续递归啦，
+                    //因为stricker里面完全没有对应的可以删去的字符，那就直接下一个
+                }
+                if (left < mask) {
+                    //求个最小，要么当前状态，要么剩下的字母去求解，得到的stricker的次数再加上当前次，也就是+1
+                    dp[mask] = min(dp[mask], helper(left) + 1);
+                }
+            }
+            return dp[mask];//返回目标需要次数
+        };//lambda函数是个表达式，得加;
+        //一开始传入多少呢？以target="aa"来说，m=2, 1<<2=4,(1<<2)-1=3,mask=3,换成二进制也就是11表示的是当前aa这两位的情况
+        //同理对于其他的，比如target="aaaaa" m=5, 1<<5=32,(1<<2)-1=31,二进制表示11111，表示所有都存在的情况
+        int ans = helper((1 << m) - 1);
+        return ans > m ? -1 : ans;
+    }
+}
+
+void minStickers_test() {
+    vector<string> stickers;
+    string target;
+    stickers = {"with", "example", "science"};
+    target = "thehat";
+    cout << minStickers::minStickers(stickers, target) << endl;
+    stickers = {"notice", "possible"};
+    target = "basicbasic";
+    cout << minStickers::minStickers(stickers, target) << endl;
+}
+
+namespace topKFrequent {
+    vector<string> topKFrequent(vector<string> &words, int k) {
+        unordered_map<string, int> cnt;
+        for (auto &word : words) {
+            ++cnt[word];
+        }
+        vector<string> rec;
+        for (auto&[key, value] : cnt) {
+            rec.emplace_back(key);
+        }
+        sort(rec.begin(), rec.end(), [&](const string &a, const string &b) -> bool {
+            return cnt[a] == cnt[b] ? a < b : cnt[a] > cnt[b];
+        });
+        rec.erase(rec.begin() + k, rec.end());
+        return rec;
+    }
+}
+
+void topKFrequent692_test() {
+    vector<string> words, ans;
+    int k;
+    words = {"i", "love", "leetcode", "i", "love", "coding"};
+    k = 2;
+    ans = topKFrequent::topKFrequent(words, k);
+    print_vector(ans);
+    words = {"the", "day", "is", "sunny", "the", "the", "the", "sunny", "is", "is"};
+    k = 4;
+    ans = topKFrequent::topKFrequent(words, k);
+    print_vector(ans);
+}
+
+namespace hasAlternatingBits {
+    bool hasAlternatingBits(int n) {
+        long a = n ^(n >> 1);
+        return (a & (a + 1)) == 0;
+    }
+}
+
+void hasAlternatingBits_test() {
+    int n;
+    n = 5;
+    cout << hasAlternatingBits::hasAlternatingBits(n) << endl;
+    n = 7;
+    cout << hasAlternatingBits::hasAlternatingBits(n) << endl;
+    n = 11;
+    cout << hasAlternatingBits::hasAlternatingBits(n) << endl;
+}
+
+namespace maxAreaOfIslan {
+    int dfs(vector<vector<int>> &grid, int cur_i, int cur_j) {
+        if (cur_i < 0 || cur_j < 0 || cur_i == grid.size() || cur_j == grid[0].size() || grid[cur_i][cur_j] != 1) {
+            return 0;
+        }
+        grid[cur_i][cur_j] = 0;
+        int di[4] = {0, 0, 1, -1};
+        int dj[4] = {1, -1, 0, 0};
+        int ans = 1;
+        for (int index = 0; index != 4; ++index) {
+            int next_i = cur_i + di[index], next_j = cur_j + dj[index];
+            ans += dfs(grid, next_i, next_j);
+        }
+        return ans;
+    }
+
+    int maxAreaOfIsland(vector<vector<int>> &grid) {
+        int ans = 0;
+        for (int i = 0; i != grid.size(); ++i) {
+            for (int j = 0; j != grid[0].size(); ++j) {
+                ans = max(ans, dfs(grid, i, j));
+            }
+        }
+        return ans;
+    }
+}
+
+void maxAreaOfIsland_test() {
+    vector<vector<int>> grid;
+    grid = {{0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0},
+            {0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0},
+            {0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0}};
+    cout << maxAreaOfIslan::maxAreaOfIsland(grid) << endl;
+    grid = {{0, 0, 0, 0, 0, 0, 0, 0}};
+    cout << maxAreaOfIslan::maxAreaOfIsland(grid) << endl;
+}
+
+namespace countBinarySubstrings {
+    int countBinarySubstrings(string s) {
+        int ptr = 0, n = s.size(), last = 0, ans = 0;
+        while (ptr < n) {
+            char c = s[ptr];
+            int count = 0;
+            while (ptr < n && s[ptr] == c) {
+                ++ptr;
+                ++count;
+            }
+            ans += min(count, last);
+            last = count;
+        }
+        return ans;
+    }
+}
+
+void countBinarySubstrings_test() {
+    string s;
+    s = "00110011";
+    cout << countBinarySubstrings::countBinarySubstrings(s) << endl;
+    s = "10101";
+    cout << countBinarySubstrings::countBinarySubstrings(s) << endl;
+}
+
+namespace findShortestSubArray {
+    int findShortestSubArray(vector<int> &nums) {
+        unordered_map<int, vector<int>> mp;
+        int n = nums.size();
+        for (int i = 0; i < n; i++) {
+            if (mp.count(nums[i])) {
+                mp[nums[i]][0]++;
+                mp[nums[i]][2] = i;
+            } else {
+                mp[nums[i]] = {1, i, i};
+            }
+        }
+        int maxNum = 0, minLen = 0;
+        for (auto& [_, vec] : mp) {
+            if (maxNum < vec[0]) {
+                maxNum = vec[0];
+                minLen = vec[2] - vec[1] + 1;
+            } else if (maxNum == vec[0]) {
+                if (minLen > vec[2] - vec[1] + 1) {
+                    minLen = vec[2] - vec[1] + 1;
+                }
+            }
+        }
+        return minLen;
+    }
+}
+
+void findShortestSubArray_test() {
+    vector<int> nums;
+    nums = {1, 2, 2, 3, 1};
+    cout << findShortestSubArray::findShortestSubArray(nums) << endl;
+    nums = {1, 2, 2, 3, 1, 4, 2};
+    cout << findShortestSubArray::findShortestSubArray(nums) << endl;
+}
+
+int main() {
+    findShortestSubArray_test();
+    {
+        //countBinarySubstrings_test();
+
+        //maxAreaOfIsland_test();
+
+        //hasAlternatingBits_test();
+
+        //topKFrequent692_test();
+
+        //minStickers_test();
+
+        //maxSumOfThreeSubarrays_test();
+
+        //findRedundantConnection_test();
+
+        //repeatedStringMatch_test();
+
+        //findRedundantDirectedConnection_test();
 
         //calPoints_test();
 
         //validPalindrome_test();
 
         //judgePoint24_test();
+
+        //cutOffTree_test();
 
         //checkValidString_test();
 
