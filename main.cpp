@@ -5199,9 +5199,147 @@ void findRedundantConnection_test(){
     print_vector(ans);
 }
 
+namespace findRedundantDirectedConnection {
+    struct UnionFind {
+        vector <int> ancestor;
+
+        UnionFind(int n) {
+            ancestor.resize(n);
+            for (int i = 0; i < n; ++i) {
+                ancestor[i] = i;
+            }
+        }
+
+        int find(int index) {
+            return index == ancestor[index] ? index : ancestor[index] = find(ancestor[index]);
+        }
+
+        void merge(int u, int v) {
+            ancestor[find(u)] = find(v);
+        }
+    };
+
+    vector<int> findRedundantDirectedConnection(vector<vector<int>>& edges) {
+        int n = edges.size();
+        UnionFind uf = UnionFind(n + 1);
+        auto parent = vector<int>(n + 1);
+        for (int i = 1; i <= n; ++i) {
+            parent[i] = i;
+        }
+        int conflict = -1;
+        int cycle = -1;
+        for (int i = 0; i < n; ++i) {
+            auto edge = edges[i];
+            int node1 = edge[0], node2 = edge[1];
+            if (parent[node2] != node2) {
+                conflict = i;
+            } else {
+                parent[node2] = node1;
+                if (uf.find(node1) == uf.find(node2)) {
+                    cycle = i;
+                } else {
+                    uf.merge(node1, node2);
+                }
+            }
+        }
+        if (conflict < 0) {
+            auto redundant = vector<int> {edges[cycle][0], edges[cycle][1]};
+            return redundant;
+        } else {
+            auto conflictEdge = edges[conflict];
+            if (cycle >= 0) {
+                auto redundant = vector<int> {parent[conflictEdge[1]], conflictEdge[1]};
+                return redundant;
+            } else {
+                auto redundant = vector<int> {conflictEdge[0], conflictEdge[1]};
+                return redundant;
+            }
+        }
+    }
+
+}
+
+void findRedundantDirectedConnection_test(){
+    vector<vector<int>> edges;
+    vector<int>ans;
+    edges = {{1,2},{1,3},{2,3}};
+    ans = findRedundantDirectedConnection::findRedundantDirectedConnection(edges);
+    print_vector(ans);
+    cout << "++++++++++++++" << endl;
+    edges = {{1,2},{2,3},{3,4},{4,1},{1,5}};
+    ans = findRedundantDirectedConnection::findRedundantDirectedConnection(edges);
+    print_vector(ans);
+}
+
+namespace repeatedStringMatch{
+    int strStr(string haystack, string needle) {
+        int n = haystack.size(), m = needle.size();
+        if (m == 0) {
+            return 0;
+        }
+
+        long long k1 = 1e9 + 7;
+        long long k2 = 1337;
+        srand((unsigned)time(NULL));
+        long long kMod1 = rand() % k1 + k1;
+        long long kMod2 = rand() % k2 + k2;
+
+        long long hash_needle = 0;
+        for (auto c : needle) {
+            hash_needle = (hash_needle * kMod2 + c) % kMod1;
+        }
+        long long hash_haystack = 0, extra = 1;
+        for (int i = 0; i < m - 1; i++) {
+            hash_haystack = (hash_haystack * kMod2 + haystack[i % n]) % kMod1;
+            extra = (extra * kMod2) % kMod1;
+        }
+        for (int i = m - 1; (i - m + 1) < n; i++) {
+            hash_haystack = (hash_haystack * kMod2 + haystack[i % n]) % kMod1;
+            if (hash_haystack == hash_needle) {
+                return i - m + 1;
+            }
+            hash_haystack = (hash_haystack - extra * haystack[(i - m + 1) % n]) % kMod1;
+            hash_haystack = (hash_haystack + kMod1) % kMod1;
+        }
+        return -1;
+    }
+
+    int repeatedStringMatch(string a, string b) {
+        int an = a.size(), bn = b.size();
+        int index = strStr(a, b);
+        if (index == -1) {
+            return -1;
+        }
+        if (an - index >= bn) {
+            return 1;
+        }
+        return (bn + index - an - 1) / an + 2;
+    }
+}
+
+void repeatedStringMatch_test(){
+    string a, b;
+    a = "abcd";
+    b = "cdabcdab";
+    cout << repeatedStringMatch::repeatedStringMatch(a, b) << endl;
+    a = "a";
+    b = "aa";
+    cout << repeatedStringMatch::repeatedStringMatch(a, b) << endl;
+    a = "a";
+    b = "a";
+    cout << repeatedStringMatch::repeatedStringMatch(a, b) << endl;
+    a = "abc";
+    b = "wxyz";
+    cout << repeatedStringMatch::repeatedStringMatch(a, b) << endl;
+}
+
 int main() {
-    findRedundantConnection_test();
+    repeatedStringMatch_test();
     {
+    //findRedundantDirectedConnection_test();
+
+    //findRedundantConnection_test();
+
         //calPoints_test();
 
         //validPalindrome_test();
