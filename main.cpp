@@ -5666,7 +5666,7 @@ namespace findShortestSubArray {
             }
         }
         int maxNum = 0, minLen = 0;
-        for (auto& [_, vec] : mp) {
+        for (auto&[_, vec] : mp) {
             if (maxNum < vec[0]) {
                 maxNum = vec[0];
                 minLen = vec[2] - vec[1] + 1;
@@ -5688,9 +5688,107 @@ void findShortestSubArray_test() {
     cout << findShortestSubArray::findShortestSubArray(nums) << endl;
 }
 
+namespace canPartitionKSubsets {
+    bool canPartitionKSubsets(vector<int> &nums, int k) {
+        int all = accumulate(nums.begin(), nums.end(), 0);
+        if (all % k > 0) {
+            return false;
+        }
+        int per = all / k;
+        sort(nums.begin(), nums.end());
+        if (nums.back() > per) {
+            return false;
+        }
+        int n = nums.size();
+        vector<bool> dp(1 << n, false);
+        vector<int> curSum(1 << n, 0);
+        dp[0] = true;
+        auto ss = 1 << n;
+        cout << ss << endl;
+        for (int i = 0; i < 1 << n; i++) {
+            if (!dp[i]) {
+                continue;
+            }
+            for (int j = 0; j < n; j++) {
+                if (curSum[i] + nums[j] > per) {
+                    break;
+                }
+                if (((i >> j) & 1) == 0) {
+                    int next = i | (1 << j);
+                    if (!dp[next]) {
+                        curSum[next] = (curSum[i] + nums[j]) % per;
+                        dp[next] = true;
+                    }
+                }
+            }
+        }
+        return dp[(1 << n) - 1];
+    }
+}
+
+void canPartitionKSubsets_test() {
+    vector<int> nums;
+    int k;
+    nums = {4, 3, 2, 3, 5, 2, 1};
+    k = 4;
+    cout << canPartitionKSubsets::canPartitionKSubsets(nums, k) << endl;
+    nums = {1, 2, 3, 4};
+    k = 3;
+    cout << canPartitionKSubsets::canPartitionKSubsets(nums, k) << endl;
+}
+
+namespace fallingSquares {
+    vector<int> fallingSquares(vector<vector<int>>& positions) {
+        int n = positions.size();
+        vector<int> ret(n);
+        map<int, int> heightMap;
+        heightMap[0] = 0; // 初始时从 0 开始的所有点的堆叠高度都是 0
+        for (int i = 0; i < n; i++) {
+            int size = positions[i][1];
+            int left = positions[i][0], right = positions[i][0] + positions[i][1] - 1;
+            auto lp = heightMap.upper_bound(left), rp = heightMap.upper_bound(right);
+
+            //int rHeight = prev(rp)->second; // 记录 right + 1 对应的堆叠高度（如果 right + 1 不在 heightMap 中）
+            int rHeight = rp->second;
+
+            // 更新第 i 个掉落的方块的堆叠高度
+            int height = 0;
+            for (auto p = prev(lp); p != rp; p++) {
+                height = max(height, p->second + size);
+            }
+
+            // 清除 heightMap 中位于 (left, right] 内的点
+            heightMap.erase(lp, rp);
+
+            heightMap[left] = height; // 更新 left 的变化
+            if (rp == heightMap.end() || rp->first != right + 1) { // 如果 right + 1 不在 heightMap 中，更新 right + 1 的变化
+                heightMap[right + 1] = rHeight;
+            }
+            ret[i] = i > 0 ? max(ret[i - 1], height) : height;
+        }
+        return ret;
+    }
+}
+
+void fallingSquares_test(){
+    vector<vector<int>>positions;
+    vector<int>ans;
+    positions = {{1,2}, {2,3}, {6,1}};
+    ans = fallingSquares::fallingSquares(positions);
+    print_vector(ans);
+    positions = {{100,100},{200,100}};
+    ans = fallingSquares::fallingSquares(positions);
+    print_vector(ans);
+
+}
+
 int main() {
-    findShortestSubArray_test();
+    fallingSquares_test();
     {
+    //canPartitionKSubsets_test();
+
+        //findShortestSubArray_test();
+
         //countBinarySubstrings_test();
 
         //maxAreaOfIsland_test();
