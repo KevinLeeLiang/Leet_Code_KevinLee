@@ -5738,7 +5738,7 @@ void canPartitionKSubsets_test() {
 }
 
 namespace fallingSquares {
-    vector<int> fallingSquares(vector<vector<int>>& positions) {
+    vector<int> fallingSquares(vector<vector<int>> &positions) {
         int n = positions.size();
         vector<int> ret(n);
         map<int, int> heightMap;
@@ -5770,22 +5770,103 @@ namespace fallingSquares {
     }
 }
 
-void fallingSquares_test(){
-    vector<vector<int>>positions;
-    vector<int>ans;
-    positions = {{1,2}, {2,3}, {6,1}};
+void fallingSquares_test() {
+    vector<vector<int>> positions;
+    vector<int> ans;
+    positions = {{1, 2},
+                 {2, 3},
+                 {6, 1}};
     ans = fallingSquares::fallingSquares(positions);
     print_vector(ans);
-    positions = {{100,100},{200,100}};
+    positions = {{100, 100},
+                 {200, 100}};
     ans = fallingSquares::fallingSquares(positions);
     print_vector(ans);
 
 }
 
+namespace searchBST {
+    TreeNode::TreeNode *searchBST(TreeNode::TreeNode *root, int val) {
+        if (root == nullptr)
+            return nullptr;
+        if (root->val == val)
+            return root;
+        return searchBST(val < root->val ? root->left : root->right, val);
+    }
+}
+
+void searchBST_test() {
+    TreeNode::TreeNode *ans, *root;
+    vector<int> root_val;
+    int val;
+    root_val = {4, 2, 7, 1, 3};
+    val = 2;
+    root = create_treenode(root_val);
+    ans = searchBST::searchBST(root, val);
+    cout << TreeNode::print_tree(ans) << endl;
+    root_val = {4, 2, 7, 1, 3};
+    val = 5;
+    root = create_treenode(root_val);
+    ans = searchBST::searchBST(root, val);
+    cout << TreeNode::print_tree(ans) << endl;
+}
+
+namespace insertIntoBST {
+    TreeNode::TreeNode *insertIntoBST(TreeNode::TreeNode *root, int val) {
+        if (root == nullptr) {
+            return new TreeNode::TreeNode(val);
+        }
+        TreeNode::TreeNode* pos = root;
+        while (pos != nullptr) {
+            if (val < pos->val) {
+                if (pos->left == nullptr) {
+                    pos->left = new TreeNode::TreeNode(val);
+                    break;
+                } else {
+                    pos = pos->left;
+                }
+            } else {
+                if (pos->right == nullptr) {
+                    pos->right = new TreeNode::TreeNode(val);
+                    break;
+                } else {
+                    pos = pos->right;
+                }
+            }
+        }
+        return root;
+    }
+}
+
+void insertIntoBST_test() {
+    vector<int> vals;
+    int val;
+    TreeNode::TreeNode *root, *ans;
+    vals = {4, 2, 7, 1, 3};
+    val = 5;
+    root = create_treenode(vals);
+    ans = insertIntoBST::insertIntoBST(root, val);
+    cout << TreeNode::print_tree(ans) << endl;
+    vals = {40, 20, 60, 10, 30, 50, 70};
+    val = 25;
+    root = create_treenode(vals);
+    ans = insertIntoBST::insertIntoBST(root, val);
+    cout << TreeNode::print_tree(ans) << endl;
+    vals = {4, 2, 7, 1, 3, 0, 0, 0, 0, 0, 0};
+    val = 25;
+    root = create_treenode(vals);
+    ans = insertIntoBST::insertIntoBST(root, val);
+    cout << TreeNode::print_tree(ans) << endl;
+}
+
 int main() {
-    fallingSquares_test();
+    insertIntoBST_test();
     {
-    //canPartitionKSubsets_test();
+        //searchBST_test();
+
+        //fallingSquares_test();
+
+        //canPartitionKSubsets_test();
 
         //findShortestSubArray_test();
 
