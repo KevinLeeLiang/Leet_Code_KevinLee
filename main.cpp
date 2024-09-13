@@ -5816,7 +5816,7 @@ namespace insertIntoBST {
         if (root == nullptr) {
             return new TreeNode::TreeNode(val);
         }
-        TreeNode::TreeNode* pos = root;
+        TreeNode::TreeNode *pos = root;
         while (pos != nullptr) {
             if (val < pos->val) {
                 if (pos->left == nullptr) {
@@ -5859,9 +5859,42 @@ void insertIntoBST_test() {
     cout << TreeNode::print_tree(ans) << endl;
 }
 
+namespace binarySearch {
+    int binarySearch(vector<int> &nums, int target, int left, int righ) {
+        if (left > righ ||(left == righ && nums[left] != target)) {
+            return -1;
+        }
+        int mid = left + (righ - left) /2;
+        if (nums[mid] > target) {
+            return binarySearch(nums, target, left, mid);
+        } else if (nums[mid] < target) {
+            return binarySearch(nums, target, mid+1, righ);
+        } else {
+            return mid;
+        }
+    }
+
+    int search(vector<int> &nums, int target) {
+        return binarySearch(nums, target, 0, nums.size() - 1);
+    }
+}
+
+void binarySearch_test() {
+    vector<int> nums;
+    int target;
+    nums = {-1, 0, 3, 5, 9, 12};
+    target = 9;
+    cout << binarySearch::search(nums, target) << endl;
+    nums = {-1, 0, 3, 5, 9, 12};
+    target = 2;
+    cout << binarySearch::search(nums, target) << endl;
+}
+
 int main() {
-    insertIntoBST_test();
+    binarySearch_test();
     {
+        //insertIntoBST_test();
+
         //searchBST_test();
 
         //fallingSquares_test();
