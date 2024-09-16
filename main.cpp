@@ -5861,14 +5861,14 @@ void insertIntoBST_test() {
 
 namespace binarySearch {
     int binarySearch(vector<int> &nums, int target, int left, int righ) {
-        if (left > righ ||(left == righ && nums[left] != target)) {
+        if (left > righ || (left == righ && nums[left] != target)) {
             return -1;
         }
-        int mid = left + (righ - left) /2;
+        int mid = left + (righ - left) / 2;
         if (nums[mid] > target) {
             return binarySearch(nums, target, left, mid);
         } else if (nums[mid] < target) {
-            return binarySearch(nums, target, mid+1, righ);
+            return binarySearch(nums, target, mid + 1, righ);
         } else {
             return mid;
         }
@@ -5890,9 +5890,49 @@ void binarySearch_test() {
     cout << binarySearch::search(nums, target) << endl;
 }
 
+namespace minimumDeleteSum {
+    int minimumDeleteSum(string s1, string s2) {
+        int m = s1.size();
+        int n = s2.size();
+        vector<vector<int>> dp(m + 1, vector<int>(n + 1));
+
+        for (int i = 1; i <= m; ++i) {
+            dp[i][0] = dp[i - 1][0] + s1[i - 1];
+        }
+         for (int j = 1; j <= n; ++j) {
+            dp[0][j] = dp[0][j - 1] + s2[j - 1];
+        }
+        for (int i = 1; i <= m; i++) {
+            char c1 = s1[i - 1];
+            for (int j = 1; j <= n; j++) {
+                char c2 = s2[j - 1];
+                if (c1 == c2) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = min(dp[i - 1][j] + s1[i - 1], dp[i][j - 1] + s2[j - 1]);
+                }
+            }
+        }
+
+        return dp[m][n];
+    }
+}
+
+void minimumDeleteSum_test(){
+    string s1, s2;
+    s1 = "sea";
+    s2 = "eat";
+    cout << minimumDeleteSum::minimumDeleteSum(s1, s2) << endl;
+    s1 = "delete";
+    s2 = "leet";
+    cout << minimumDeleteSum::minimumDeleteSum(s1, s2) << endl;
+}
+
 int main() {
-    binarySearch_test();
+    minimumDeleteSum_test();
     {
+        //binarySearch_test();
+
         //insertIntoBST_test();
 
         //searchBST_test();
