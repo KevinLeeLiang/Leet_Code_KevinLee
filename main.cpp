@@ -5861,14 +5861,14 @@ void insertIntoBST_test() {
 
 namespace binarySearch {
     int binarySearch(vector<int> &nums, int target, int left, int righ) {
-        if (left > righ ||(left == righ && nums[left] != target)) {
+        if (left > righ || (left == righ && nums[left] != target)) {
             return -1;
         }
-        int mid = left + (righ - left) /2;
+        int mid = left + (righ - left) / 2;
         if (nums[mid] > target) {
             return binarySearch(nums, target, left, mid);
         } else if (nums[mid] < target) {
-            return binarySearch(nums, target, mid+1, righ);
+            return binarySearch(nums, target, mid + 1, righ);
         } else {
             return mid;
         }
@@ -5890,9 +5890,70 @@ void binarySearch_test() {
     cout << binarySearch::search(nums, target) << endl;
 }
 
+namespace findLength {
+    int findLength(vector<int> &nums1, vector<int> &nums2) {
+        int n = nums1.size();
+        int m = nums2.size();
+        int ans = 0;
+        vector<vector<int>> dp(n + 1, vector<int>(m + 1, 0));
+        for (int i = n - 1; i >= 0; --i) {
+            for (int j = m - 1; j >= 0; --j) {
+                dp[i][j] = nums1[i] == nums2[j] ? dp[i + 1][j + 1] + 1 : 0;
+                ans = max(ans, dp[i][j]);
+            }
+        }
+        return ans;
+    }
+}
+
+void findLength_test() {
+    vector<int> nums1, nums2;
+    nums1 = {1, 2, 3, 2, 1};
+    nums2 = {3, 2, 1, 4, 7};
+    cout << findLength::findLength(nums1, nums2) << endl;
+    nums1 = {0, 0, 0, 0, 0};
+    nums2 = {0, 0, 0, 0, 0};
+    cout << findLength::findLength(nums1, nums2) << endl;
+}
+
+namespace smallestDistancePair {
+    int smallestDistancePair(vector<int>& nums, int k) {
+        sort(nums.begin(), nums.end());
+        int n = nums.size(), left = 0, right = nums.back() - nums.front();
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            int cnt = 0;
+            for (int i = 0, j = 0; j < n; j++) {
+                while (nums[j] - nums[i] > mid) {
+                    i++;
+                }
+                cnt += j - i;
+            }
+            if (cnt >= k) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return left;
+    }
+}
+
+void smallestDistancePair_test(){
+    vector<int>nums;
+    int k;
+    nums = {62, 100, 4};
+    k = 2;
+    cout << smallestDistancePair::smallestDistancePair(nums, k) << endl;
+}
+
 int main() {
-    binarySearch_test();
+    smallestDistancePair_test();
     {
+    //findLength_test();
+
+        //binarySearch_test();
+
         //insertIntoBST_test();
 
         //searchBST_test();
