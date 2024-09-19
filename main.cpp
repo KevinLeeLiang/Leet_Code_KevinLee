@@ -5890,6 +5890,95 @@ void binarySearch_test() {
     cout << binarySearch::search(nums, target) << endl;
 }
 
+namespace minimumDeleteSum {
+    int minimumDeleteSum(string s1, string s2) {
+        int m = s1.size();
+        int n = s2.size();
+        vector<vector<int>> dp(m + 1, vector<int>(n + 1));
+
+        for (int i = 1; i <= m; ++i) {
+            dp[i][0] = dp[i - 1][0] + s1[i - 1];
+        }
+        for (int j = 1; j <= n; ++j) {
+            dp[0][j] = dp[0][j - 1] + s2[j - 1];
+        }
+        for (int i = 1; i <= m; i++) {
+            char c1 = s1[i - 1];
+            for (int j = 1; j <= n; j++) {
+                char c2 = s2[j - 1];
+                if (c1 == c2) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = min(dp[i - 1][j] + s1[i - 1], dp[i][j - 1] + s2[j - 1]);
+                }
+            }
+        }
+
+        return dp[m][n];
+    }
+}
+
+void minimumDeleteSum_test() {
+    string s1, s2;
+    s1 = "sea";
+    s2 = "eat";
+    cout << minimumDeleteSum::minimumDeleteSum(s1, s2) << endl;
+    s1 = "delete";
+    s2 = "leet";
+    cout << minimumDeleteSum::minimumDeleteSum(s1, s2) << endl;
+}
+
+namespace numSubarrayProductLessThanK {
+    int numSubarrayProductLessThanK(vector<int> &nums, int k) {
+        int n = nums.size(), ans = 0;
+        int prod = 1, i = 0;
+        for (int j = 0; j < n; j++) {
+            prod *= nums[j];
+            while (i <= j && prod >= k) {
+                prod /= nums[i];
+                i++;
+            }
+            ans += j - i + 1;
+        }
+        return ans;
+    }
+}
+
+void numSubarrayProductLessThanK_test() {
+    vector<int> nums;
+    int k;
+    nums = {10, 5, 2, 6};
+    k = 100;
+    cout << numSubarrayProductLessThanK::numSubarrayProductLessThanK(nums, k) << endl;
+    nums = {1, 2, 3};
+    k = 0;
+    cout << numSubarrayProductLessThanK::numSubarrayProductLessThanK(nums, k) << endl;
+}
+
+namespace maxProfit {
+    int maxProfit(vector<int> &prices, int fee) {
+        int n = prices.size();
+        vector<vector<int>> dp(n, vector<int>(2));
+        dp[0][0] = 0, dp[0][1] = -prices[0];
+        for (int i = 1; i < n; ++i) {
+            dp[i][0] = max(dp[i - 1][0], dp[i - 1][1] + prices[i] - fee);
+            dp[i][1] = max(dp[i - 1][1], dp[i - 1][0] - prices[i]);
+        }
+        return dp[n - 1][0];
+    }
+}
+
+void maxProfit_test() {
+    vector<int> prices;
+    int fee;
+    prices = {1, 3, 2, 8, 4, 9};
+    fee = 2;
+    cout << maxProfit::maxProfit(prices, fee) << endl;
+    prices = {1, 3, 7, 5, 10, 3};
+    fee = 3;
+    cout << maxProfit::maxProfit(prices, fee) << endl;
+}
+
 namespace findLength {
     int findLength(vector<int> &nums1, vector<int> &nums2) {
         int n = nums1.size();
@@ -5917,7 +6006,7 @@ void findLength_test() {
 }
 
 namespace smallestDistancePair {
-    int smallestDistancePair(vector<int>& nums, int k) {
+    int smallestDistancePair(vector<int> &nums, int k) {
         sort(nums.begin(), nums.end());
         int n = nums.size(), left = 0, right = nums.back() - nums.front();
         while (left <= right) {
@@ -5939,8 +6028,8 @@ namespace smallestDistancePair {
     }
 }
 
-void smallestDistancePair_test(){
-    vector<int>nums;
+void smallestDistancePair_test() {
+    vector<int> nums;
     int k;
     nums = {62, 100, 4};
     k = 2;
@@ -5950,7 +6039,13 @@ void smallestDistancePair_test(){
 int main() {
     smallestDistancePair_test();
     {
-    //findLength_test();
+        //findLength_test();
+
+        //maxProfit_test();
+
+        //numSubarrayProductLessThanK_test();
+
+        //minimumDeleteSum_test();
 
         //binarySearch_test();
 
