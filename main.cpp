@@ -6036,9 +6036,172 @@ void smallestDistancePair_test() {
     cout << smallestDistancePair::smallestDistancePair(nums, k) << endl;
 }
 
+namespace longestWord {
+    class Trie {
+    public:
+        Trie() {
+            this->children = vector<Trie *>(26, nullptr);
+            this->is_end = false;
+        }
+
+        bool insert(const string &word) {
+            Trie *node = this;
+            for (const auto &ch : word) {
+                int index = ch - 'a';
+                if (node->children[index] == nullptr) {
+                    node->children[index] = new Trie();
+                }
+                node = node->children[index];
+            }
+            node->is_end = true;
+            return true;
+        }
+
+        bool search(const string &word) {
+            Trie *node = this;
+            for (const auto &ch : word) {
+                int index = ch - 'a';
+                if (node->children[index] == nullptr || !node->children[index]->is_end) {
+                    return false;
+                }
+                node = node->children[index];
+            }
+            return node != nullptr && node->is_end;
+        }
+
+    private:
+        vector<Trie *> children;
+        bool is_end;
+    };
+
+    string longestWord(vector<string> &words) {
+        Trie trie;
+        for (const auto &word : words) {
+            trie.insert(word);
+        }
+        string longest = "";
+        for (const auto &word : words) {
+            if (trie.search(word)) {
+                if (word.size() > longest.size() || (word.size() == longest.size() && word < longest)) {
+                    longest = word;
+                }
+            }
+        }
+        return longest;
+    }
+}
+
+void longestWord_test() {
+    vector<string> words;
+    string ans;
+    words = {"w", "wo", "wor", "worl", "world"};
+    ans = longestWord::longestWord(words);
+    cout << ans << endl;
+    words = {"a", "banana", "app", "appl", "ap", "apply", "apple"};
+    ans = longestWord::longestWord(words);
+    cout << ans << endl;
+}
+
+namespace accountsMerge {
+    class UnionFind {
+    public:
+        vector<int> parent;
+
+        UnionFind(int n) {
+            parent.resize(n);
+            for (int i = 0; i < n; i++) {
+                parent[i] = i;
+            }
+        }
+
+        void unionSet(int index1, int index2) {
+            parent[find(index2)] = find(index1);
+        }
+
+        int find(int index) {
+            if (parent[index] != index) {
+                parent[index] = find(parent[index]);
+            }
+            return parent[index];
+        }
+    };
+
+    vector<vector<string>> accountsMerge(vector<vector<string>> &accounts) {
+        map<string, int> emailToIndex;
+        map<string, string> emailToName;
+        int emailsCount = 0;
+        for (auto& account : accounts) {
+            string& name = account[0];
+            int size = account.size();
+            for (int i = 1; i < size; i++) {
+                string& email = account[i];
+                if (!emailToIndex.count(email)) {
+                    emailToIndex[email] = emailsCount++;
+                    emailToName[email] = name;
+                }
+            }
+        }
+        UnionFind uf(emailsCount);
+        for (auto& account : accounts) {
+            string& firstEmail = account[1];
+            int firstIndex = emailToIndex[firstEmail];
+            int size = account.size();
+            for (int i = 2; i < size; i++) {
+                string& nextEmail = account[i];
+                int nextIndex = emailToIndex[nextEmail];
+                uf.unionSet(firstIndex, nextIndex);
+            }
+        }
+        map<int, vector<string>> indexToEmails;
+        for (auto& [email, _] : emailToIndex) {
+            int index = uf.find(emailToIndex[email]);
+            vector<string>& account = indexToEmails[index];
+            account.emplace_back(email);
+            indexToEmails[index] = account;
+        }
+        vector<vector<string>> merged;
+        for (auto& [_, emails] : indexToEmails) {
+            sort(emails.begin(), emails.end());
+            string& name = emailToName[emails[0]];
+            vector<string> account;
+            account.emplace_back(name);
+            for (auto& email : emails) {
+                account.emplace_back(email);
+            }
+            merged.emplace_back(account);
+        }
+        return merged;
+    }
+}
+
+void accountsMerge_test() {
+    vector<vector<string>> accounts, ans;
+    accounts = {{"John", "johnsmith@mail.com", "john00@mail.com"},
+                {"John", "johnnybravo@mail.com"},
+                {"John", "johnsmith@mail.com", "john_newyork@mail.com"},
+                {"Mary", "mary@mail.com"}};
+    ans = accountsMerge::accountsMerge(accounts);
+    for (auto & word : ans) {
+        print_vector(word);
+    }
+    cout << "--------------" << endl;
+    accounts = {{"John", "john00@mail.com", "john_newyork@mail.com", "johnsmith@mail.com"},
+                {"John", "johnnybravo@mail.com"},
+                {"Mary", "mary@mail.com"}};
+    ans = accountsMerge::accountsMerge(accounts);
+    for (auto & word : ans) {
+        print_vector(word);
+    }
+    cout << "--------------" << endl;
+}
+
 int main() {
-    smallestDistancePair_test();
+    accountsMerge_test();
     {
+        //longestWord_test();
+
+        //smallestDistancePair_test();
+
         //findLength_test();
 
         //maxProfit_test();
