@@ -4,6 +4,34 @@
 
 using namespace std;
 
+struct ListNode {
+    int val;
+    ListNode *next;
+
+    ListNode() : val(0), next(nullptr) {}
+
+    ListNode(int x) : val(x), next(nullptr) {}
+
+    ListNode(int x, ListNode *next) : val(x), next(next) {}
+};
+
+template<typename T>
+ListNode *create_nodelist(vector<T> &nums) {
+    ListNode *head = nullptr;
+    ListNode *curr = nullptr;
+    if (nums.size() == 0)
+        return nullptr;
+    else
+        head = new ListNode(nums[0]);
+    curr = head;
+    for (int i = 1; i < nums.size(); ++i) {
+        curr->next = new ListNode(nums[i]);
+        curr = curr->next;
+    }
+    return head;
+}
+
+
 template<typename T>
 void print_vector(vector<T> &nums) {
     for (auto num : nums) {
@@ -6130,11 +6158,11 @@ namespace accountsMerge {
         map<string, int> emailToIndex;
         map<string, string> emailToName;
         int emailsCount = 0;
-        for (auto& account : accounts) {
-            string& name = account[0];
+        for (auto &account : accounts) {
+            string &name = account[0];
             int size = account.size();
             for (int i = 1; i < size; i++) {
-                string& email = account[i];
+                string &email = account[i];
                 if (!emailToIndex.count(email)) {
                     emailToIndex[email] = emailsCount++;
                     emailToName[email] = name;
@@ -6142,30 +6170,30 @@ namespace accountsMerge {
             }
         }
         UnionFind uf(emailsCount);
-        for (auto& account : accounts) {
-            string& firstEmail = account[1];
+        for (auto &account : accounts) {
+            string &firstEmail = account[1];
             int firstIndex = emailToIndex[firstEmail];
             int size = account.size();
             for (int i = 2; i < size; i++) {
-                string& nextEmail = account[i];
+                string &nextEmail = account[i];
                 int nextIndex = emailToIndex[nextEmail];
                 uf.unionSet(firstIndex, nextIndex);
             }
         }
         map<int, vector<string>> indexToEmails;
-        for (auto& [email, _] : emailToIndex) {
+        for (auto&[email, _] : emailToIndex) {
             int index = uf.find(emailToIndex[email]);
-            vector<string>& account = indexToEmails[index];
+            vector<string> &account = indexToEmails[index];
             account.emplace_back(email);
             indexToEmails[index] = account;
         }
         vector<vector<string>> merged;
-        for (auto& [_, emails] : indexToEmails) {
+        for (auto&[_, emails] : indexToEmails) {
             sort(emails.begin(), emails.end());
-            string& name = emailToName[emails[0]];
+            string &name = emailToName[emails[0]];
             vector<string> account;
             account.emplace_back(name);
-            for (auto& email : emails) {
+            for (auto &email : emails) {
                 account.emplace_back(email);
             }
             merged.emplace_back(account);
@@ -6181,7 +6209,7 @@ void accountsMerge_test() {
                 {"John", "johnsmith@mail.com", "john_newyork@mail.com"},
                 {"Mary", "mary@mail.com"}};
     ans = accountsMerge::accountsMerge(accounts);
-    for (auto & word : ans) {
+    for (auto &word : ans) {
         print_vector(word);
     }
     cout << "--------------" << endl;
@@ -6189,15 +6217,114 @@ void accountsMerge_test() {
                 {"John", "johnnybravo@mail.com"},
                 {"Mary", "mary@mail.com"}};
     ans = accountsMerge::accountsMerge(accounts);
-    for (auto & word : ans) {
+    for (auto &word : ans) {
         print_vector(word);
     }
     cout << "--------------" << endl;
 }
 
+namespace pivotIndex {
+    int pivotIndex(vector<int> &nums) {
+        if (nums.size() == 1) {
+            return 0;
+        }
+        if (nums.size() == 0)
+            return -1;
+        int n = nums.size();
+        int leftsum = 0, righsum = accumulate(nums.begin() + 1, nums.end(), 0.0);
+        for (int i = 0; i < n - 1; ++i) {
+            if (leftsum == righsum) {
+                return i;
+            } else {
+                leftsum += nums[i];
+                righsum -= nums[i + 1];
+            }
+        }
+        if (leftsum == righsum) {
+            return n - 1;
+        }
+        return -1;
+    }
+}
+
+void pivotIndex_test() {
+    vector<int> nums;
+    nums = {1, 7, 3, 6, 5, 6};
+    cout << pivotIndex::pivotIndex(nums) << endl;
+    nums = {1, 2, 3};
+    cout << pivotIndex::pivotIndex(nums) << endl;
+    nums = {2, -1, 1};
+    cout << pivotIndex::pivotIndex(nums) << endl;
+    nums = {-1, 1, 2};
+    cout << pivotIndex::pivotIndex(nums) << endl;
+}
+
+namespace splitListToParts {
+    vector<ListNode *> splitListToParts(ListNode *head, int k) {
+        int n = 0;
+        ListNode *temp = head;
+        while (temp != nullptr) {
+            n++;
+            temp = temp->next;
+        }
+        int quotient = n / k, remainder = n % k;
+
+        vector<ListNode*> parts(k,nullptr);
+        ListNode *curr = head;
+        for (int i = 0; i < k && curr != nullptr; i++) {
+            parts[i] = curr;
+            int partSize = quotient + (i < remainder ? 1 : 0);
+            for (int j = 1; j < partSize; j++) {
+                curr = curr->next;
+            }
+            ListNode *next = curr->next;
+            curr->next = nullptr;
+            curr = next;
+        }
+        return parts;
+    }
+
+    void print(vector<ListNode *> nodelist) {
+        for (auto list : nodelist) {
+            cout << "{";
+            while (list != nullptr) {
+                cout << list->val;
+                list = list->next;
+                if (list) {
+                    cout << ",";
+                }
+            }
+            cout << "} " << endl;
+        }
+    }
+}
+
+void splitListToParts_test() {
+    vector<int> nums;
+    int k;
+    vector<ListNode *> ans;
+    nums = {1, 2, 3};
+    k = 5;
+    ListNode *head;
+    head = create_nodelist(nums);
+    ans = splitListToParts::splitListToParts(head, k);
+    splitListToParts::print(ans);
+    cout << "+++++++++++" << endl;
+    nums = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    k = 3;
+    head = create_nodelist(nums);
+    ans = splitListToParts::splitListToParts(head, k);
+    splitListToParts::print(ans);
+    cout << "+++++++++++" << endl;
+}
+
 int main() {
-    accountsMerge_test();
+    splitListToParts_test();
     {
+        //pivotIndex_test();
+
+        //accountsMerge_test();
+
         //longestWord_test();
 
         //smallestDistancePair_test();
