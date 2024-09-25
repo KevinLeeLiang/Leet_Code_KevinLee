@@ -6269,7 +6269,7 @@ namespace splitListToParts {
         }
         int quotient = n / k, remainder = n % k;
 
-        vector<ListNode*> parts(k,nullptr);
+        vector<ListNode *> parts(k, nullptr);
         ListNode *curr = head;
         for (int i = 0; i < k && curr != nullptr; i++) {
             parts[i] = curr;
@@ -6382,7 +6382,7 @@ namespace countOfAtoms {
     }
 }
 
-void countOfAtoms_test(){
+void countOfAtoms_test() {
     string formula;
     formula = "H2O";
     cout << countOfAtoms::countOfAtoms(formula) << endl;
@@ -6416,9 +6416,9 @@ namespace selfDividingNumbers {
     }
 }
 
-void selfDividingNumbers_test(){
+void selfDividingNumbers_test() {
     int left, right;
-    vector<int>ans;
+    vector<int> ans;
     left = 1, right = 22;
     ans = selfDividingNumbers::selfDividingNumbers(left, right);
     print_vector(ans);
@@ -6443,7 +6443,7 @@ namespace MyCalendar {
     };
 }
 
-void MyCalendar_test(){
+void MyCalendar_test() {
     MyCalendar::MyCalendar test;
     cout << test.book(10, 20) << endl;
     cout << test.book(15, 25) << endl;
@@ -6452,7 +6452,8 @@ void MyCalendar_test(){
 }
 
 namespace countPalindromicSubsequences {
-    const int MOD = 1E9+7;
+    const int MOD = 1E9 + 7;
+
     int countPalindromicSubsequences(string s) {
         int n = s.size();
         vector<vector<vector<int>>> dp(4, vector<vector<int>>(n, vector<int>(n, 0)));
@@ -6464,7 +6465,8 @@ namespace countPalindromicSubsequences {
             for (int i = 0, j = len - 1; j < n; i++, j++) {
                 for (char c = 'a', k = 0; c <= 'd'; c++, k++) {
                     if (s[i] == c && s[j] == c) {
-                        dp[k][i][j] = (2LL + dp[0][i + 1][j - 1] + dp[1][i + 1][j - 1] + dp[2][i + 1][j - 1] + dp[3][i + 1][j - 1]) % MOD;
+                        dp[k][i][j] = (2LL + dp[0][i + 1][j - 1] + dp[1][i + 1][j - 1] + dp[2][i + 1][j - 1] +
+                                       dp[3][i + 1][j - 1]) % MOD;
                     } else if (s[i] == c) {
                         dp[k][i][j] = dp[k][i][j - 1];
                     } else if (s[j] == c) {
@@ -6484,7 +6486,7 @@ namespace countPalindromicSubsequences {
     }
 }
 
-void countPalindromicSubsequences_test(){
+void countPalindromicSubsequences_test() {
     string s;
     s = "bccb";
     cout << countPalindromicSubsequences::countPalindromicSubsequences(s) << endl;
@@ -6492,10 +6494,83 @@ void countPalindromicSubsequences_test(){
     cout << countPalindromicSubsequences::countPalindromicSubsequences(s) << endl;
 }
 
+namespace floodFill {
+    const int dx[4] = {1, 0, 0, -1};
+    const int dy[4] = {0, 1, -1, 0};
+
+    void dfs(vector<vector<int>> &image, int x, int y, int currColor, int color) {
+        if (image[x][y] == currColor) {
+            image[x][y] = color;
+            for (int i = 0; i < 4; i++) {
+                int mx = x + dx[i], my = y + dy[i];
+                if (mx >= 0 && mx < image.size() && my >= 0 && my < image[0].size()) {
+                    dfs(image, mx, my, currColor, color);
+                }
+            }
+        }
+    }
+
+    vector<vector<int>> floodFill(vector<vector<int>> &image, int sr, int sc, int color) {
+        int currColor = image[sr][sc];
+        if (currColor != color) {
+            dfs(image, sr, sc, currColor, color);
+        }
+        return image;
+    }
+}
+
+void floodFill_test() {
+    vector<vector<int>> image, ans;
+    int sr, sc, color;
+    image = {{1, 1, 1},
+             {1, 1, 0},
+             {1, 0, 1}}, sr = 1, sc = 1, color = 2;
+    ans = floodFill::floodFill(image, sr, sc, color);
+    for (auto line : ans) {
+        print_vector(line);
+    }
+}
+
+namespace asteroidCollision {
+    vector<int> asteroidCollision(vector<int> &asteroids) {
+        vector<int> st;
+        for (auto aster : asteroids) {
+            bool alive = true;
+            while (alive && aster < 0 && !st.empty() && st.back() > 0) {
+                alive = st.back() < -aster; // aster 是否存在
+                if (st.back() <= -aster) {  // 栈顶行星爆炸
+                    st.pop_back();
+                }
+            }
+            if (alive) {
+                st.push_back(aster);
+            }
+        }
+        return st;
+    }
+}
+
+void asteroidCollision_test() {
+    vector<int> asteroids, ans;
+    asteroids = {-2,-1,1,2};
+    ans = asteroidCollision::asteroidCollision(asteroids);
+    print_vector(ans);
+    asteroids = {5, 10, -5};
+    ans = asteroidCollision::asteroidCollision(asteroids);
+    print_vector(ans);
+    asteroids = {8,-8};
+    ans = asteroidCollision::asteroidCollision(asteroids);
+    print_vector(ans);
+}
+
 int main() {
-    countPalindromicSubsequences_test();
+    asteroidCollision_test();
     {
-    //MyCalendar_test();
+        //floodFill_test();
+
+        //countPalindromicSubsequences_test();
+
+        //MyCalendar_test();
 
         //selfDividingNumbers_test();
 
