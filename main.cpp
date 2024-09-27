@@ -6552,20 +6552,95 @@ namespace asteroidCollision {
 
 void asteroidCollision_test() {
     vector<int> asteroids, ans;
-    asteroids = {-2,-1,1,2};
+    asteroids = {-2, -1, 1, 2};
     ans = asteroidCollision::asteroidCollision(asteroids);
     print_vector(ans);
     asteroids = {5, 10, -5};
     ans = asteroidCollision::asteroidCollision(asteroids);
     print_vector(ans);
-    asteroids = {8,-8};
+    asteroids = {8, -8};
     ans = asteroidCollision::asteroidCollision(asteroids);
     print_vector(ans);
 }
 
+namespace dailyTemperatures {
+    vector<int> dailyTemperatures(vector<int> &temperatures) {
+        int n = temperatures.size();
+        vector<int> ans(n);
+        stack<int> s;
+        for (int i = 0; i < n; ++i) {
+            while (!s.empty() && temperatures[i] > temperatures[s.top()]) {
+                int previousIndex = s.top();
+                ans[previousIndex] = i - previousIndex;
+                s.pop();
+            }
+            s.push(i);
+        }
+        return ans;
+    }
+}
+
+void dailyTemperatures_test() {
+    vector<int> temperatures, ans;
+    temperatures = {73, 74, 75, 71, 69, 72, 76, 73};
+    ans = dailyTemperatures::dailyTemperatures(temperatures);
+    print_vector(ans);
+    temperatures = {30, 40, 50, 60};
+    ans = dailyTemperatures::dailyTemperatures(temperatures);
+    print_vector(ans);
+}
+
+namespace deleteAndEarn {
+    int rob(vector<int> &nums) {
+        int size = nums.size();
+        if (size == 1) {
+            return nums[0];
+        }
+        int first = nums[0], second = max(nums[0], nums[1]);
+        for (int i = 2; i < size; i++) {
+            int temp = second;
+            second = max(first + nums[i], second);
+            first = temp;
+        }
+        return second;
+    }
+
+    int deleteAndEarn(vector<int> &nums) {
+        int n = nums.size();
+        int ans = 0;
+        sort(nums.begin(), nums.end());
+        vector<int> sum = {nums[0]};
+        for (int i = 1; i < n; ++i) {
+            int val = nums[i];
+            if (val == nums[i - 1]) {
+                sum.back() += val;
+            } else if (val == nums[i - 1] + 1) {
+                sum.push_back(val);
+            } else {
+                ans += rob(sum);
+                sum = {val};
+            }
+        }
+        ans += rob(sum);
+        return ans;
+    }
+}
+
+void deleteAndEarn_test() {
+    vector<int> nums;
+    nums = {3, 4, 2};
+    cout << deleteAndEarn::deleteAndEarn(nums) << endl;
+    nums = {2, 2, 3, 3, 3, 4};
+    cout << deleteAndEarn::deleteAndEarn(nums) << endl;
+}
+
 int main() {
-    asteroidCollision_test();
+    deleteAndEarn_test();
     {
+        //dailyTemperatures_test();
+
+        //asteroidCollision_test();
+
         //floodFill_test();
 
         //countPalindromicSubsequences_test();
