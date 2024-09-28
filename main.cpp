@@ -6634,9 +6634,108 @@ void deleteAndEarn_test() {
     cout << deleteAndEarn::deleteAndEarn(nums) << endl;
 }
 
+namespace cherryPickup {
+    int cherryPickup(vector<vector<int>> &grid) {
+        int n = grid.size();
+        vector<vector<vector<int>>> f(n * 2 - 1, vector<vector<int>>(n, vector<int>(n, INT_MIN)));
+        f[0][0][0] = grid[0][0];
+        for (int k = 1; k < n * 2 - 1; ++k) {
+            for (int x1 = max(k - n + 1, 0); x1 <= min(k, n - 1); ++x1) {
+                int y1 = k - x1;
+                if (grid[x1][y1] == -1) {
+                    continue;
+                }
+                for (int x2 = x1; x2 <= min(k, n - 1); ++x2) {
+                    int y2 = k - x2;
+                    if (grid[x2][y2] == -1) {
+                        continue;
+                    }
+                    int res = f[k - 1][x1][x2]; // 都往右
+                    if (x1) {
+                        res = max(res, f[k - 1][x1 - 1][x2]); // 往下，往右
+                    }
+                    if (x2) {
+                        res = max(res, f[k - 1][x1][x2 - 1]); // 往右，往下
+                    }
+                    if (x1 && x2) {
+                        res = max(res, f[k - 1][x1 - 1][x2 - 1]); // 都往下
+                    }
+                    res += grid[x1][y1];
+                    if (x2 != x1) { // 避免重复摘同一个樱桃
+                        res += grid[x2][y2];
+                    }
+                    f[k][x1][x2] = res;
+                }
+            }
+        }
+        return max(f.back().back().back(), 0);
+    }
+}
+
+void cherryPickup_test() {
+    vector<vector<int>> grid;
+    grid = {{0, 1, -1},
+            {1, 0, -1},
+            {1, 1, 1}};
+    cout << cherryPickup::cherryPickup(grid) << endl;
+    grid = {{1,  1,  -1},
+            {1,  -1, 1},
+            {-1, 1,  1}};
+    cout << cherryPickup::cherryPickup(grid) << endl;
+}
+
+namespace networkDelayTime {
+    int networkDelayTime(vector<vector<int>> &times, int n, int k) {
+        const int inf = INT_MAX / 2;
+        vector<vector<int>> g(n, vector<int>(n, inf));
+        for (auto &t : times) {
+            int x = t[0] - 1, y = t[1] - 1;
+            g[x][y] = t[2];
+        }
+
+        vector<int> dist(n, inf);
+        dist[k - 1] = 0;
+        vector<int> used(n);
+        for (int i = 0; i < n; ++i) {
+            int x = -1;
+            for (int y = 0; y < n; ++y) {
+                if (!used[y] && (x == -1 || dist[y] < dist[x])) {
+                    x = y;
+                }
+            }
+            used[x] = true;
+            for (int y = 0; y < n; ++y) {
+                dist[y] = min(dist[y], dist[x] + g[x][y]);
+            }
+        }
+
+        int ans = *max_element(dist.begin(), dist.end());
+        return ans == inf ? -1 : ans;
+    }
+}
+
+void networkDelayTime_test() {
+    vector<vector<int>> times;
+    int n, k;
+    times = {
+            {2, 1, 1},
+            {2, 3, 1},
+            {3, 4, 1}
+    };
+    n = 4, k = 2;
+    cout << networkDelayTime::networkDelayTime(times, n, k) << endl;
+    times = {{1,2,1}};
+    n = 2, k = 1;
+    cout << networkDelayTime::networkDelayTime(times, n, k) << endl;
+}
+
 int main() {
-    deleteAndEarn_test();
+    networkDelayTime_test();
     {
+        //cherryPickup_test();
+
+        //deleteAndEarn_test();
+
         //dailyTemperatures_test();
 
         //asteroidCollision_test();
