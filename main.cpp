@@ -6724,14 +6724,91 @@ void networkDelayTime_test() {
     };
     n = 4, k = 2;
     cout << networkDelayTime::networkDelayTime(times, n, k) << endl;
-    times = {{1,2,1}};
+    times = {{1, 2, 1}};
     n = 2, k = 1;
     cout << networkDelayTime::networkDelayTime(times, n, k) << endl;
 }
 
+namespace nextGreatestLetter {
+    char nextGreatestLetter(vector<char> &letters, char target) {
+        return target < letters.back() ? *upper_bound(letters.begin(), letters.end() - 1, target) : letters[0];
+    }
+}
+
+void nextGreatestLetter_test() {
+    vector<char> letters;
+    char target;
+    letters = {'c', 'f', 'j'};
+    target = 'a';
+    cout << nextGreatestLetter::nextGreatestLetter(letters, target) << endl;
+    letters = {'c', 'f', 'j'};
+    target = 'c';
+    cout << nextGreatestLetter::nextGreatestLetter(letters, target) << endl;
+    letters = {'x', 'x', 'y', 'y'};
+    target = 'z';
+    cout << nextGreatestLetter::nextGreatestLetter(letters, target) << endl;
+}
+
+namespace minCostClimbingStairs {
+    int minCostClimbingStairs(vector<int> &cost) {
+        int n = cost.size();
+        vector<int> dp0(n), dp1(n);
+        bool is_step = false;
+        dp0[0] = cost[0];
+        dp1[0] = 0;
+        for (int i = 1; i < n; ++i) {
+            dp0[i] = min(dp0[i - 1], dp1[i - 1]) + cost[i];
+            dp1[i] = dp0[i - 1];
+        }
+        return min(dp0[n - 1], dp1[n - 1]);
+    }
+}
+
+void minCostClimbingStairs_test() {
+    vector<int> cost;
+    cost = {10, 15, 20};
+    cout << minCostClimbingStairs::minCostClimbingStairs(cost) << endl;
+    cost = {1, 100, 1, 1, 1, 100, 1, 1, 100, 1};
+    cout << minCostClimbingStairs::minCostClimbingStairs(cost) << endl;
+}
+
+namespace dominantIndex {
+    int dominantIndex(vector<int> &nums) {
+        int index = 0;
+        int max = nums[0], secmax = 0;
+        for (int i = 1; i < nums.size(); ++i) {
+            int num = nums[i];
+            if (num > max) {
+                secmax = max;
+                max = num;
+                index = i;
+            } else if (num > secmax) {
+                secmax = num;
+            }
+        }
+        return secmax * 2 > max ? -1 : index;
+    }
+}
+
+void dominantIndex_test() {
+    vector<int> nums;
+    nums = {3, 6, 1, 0};
+    cout << dominantIndex::dominantIndex(nums) << endl;
+    nums = {1, 2, 3, 4};
+    cout << dominantIndex::dominantIndex(nums) << endl;
+    nums = {0, 0, 3, 2};
+    cout << dominantIndex::dominantIndex(nums) << endl;
+}
+
 int main() {
-    networkDelayTime_test();
+    dominantIndex_test();
     {
+        //minCostClimbingStairs_test();
+
+        //nextGreatestLetter_test();
+
+        //networkDelayTime_test();
+
         //cherryPickup_test();
 
         //deleteAndEarn_test();
