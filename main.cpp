@@ -6800,9 +6800,54 @@ void dominantIndex_test() {
     cout << dominantIndex::dominantIndex(nums) << endl;
 }
 
+namespace shortestCompletingWord {
+    string shortestCompletingWord(string licensePlate, vector<string>& words) {
+        array<int, 26> cnt{};
+        for (char ch : licensePlate) {
+            if (isalpha(ch)) {
+                ++cnt[tolower(ch) - 'a'];
+            }
+        }
+        int idx = -1;
+        for (int i = 0; i < words.size(); ++i) {
+            array<int, 26> c{};
+            for (char ch : words[i]) {
+                ++c[ch - 'a'];
+            }
+            bool ok = true;
+            for (int j = 0; j < 26; ++j) {
+                if (c[j] < cnt[j]) {
+                    ok = false;
+                    break;
+                }
+            }
+            if (ok && (idx < 0 || words[i].length() < words[idx].length())) {
+                idx = i;
+            }
+        }
+        return words[idx];
+    }
+}
+
+void shortestCompletingWord_test(){
+    string licensePlate;
+    vector<string>words;
+    licensePlate = "1s3 PSt";
+    words = {"step", "steps", "stripe", "stepple"};
+    cout << shortestCompletingWord::shortestCompletingWord(licensePlate, words) << endl;
+    licensePlate = "1s3 456";
+    words = {"looks", "pest", "stew", "show"};
+    cout << shortestCompletingWord::shortestCompletingWord(licensePlate, words) << endl;
+    licensePlate = "Ah71752";
+    words = {"suggest","letter","of","husband","easy","education","drug","prevent","writer","old"};
+    cout << shortestCompletingWord::shortestCompletingWord(licensePlate, words) << endl;
+}
+
 int main() {
-    dominantIndex_test();
+    shortestCompletingWord_test();
     {
+    //dominantIndex_test();
+
         //minCostClimbingStairs_test();
 
         //nextGreatestLetter_test();
