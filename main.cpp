@@ -6915,15 +6915,16 @@ namespace crackSafe {
     int highest;
     int k;
     void dfs(int node) {
-        for (int x = 0; x < k; ++x) {
-            int nei = node + 10 + x;
+        for(int x = 0; x < k; ++x) {
+            int nei = node * 10 + x;
             if (!seen.count(nei)) {
                 seen.insert(nei);
-                dfs(nei % highest);
+                dfs(nei%highest);
                 ans += (x + '0');
             }
         }
-    };
+    }
+
     string crackSafe(int n, int _k) {
         highest = pow(10, n - 1);
         k = _k;
@@ -6940,9 +6941,31 @@ void crackSafe_test(){
     cout << crackSafe::crackSafe(n, k) << endl;
 }
 
+namespace reachNumber {
+    int reachNumber(int target) {
+        target = abs(target);
+        int k = 0;
+        while (target > 0) {
+            k++;
+            target -= k;
+        }
+        return target % 2 == 0 ? k : k + 1 + k % 2;
+    }
+}
+
+void reachNumber_test(){
+    int target;
+    target = 2;
+    cout << reachNumber::reachNumber(target) << endl;
+    target = 3;
+    cout << reachNumber::reachNumber(target) << endl;
+}
+
 int main() {
-    crackSafe_test();
+    reachNumber_test();
     {
+    //crackSafe_test();
+
     //openLock_test();
 
         //shortestCompletingWord_test();
