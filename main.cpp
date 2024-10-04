@@ -6843,10 +6843,10 @@ void shortestCompletingWord_test() {
     cout << shortestCompletingWord::shortestCompletingWord(licensePlate, words) << endl;
 }
 
-namespace openLock{
-    int openLock(vector<string>& deadends, string target) {
-        stack<string>stk;
-        if (target == "0000"){
+namespace openLock {
+    int openLock(vector<string> &deadends, string target) {
+        stack<string> stk;
+        if (target == "0000") {
             return 0;
         }
         unordered_set<string> dead(deadends.begin(), deadends.end());
@@ -6862,7 +6862,7 @@ namespace openLock{
         };
 
         // 枚举 status 通过一次旋转得到的数字
-        auto get = [&](string& status) -> vector<string> {
+        auto get = [&](string &status) -> vector<string> {
             vector<string> ret;
             for (int i = 0; i < 4; ++i) {
                 char num = status[i];
@@ -6879,9 +6879,9 @@ namespace openLock{
         unordered_set<string> seen = {"0000"};
 
         while (!q.empty()) {
-            auto [status, step] = q.front();
+            auto[status, step] = q.front();
             q.pop();
-            for (auto&& next_status: get(status)) {
+            for (auto &&next_status: get(status)) {
                 if (!seen.count(next_status) && !dead.count(next_status)) {
                     if (next_status == target) {
                         return step + 1;
@@ -6895,31 +6895,32 @@ namespace openLock{
     }
 }
 
-void openLock_test(){
-    vector<string>deadends;
+void openLock_test() {
+    vector<string> deadends;
     string target;
-    deadends = {"0201","0101","0102","1212","2002"};
+    deadends = {"0201", "0101", "0102", "1212", "2002"};
     target = "0202";
     cout << openLock::openLock(deadends, target) << endl;
     deadends = {"8888"};
     target = "0009";
     cout << openLock::openLock(deadends, target) << endl;
-    deadends = {"8887","8889","8878","8898","8788","8988","7888","9888"};
+    deadends = {"8887", "8889", "8878", "8898", "8788", "8988", "7888", "9888"};
     target = "8888";
     cout << openLock::openLock(deadends, target) << endl;
 }
 
 namespace crackSafe {
-    unordered_set<int>seen;
+    unordered_set<int> seen;
     string ans;
     int highest;
     int k;
+
     void dfs(int node) {
-        for(int x = 0; x < k; ++x) {
+        for (int x = 0; x < k; ++x) {
             int nei = node * 10 + x;
             if (!seen.count(nei)) {
                 seen.insert(nei);
-                dfs(nei%highest);
+                dfs(nei % highest);
                 ans += (x + '0');
             }
         }
@@ -6934,7 +6935,7 @@ namespace crackSafe {
     }
 }
 
-void crackSafe_test(){
+void crackSafe_test() {
     int n = 1, k = 2;
     cout << crackSafe::crackSafe(n, k) << endl;
     n = 2, k = 2;
@@ -6953,7 +6954,7 @@ namespace reachNumber {
     }
 }
 
-void reachNumber_test(){
+void reachNumber_test() {
     int target;
     target = 2;
     cout << reachNumber::reachNumber(target) << endl;
@@ -6961,12 +6962,63 @@ void reachNumber_test(){
     cout << reachNumber::reachNumber(target) << endl;
 }
 
-int main() {
-    reachNumber_test();
-    {
-    //crackSafe_test();
+namespace intersectionSizeTwo {
+    void help(vector<vector<int>>& intervals, vector<vector<int>>& temp, int pos, int num) {
+        for (int i = pos; i >= 0; i--) {
+            if (intervals[i][1] < num) {
+                break;
+            }
+            temp[i].push_back(num);
+        }
+    }
 
-    //openLock_test();
+    int intersectionSizeTwo(vector<vector<int>>& intervals) {
+        int n = intervals.size();
+        int res = 0;
+        int m = 2;
+        sort(intervals.begin(), intervals.end(), [&](vector<int>& a, vector<int>& b) {
+            if (a[0] == b[0]) {
+                return a[1] > b[1];
+            }
+            return a[0] < b[0];
+        });
+        vector<vector<int>> temp(n);
+        for (int i = n - 1; i >= 0; i--) {
+            for (int j = intervals[i][0], k = temp[i].size(); k < m; j++, k++) {
+                res++;
+                help(intervals, temp, i - 1, j);
+            }
+        }
+        return res;
+    }
+}
+
+void intersectionSizeTwo_test() {
+    vector<vector<int>> intervals;
+    intervals = {{1, 3},
+                 {3, 7},
+                 {8, 9}};
+    cout << intersectionSizeTwo::intersectionSizeTwo(intervals) << endl;
+    intervals = {{1, 3},
+                 {1, 4},
+                 {2, 5},
+                 {3, 5}};
+    cout << intersectionSizeTwo::intersectionSizeTwo(intervals) << endl;
+    intervals = {{1, 2},
+                 {2, 3},
+                 {2, 4},
+                 {4, 5}};
+    cout << intersectionSizeTwo::intersectionSizeTwo(intervals) << endl;
+}
+
+int main() {
+    intersectionSizeTwo_test();
+    {
+        //reachNumber_test();
+
+        //crackSafe_test();
+
+        //openLock_test();
 
         //shortestCompletingWord_test();
 
