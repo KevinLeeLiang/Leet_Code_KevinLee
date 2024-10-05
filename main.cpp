@@ -7011,9 +7011,70 @@ void intersectionSizeTwo_test() {
     cout << intersectionSizeTwo::intersectionSizeTwo(intervals) << endl;
 }
 
+namespace makeLargestSpecial {
+    string makeLargestSpecial(string s) {
+        if (s.size() <= 2) {
+            return s;
+        }
+        int cnt = 0, left = 0;
+        vector<string> subs;
+        for (int i = 0; i < s.size(); ++i) {
+            if (s[i] == '1') {
+                ++cnt;
+            }
+            else {
+                --cnt;
+                if (cnt == 0) {
+                    subs.push_back("1" + makeLargestSpecial(s.substr(left + 1, i - left - 1)) + "0");
+                    left = i + 1;
+                }
+            }
+        }
+
+        sort(subs.begin(), subs.end(), greater<string>{});
+        string ans = accumulate(subs.begin(), subs.end(), ""s);
+        return ans;
+    }
+}
+
+void makeLargestSpecial_test(){
+    string s, ans;
+    s = "11011000";
+    ans = makeLargestSpecial::makeLargestSpecial(s);
+    cout << ans << endl;
+    s = "10";
+    ans = makeLargestSpecial::makeLargestSpecial(s);
+    cout << ans << endl;
+}
+
+namespace countPrimeSetBits {
+    int countPrimeSetBits(int left, int right) {
+        int ans = 0;
+        for (int x = left; x <= right; ++x) {
+            if ((1 << __builtin_popcount(x)) & 665772) {
+                ++ans;
+            }
+        }
+        return ans;
+    }
+}
+
+
+void countPrimeSetBits_test(){
+    int left, right;
+    left = 6, right = 10;
+    cout << countPrimeSetBits::countPrimeSetBits(left, right) << endl;
+    left = 10, right = 15;
+    cout << countPrimeSetBits::countPrimeSetBits(left, right) << endl;
+}
+
 int main() {
-    intersectionSizeTwo_test();
+    countPrimeSetBits_test();
     {
+        //makeLargestSpecial_test();
+
+        //intersectionSizeTwo_test();
+
         //reachNumber_test();
 
         //crackSafe_test();
