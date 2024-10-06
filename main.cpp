@@ -6963,7 +6963,7 @@ void reachNumber_test() {
 }
 
 namespace intersectionSizeTwo {
-    void help(vector<vector<int>>& intervals, vector<vector<int>>& temp, int pos, int num) {
+    void help(vector<vector<int>> &intervals, vector<vector<int>> &temp, int pos, int num) {
         for (int i = pos; i >= 0; i--) {
             if (intervals[i][1] < num) {
                 break;
@@ -6972,11 +6972,11 @@ namespace intersectionSizeTwo {
         }
     }
 
-    int intersectionSizeTwo(vector<vector<int>>& intervals) {
+    int intersectionSizeTwo(vector<vector<int>> &intervals) {
         int n = intervals.size();
         int res = 0;
         int m = 2;
-        sort(intervals.begin(), intervals.end(), [&](vector<int>& a, vector<int>& b) {
+        sort(intervals.begin(), intervals.end(), [&](vector<int> &a, vector<int> &b) {
             if (a[0] == b[0]) {
                 return a[1] > b[1];
             }
@@ -7021,8 +7021,7 @@ namespace makeLargestSpecial {
         for (int i = 0; i < s.size(); ++i) {
             if (s[i] == '1') {
                 ++cnt;
-            }
-            else {
+            } else {
                 --cnt;
                 if (cnt == 0) {
                     subs.push_back("1" + makeLargestSpecial(s.substr(left + 1, i - left - 1)) + "0");
@@ -7037,7 +7036,7 @@ namespace makeLargestSpecial {
     }
 }
 
-void makeLargestSpecial_test(){
+void makeLargestSpecial_test() {
     string s, ans;
     s = "11011000";
     ans = makeLargestSpecial::makeLargestSpecial(s);
@@ -7060,7 +7059,7 @@ namespace countPrimeSetBits {
 }
 
 
-void countPrimeSetBits_test(){
+void countPrimeSetBits_test() {
     int left, right;
     left = 6, right = 10;
     cout << countPrimeSetBits::countPrimeSetBits(left, right) << endl;
@@ -7068,9 +7067,120 @@ void countPrimeSetBits_test(){
     cout << countPrimeSetBits::countPrimeSetBits(left, right) << endl;
 }
 
+namespace partitionLabels {
+    vector<int> partitionLabels(string s) {
+        vector<int> last(26);
+        int n = s.size();
+        for (int i = 0; i < n; ++i) {
+            last[s[i] - 'a'] = i;
+        }
+        vector<int> partition;
+        int start = 0, end = 0;
+        for (int i = 0; i < n; ++i) {
+            end = max(end, last[s[i] - 'a']);
+            if (i == end) {
+                partition.push_back(end - start + 1);
+                start = end + 1;
+            }
+        }
+        return partition;
+    }
+}
+
+void partitionLabels_test() {
+    string s;
+    vector<int> ans;
+    s = "ababcbacadefegdehijhklij";
+    ans = partitionLabels::partitionLabels(s);
+    print_vector(ans);
+    s = "eccbbbbdec";
+    ans = partitionLabels::partitionLabels(s);
+    print_vector(ans);
+    s = "caedbdedda";
+    ans = partitionLabels::partitionLabels(s);
+    print_vector(ans);
+    s = "eaaaabaaec";
+    ans = partitionLabels::partitionLabels(s);
+    print_vector(ans);
+}
+
+namespace orderOfLargestPlusSign {
+    int orderOfLargestPlusSign(int n, vector<vector<int>> &mines) {
+        vector<vector<int>> dp(n, vector<int>(n, n));
+        unordered_set<int> banned;
+        for (auto &&vec : mines) {
+            banned.emplace(vec[0] * n + vec[1]);
+        }
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            int count = 0;
+            /* left */
+            for (int j = 0; j < n; j++) {
+                if (banned.count(i * n + j)) {
+                    count = 0;
+                } else {
+                    count++;
+                }
+                dp[i][j] = min(dp[i][j], count);
+            }
+            count = 0;
+            /* right */
+            for (int j = n - 1; j >= 0; j--) {
+                if (banned.count(i * n + j)) {
+                    count = 0;
+                } else {
+                    count++;
+                }
+                dp[i][j] = min(dp[i][j], count);
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            int count = 0;
+            /* up */
+            for (int j = 0; j < n; j++) {
+                if (banned.count(j * n + i)) {
+                    count = 0;
+                } else {
+                    count++;
+                }
+                dp[j][i] = min(dp[j][i], count);
+            }
+            count = 0;
+            /* down */
+            for (int j = n - 1; j >= 0; j--) {
+                if (banned.count(j * n + i)) {
+                    count = 0;
+                } else {
+                    count++;
+                }
+                dp[j][i] = min(dp[j][i], count);
+                ans = max(ans, dp[j][i]);
+            }
+        }
+        return ans;
+    }
+}
+
+void orderOfLargestPlusSign_test() {
+    int n;
+    vector<vector<int>> mines;
+    n = 5, mines = {{4, 2}};
+    cout << orderOfLargestPlusSign::orderOfLargestPlusSign(n, mines) << endl;
+    n = 1, mines = {{0, 0}};
+    cout << orderOfLargestPlusSign::orderOfLargestPlusSign(n, mines) << endl;
+    n = 2, mines = {{0,0},{0,1},{1,0}};
+    cout << orderOfLargestPlusSign::orderOfLargestPlusSign(n, mines) << endl;
+    n = 3, mines = {{0,1},{0,2},{1,0},{1,1},{1,2},{2,0},{2,1},{2,2}};
+    cout << orderOfLargestPlusSign::orderOfLargestPlusSign(n, mines) << endl;
+}
+
 int main() {
-    countPrimeSetBits_test();
+    orderOfLargestPlusSign_test();
     {
+        //partitionLabels_test();
+
+        //countPrimeSetBits_test();
+
         //makeLargestSpecial_test();
 
         //intersectionSizeTwo_test();
