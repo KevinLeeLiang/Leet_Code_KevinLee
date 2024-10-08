@@ -7168,15 +7168,109 @@ void orderOfLargestPlusSign_test() {
     cout << orderOfLargestPlusSign::orderOfLargestPlusSign(n, mines) << endl;
     n = 1, mines = {{0, 0}};
     cout << orderOfLargestPlusSign::orderOfLargestPlusSign(n, mines) << endl;
-    n = 2, mines = {{0,0},{0,1},{1,0}};
+    n = 2, mines = {{0, 0},
+                    {0, 1},
+                    {1, 0}};
     cout << orderOfLargestPlusSign::orderOfLargestPlusSign(n, mines) << endl;
-    n = 3, mines = {{0,1},{0,2},{1,0},{1,1},{1,2},{2,0},{2,1},{2,2}};
+    n = 3, mines = {{0, 1},
+                    {0, 2},
+                    {1, 0},
+                    {1, 1},
+                    {1, 2},
+                    {2, 0},
+                    {2, 1},
+                    {2, 2}};
     cout << orderOfLargestPlusSign::orderOfLargestPlusSign(n, mines) << endl;
 }
 
+namespace reorganizeString {
+    string reorganizeString(string s) {
+        if (s.length() < 2) {
+            return s;
+        }
+        vector<int> counts(26, 0);
+        int maxCount = 0;
+        int length = s.length();
+        for (int i = 0; i < length; i++) {
+            char c = s[i];
+            counts[c - 'a']++;
+            maxCount = max(maxCount, counts[c - 'a']);
+        }
+        if (maxCount > (length + 1) / 2) {
+            return "";
+        }
+        string reorganizeArray(length, ' ');
+        int evenIndex = 0, oddIndex = 1;
+        int halfLength = length / 2;
+        for (int i = 0; i < 26; i++) {
+            char c = 'a' + i;
+            while (counts[i] > 0 && counts[i] <= halfLength && oddIndex < length) {
+                reorganizeArray[oddIndex] = c;
+                counts[i]--;
+                oddIndex += 2;
+            }
+            while (counts[i] > 0) {
+                reorganizeArray[evenIndex] = c;
+                counts[i]--;
+                evenIndex += 2;
+            }
+        }
+        return reorganizeArray;
+    }
+}
+
+void reorganizeString_test() {
+    string s;
+    s = "baa";
+    cout << reorganizeString::reorganizeString(s) << endl;
+    cout << "--------" << endl;
+    s = "aab";
+    cout << reorganizeString::reorganizeString(s) << endl;
+    cout << "--------" << endl;
+    s = "aaab";
+    cout << reorganizeString::reorganizeString(s) << endl;
+    cout << "--------" << endl;
+}
+
+namespace maxChunksToSorted {
+    int maxChunksToSorted(vector<int> &arr) {
+        unordered_map<int, int> cnt;
+        int res = 0;
+        vector<int> sortedArr = arr;
+        sort(sortedArr.begin(), sortedArr.end());
+        for (int i = 0; i < sortedArr.size(); i++) {
+            int x = arr[i], y = sortedArr[i];
+            cnt[x]++;
+            if (cnt[x] == 0) {
+                cnt.erase(x);
+            }
+            cnt[y]--;
+            if (cnt[y] == 0) {
+                cnt.erase(y);
+            }
+            if (cnt.size() == 0) {
+                res++;
+            }
+        }
+        return res;
+    }
+};
+
+void maxChunksToSorted_test() {
+    vector<int> arr;
+    arr = {5, 4, 3, 2, 1};
+    cout << maxChunksToSorted::maxChunksToSorted(arr) << endl;
+    arr = {2, 1, 3, 4, 4};
+    cout << maxChunksToSorted::maxChunksToSorted(arr) << endl;
+}
+
 int main() {
-    orderOfLargestPlusSign_test();
+    maxChunksToSorted_test();
     {
+        //reorganizeString_test();
+
+        //orderOfLargestPlusSign_test();
+
         //partitionLabels_test();
 
         //countPrimeSetBits_test();
