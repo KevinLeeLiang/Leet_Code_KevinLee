@@ -7339,10 +7339,33 @@ void maxChunksToSorted_test() {
     cout << maxChunksToSorted::maxChunksToSorted(arr) << endl;
 }
 
+namespace numJewelsInStones {
+    int numJewelsInStones(string jewels, string stones) {
+        unordered_set<char>jewels_set;
+        int ans =0;
+        for (auto c : jewels) {
+            jewels_set.insert(c);
+        }
+        for (auto c : stones) {
+            if (jewels_set.count(c)) {
+                ans ++;
+            }
+        }
+        return ans;
+    }
+}
 
+void numJewelsInStones_test() {
+    string jewels = "aA", stones = "aAAbbbb";
+    cout << numJewelsInStones::numJewelsInStones(jewels, stones) << endl;
+    jewels = "Z", stones = "zz";
+    cout << numJewelsInStones::numJewelsInStones(jewels, stones) << endl;
+}
 int main() {
-    maxChunksToSorted_test();
+    numJewelsInStones_test();
     {
+    //maxChunksToSorted_test();
+
         //reorganizeString_test();
 
         //isToeplitzMatrix_test();
