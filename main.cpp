@@ -7341,14 +7341,14 @@ void maxChunksToSorted_test() {
 
 namespace numJewelsInStones {
     int numJewelsInStones(string jewels, string stones) {
-        unordered_set<char>jewels_set;
-        int ans =0;
+        unordered_set<char> jewels_set;
+        int ans = 0;
         for (auto c : jewels) {
             jewels_set.insert(c);
         }
         for (auto c : stones) {
             if (jewels_set.count(c)) {
-                ans ++;
+                ans++;
             }
         }
         return ans;
@@ -7361,10 +7361,102 @@ void numJewelsInStones_test() {
     jewels = "Z", stones = "zz";
     cout << numJewelsInStones::numJewelsInStones(jewels, stones) << endl;
 }
+
+namespace slidingPuzzle {
+    vector<vector<int>> neighbors = {{1, 3},
+                                     {0, 2, 4},
+                                     {1, 5},
+                                     {0, 4},
+                                     {1, 3, 5},
+                                     {2, 4}};
+
+    int slidingPuzzle(vector<vector<int>> &board) {
+        // 枚举status，通过一次交换操作得到的状态
+        auto get = [&](string &status) -> vector<string> {
+            vector<string> ret;
+            int x = status.find('0');
+            for (int y: neighbors[x]) {
+                swap(status[x], status[y]);
+                ret.push_back(status);
+                swap(status[x], status[y]);
+            }
+            return ret;
+        };
+        string initial;
+        for (int i = 0; i < 2; ++i) {
+            for (int j = 0; j < 3; ++j) {
+                initial += char(board[i][j] + '0');
+            }
+        }
+        if (initial == "123450") {
+            return 0;
+        }
+
+        queue<pair<string, int>> q;
+        q.emplace(initial, 0);
+        unordered_set<string> seen = {initial};
+
+        while (!q.empty()) {
+            auto[status, step] = q.front();
+            q.pop();
+            for (auto &&next_status: get(status)) {
+                if (!seen.count(next_status)) {
+                    if (next_status == "123450") {
+                        return step + 1;
+                    }
+                    q.emplace(next_status, step + 1);
+                    seen.insert(move(next_status));
+                }
+            }
+        }
+
+        return -1;
+    }
+}
+
+void slidingPuzzle_test() {
+    vector<vector<int>> board;
+    board = {{1, 2, 3},
+             {4, 0, 5}};
+    cout << slidingPuzzle::slidingPuzzle(board) << endl;
+    board = {{1, 2, 3},
+             {5, 4, 0}};
+    cout << slidingPuzzle::slidingPuzzle(board) << endl;
+    board = {{4, 1, 2},
+             {5, 0, 3}};
+    cout << slidingPuzzle::slidingPuzzle(board) << endl;
+}
+
+namespace isIdealPermutation {
+    bool isIdealPermutation(vector<int>& nums) {
+        int n = nums.size(), minSuff = nums[n - 1];
+        for (int i = n - 3; i >= 0; i--) {
+            if (nums[i] > minSuff) {
+                return false;
+            }
+            minSuff = min(minSuff, nums[i + 1]);
+        }
+        return true;
+
+    }
+}
+
+void isIdealPermutation_test(){
+    vector<int>nums;
+    nums = {1,0,2};
+    cout << isIdealPermutation::isIdealPermutation(nums) << endl;
+    nums = {1,2,0};
+    cout << isIdealPermutation::isIdealPermutation(nums) << endl;
+}
+
 int main() {
-    numJewelsInStones_test();
+    isIdealPermutation_test();
     {
-    //maxChunksToSorted_test();
+    //slidingPuzzle_test();
+
+        //numJewelsInStones_test();
+
+        //maxChunksToSorted_test();
 
         //reorganizeString_test();
 
