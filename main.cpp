@@ -7428,7 +7428,7 @@ void slidingPuzzle_test() {
 }
 
 namespace isIdealPermutation {
-    bool isIdealPermutation(vector<int>& nums) {
+    bool isIdealPermutation(vector<int> &nums) {
         int n = nums.size(), minSuff = nums[n - 1];
         for (int i = n - 3; i >= 0; i--) {
             if (nums[i] > minSuff) {
@@ -7441,11 +7441,11 @@ namespace isIdealPermutation {
     }
 }
 
-void isIdealPermutation_test(){
-    vector<int>nums;
-    nums = {1,0,2};
+void isIdealPermutation_test() {
+    vector<int> nums;
+    nums = {1, 0, 2};
     cout << isIdealPermutation::isIdealPermutation(nums) << endl;
-    nums = {1,2,0};
+    nums = {1, 2, 0};
     cout << isIdealPermutation::isIdealPermutation(nums) << endl;
 }
 
@@ -7488,7 +7488,7 @@ namespace canTransform {
     }
 }
 
-void canTransform_test(){
+void canTransform_test() {
     string start, end;
     start = "RXXLRXRXL";
     end = "XRLXXRRLX";
@@ -7498,12 +7498,36 @@ void canTransform_test(){
     cout << canTransform::canTransform(start, end) << endl;
 }
 
-int main() {
-    canTransform_test();
-    {
-    //isIdealPermutation_test();
+namespace numRabbits {
+    int numRabbits(vector<int> &answers) {
+        unordered_map<int, int>map;
+        for (auto ans:answers) {
+            ++map[ans];
+        }
+        int ans = 0;
+        for (auto &[y,x]: map) {
+            ans += (x + y) / (y + 1) * (y + 1);
+        }
+        return ans;
+    }
+}
 
-    //slidingPuzzle_test();
+void numRabbits_test() {
+    vector<int> answers;
+    answers = {1, 1, 2};
+    cout << numRabbits::numRabbits(answers) << endl;
+    answers = {10, 10, 10};
+    cout << numRabbits::numRabbits(answers) << endl;
+}
+
+int main() {
+    numRabbits_test();
+    {
+        //canTransform_test();
+
+        //isIdealPermutation_test();
+
+        //slidingPuzzle_test();
 
         //numJewelsInStones_test();
 
