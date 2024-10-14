@@ -7532,13 +7532,13 @@ namespace reachingPoints {
             return ty > sy && (ty - sy) % tx == 0;
         } else if (ty == sy) {
             return tx > sx && (tx - sx) % ty == 0;
-        }else
+        } else
             return false;
         return false;
     }
 }
 
-void reachingPoints_test(){
+void reachingPoints_test() {
     int sx, sy, tx, ty;
     sx = 1, sy = 1, tx = 3, ty = 5;
     cout << reachingPoints::reachingPoints(sx, sy, tx, ty) << endl;
@@ -7548,10 +7548,105 @@ void reachingPoints_test(){
     cout << reachingPoints::reachingPoints(sx, sy, tx, ty) << endl;
 }
 
+namespace numRabbits {
+    int numRabbits(vector<int> &answers) {
+        unordered_map<int, int> map;
+        for (auto ans:answers) {
+            ++map[ans];
+        }
+        int ans = 0;
+        for (auto &[y, x]: map) {
+            ans += (x + y) / (y + 1) * (y + 1);
+        }
+        return ans;
+    }
+}
+
+void numRabbits_test() {
+    vector<int> answers;
+    answers = {1, 1, 2};
+    cout << numRabbits::numRabbits(answers) << endl;
+    answers = {10, 10, 10};
+    cout << numRabbits::numRabbits(answers) << endl;
+}
+
+namespace minDiffInBST {
+    void dfs(TreeNode::TreeNode*root, int &pre, int &ans) {
+        if (root == nullptr)
+            return ;
+        dfs(root->left, pre, ans) ;
+        if (pre == -1) {
+            pre = root->val;
+        } else {
+            int tmp = fabs(root->val - pre);
+            ans = min(ans, tmp);
+            pre = root->val;
+        }
+        dfs(root->right, pre, ans);
+    }
+    int minDiffInBST(TreeNode::TreeNode *root) {
+        int ans = INT_MAX, pre = -1;
+        dfs(root, pre, ans);
+        return ans;
+    }
+}
+
+void minDiffInBST_test() {
+    TreeNode::TreeNode *root;
+    vector<int> tree;
+    tree = {4, 2, 6, 1, 3};
+    root = create_treenode(tree, true);
+    cout << minDiffInBST::minDiffInBST(root) << endl;
+    tree = {1,0,48,-1,-1,12,4};
+    root = create_treenode(tree, true);
+    cout << minDiffInBST::minDiffInBST(root) << endl;
+}
+
+namespace letterCasePermutation {
+    vector<string> letterCasePermutation(string s) {
+        vector<string> ans;
+        queue<string> qu;
+        qu.emplace("");
+        while (!qu.empty()) {
+            string &curr = qu.front();
+            if (curr.size() == s.size()) {
+                ans.emplace_back(curr);
+                qu.pop();
+            } else {
+                int pos = curr.size();
+                if (isalpha(s[pos])) {
+                    string next = curr;
+                    next.push_back(s[pos] ^ 32);
+                    qu.emplace(next);
+                }
+                curr.push_back(s[pos]);
+            }
+        }
+        return ans;
+    }
+}
+
+void letterCasePermutation_test(){
+    string s;
+    vector<string>ans;
+    s = "a1b2";
+    ans = letterCasePermutation::letterCasePermutation(s) ;
+    print_vector(ans);
+    s = "3z4";
+    ans = letterCasePermutation::letterCasePermutation(s) ;
+    print_vector(ans);
+}
+
 int main() {
-    reachingPoints_test();
+    letterCasePermutation_test();
     {
-    //kthGrammar_test();
+        //minDiffInBST_test();
+
+        //numRabbits_test();
+
+        //reachingPoints_test();
+
+        //kthGrammar_test();
 
         //canTransform_test();
 
