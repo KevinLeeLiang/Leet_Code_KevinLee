@@ -7428,7 +7428,7 @@ void slidingPuzzle_test() {
 }
 
 namespace isIdealPermutation {
-    bool isIdealPermutation(vector<int>& nums) {
+    bool isIdealPermutation(vector<int> &nums) {
         int n = nums.size(), minSuff = nums[n - 1];
         for (int i = n - 3; i >= 0; i--) {
             if (nums[i] > minSuff) {
@@ -7441,11 +7441,11 @@ namespace isIdealPermutation {
     }
 }
 
-void isIdealPermutation_test(){
-    vector<int>nums;
-    nums = {1,0,2};
+void isIdealPermutation_test() {
+    vector<int> nums;
+    nums = {1, 0, 2};
     cout << isIdealPermutation::isIdealPermutation(nums) << endl;
-    nums = {1,2,0};
+    nums = {1, 2, 0};
     cout << isIdealPermutation::isIdealPermutation(nums) << endl;
 }
 
@@ -7488,7 +7488,7 @@ namespace canTransform {
     }
 }
 
-void canTransform_test(){
+void canTransform_test() {
     string start, end;
     start = "RXXLRXRXL";
     end = "XRLXXRRLX";
@@ -7498,12 +7498,66 @@ void canTransform_test(){
     cout << canTransform::canTransform(start, end) << endl;
 }
 
-int main() {
-    canTransform_test();
-    {
-    //isIdealPermutation_test();
+namespace kthGrammar {
+    int kthGrammar(int n, int k) {
+        if (n == 1)
+            return 0;
+        return (k & 1) ^ 1 ^ kthGrammar(n - 1, (k + 1) / 2);
+    }
+}
 
-    //slidingPuzzle_test();
+void kthGrammar_test() {
+    int n, k;
+    n = 1, k = 1;
+    cout << kthGrammar::kthGrammar(n, k) << endl;
+    n = 2, k = 1;
+    cout << kthGrammar::kthGrammar(n, k) << endl;
+    n = 2, k = 2;
+    cout << kthGrammar::kthGrammar(n, k) << endl;
+}
+
+namespace reachingPoints {
+    bool reachingPoints(int sx, int sy, int tx, int ty) {
+        while (tx > sx && ty > sy && tx != ty) {
+            if (tx > ty) {
+                tx %= ty;
+            } else {
+                ty %= tx;
+            }
+        }
+
+        if (tx == sx && ty == sy) {
+            return true;
+        } else if (tx == sx) {
+            return ty > sy && (ty - sy) % tx == 0;
+        } else if (ty == sy) {
+            return tx > sx && (tx - sx) % ty == 0;
+        }else
+            return false;
+        return false;
+    }
+}
+
+void reachingPoints_test(){
+    int sx, sy, tx, ty;
+    sx = 1, sy = 1, tx = 3, ty = 5;
+    cout << reachingPoints::reachingPoints(sx, sy, tx, ty) << endl;
+    sx = 1, sy = 1, tx = 2, ty = 2;
+    cout << reachingPoints::reachingPoints(sx, sy, tx, ty) << endl;
+    sx = 1, sy = 1, tx = 1, ty = 1;
+    cout << reachingPoints::reachingPoints(sx, sy, tx, ty) << endl;
+}
+
+int main() {
+    reachingPoints_test();
+    {
+    //kthGrammar_test();
+
+        //canTransform_test();
+
+        //isIdealPermutation_test();
+
+        //slidingPuzzle_test();
 
         //numJewelsInStones_test();
 
