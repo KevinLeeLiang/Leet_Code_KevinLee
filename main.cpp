@@ -7571,10 +7571,10 @@ void numRabbits_test() {
 }
 
 namespace minDiffInBST {
-    void dfs(TreeNode::TreeNode*root, int &pre, int &ans) {
+    void dfs(TreeNode::TreeNode *root, int &pre, int &ans) {
         if (root == nullptr)
-            return ;
-        dfs(root->left, pre, ans) ;
+            return;
+        dfs(root->left, pre, ans);
         if (pre == -1) {
             pre = root->val;
         } else {
@@ -7584,6 +7584,7 @@ namespace minDiffInBST {
         }
         dfs(root->right, pre, ans);
     }
+
     int minDiffInBST(TreeNode::TreeNode *root) {
         int ans = INT_MAX, pre = -1;
         dfs(root, pre, ans);
@@ -7597,7 +7598,7 @@ void minDiffInBST_test() {
     tree = {4, 2, 6, 1, 3};
     root = create_treenode(tree, true);
     cout << minDiffInBST::minDiffInBST(root) << endl;
-    tree = {1,0,48,-1,-1,12,4};
+    tree = {1, 0, 48, -1, -1, 12, 4};
     root = create_treenode(tree, true);
     cout << minDiffInBST::minDiffInBST(root) << endl;
 }
@@ -7626,20 +7627,102 @@ namespace letterCasePermutation {
     }
 }
 
-void letterCasePermutation_test(){
+void letterCasePermutation_test() {
     string s;
-    vector<string>ans;
+    vector<string> ans;
     s = "a1b2";
-    ans = letterCasePermutation::letterCasePermutation(s) ;
+    ans = letterCasePermutation::letterCasePermutation(s);
     print_vector(ans);
     s = "3z4";
-    ans = letterCasePermutation::letterCasePermutation(s) ;
+    ans = letterCasePermutation::letterCasePermutation(s);
+    print_vector(ans);
+}
+
+namespace isBipartite {
+    static constexpr int UNCOLORED = 0;
+    static constexpr int RED = 1;
+    static constexpr int GREEN = 2;
+    vector<int> color;
+    bool valid;
+    void dfs(int node, int c, const vector<vector<int>>&graph) {
+        color[node] = c;
+        int cNei = (c == RED ? GREEN : RED);
+        for (int neighbor: graph[node]) {
+            if (color[neighbor] == UNCOLORED) {
+                dfs(neighbor, cNei, graph);
+                if (!valid) {
+                    return;
+                }
+            }
+            else if (color[neighbor] != cNei) {
+                valid = false;
+                return;
+            }
+        }
+    }
+    bool isBipartite(vector<vector<int>> &graph) {
+        int n = graph.size();
+        valid = true;
+        color.assign(n, UNCOLORED);
+        for (int i = 0; i < n && valid; ++i) {
+            if (color[i] == UNCOLORED) {
+                dfs(i, RED, graph);
+            }
+        }
+        return valid;
+    }
+}
+
+void isBipartite_test() {
+    vector<vector<int>> graph;
+    graph = {{1, 2, 3},
+             {0, 2},
+             {0, 1, 3},
+             {0, 2}};
+    cout << isBipartite::isBipartite(graph) << endl;
+    graph = {{1, 3},
+             {0, 2},
+             {1, 3},
+             {0, 2}};
+    cout << isBipartite::isBipartite(graph) << endl;
+}
+
+namespace kthSmallestPrimeFraction {
+    vector<int> kthSmallestPrimeFraction(vector<int>& arr, int k) {
+        int n = arr.size();
+        vector<pair<int, int>> frac;
+        for (int i = 0; i < n; ++i) {
+            for (int j = i + 1; j < n; ++j) {
+                frac.emplace_back(arr[i], arr[j]);
+            }
+        }
+        sort(frac.begin(), frac.end(), [&](const auto& x, const auto& y) {
+            return x.first * y.second < x.second * y.first;
+        });
+        return {frac[k - 1].first, frac[k - 1].second};
+    }
+}
+
+void kthSmallestPrimeFraction_test(){
+    vector<int>arr,ans;
+    int k;
+    arr = {1,2,3,5};
+    k = 3;
+    ans = kthSmallestPrimeFraction::kthSmallestPrimeFraction(arr, k) ;
+    print_vector(ans);
+    arr = {1,7};
+    k = 1;
+    ans = kthSmallestPrimeFraction::kthSmallestPrimeFraction(arr, k);
     print_vector(ans);
 }
 
 int main() {
-    letterCasePermutation_test();
+    kthSmallestPrimeFraction_test();
     {
+    //isBipartite_test();
+
+        //letterCasePermutation_test();
+
         //minDiffInBST_test();
 
         //numRabbits_test();
