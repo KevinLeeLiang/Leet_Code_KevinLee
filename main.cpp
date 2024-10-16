@@ -7644,7 +7644,8 @@ namespace isBipartite {
     static constexpr int GREEN = 2;
     vector<int> color;
     bool valid;
-    void dfs(int node, int c, const vector<vector<int>>&graph) {
+
+    void dfs(int node, int c, const vector<vector<int>> &graph) {
         color[node] = c;
         int cNei = (c == RED ? GREEN : RED);
         for (int neighbor: graph[node]) {
@@ -7653,13 +7654,13 @@ namespace isBipartite {
                 if (!valid) {
                     return;
                 }
-            }
-            else if (color[neighbor] != cNei) {
+            } else if (color[neighbor] != cNei) {
                 valid = false;
                 return;
             }
         }
     }
+
     bool isBipartite(vector<vector<int>> &graph) {
         int n = graph.size();
         valid = true;
@@ -7688,7 +7689,7 @@ void isBipartite_test() {
 }
 
 namespace kthSmallestPrimeFraction {
-    vector<int> kthSmallestPrimeFraction(vector<int>& arr, int k) {
+    vector<int> kthSmallestPrimeFraction(vector<int> &arr, int k) {
         int n = arr.size();
         vector<pair<int, int>> frac;
         for (int i = 0; i < n; ++i) {
@@ -7696,30 +7697,98 @@ namespace kthSmallestPrimeFraction {
                 frac.emplace_back(arr[i], arr[j]);
             }
         }
-        sort(frac.begin(), frac.end(), [&](const auto& x, const auto& y) {
+        sort(frac.begin(), frac.end(), [&](const auto &x, const auto &y) {
             return x.first * y.second < x.second * y.first;
         });
         return {frac[k - 1].first, frac[k - 1].second};
     }
 }
 
-void kthSmallestPrimeFraction_test(){
-    vector<int>arr,ans;
+void kthSmallestPrimeFraction_test() {
+    vector<int> arr, ans;
     int k;
-    arr = {1,2,3,5};
+    arr = {1, 2, 3, 5};
     k = 3;
-    ans = kthSmallestPrimeFraction::kthSmallestPrimeFraction(arr, k) ;
+    ans = kthSmallestPrimeFraction::kthSmallestPrimeFraction(arr, k);
     print_vector(ans);
-    arr = {1,7};
+    arr = {1, 7};
     k = 1;
     ans = kthSmallestPrimeFraction::kthSmallestPrimeFraction(arr, k);
     print_vector(ans);
 }
 
+namespace findCheapestPrice {
+    static constexpr int INF = 10000 * 101 + 1;
+    int findCheapestPrice(int n, vector<vector<int>> &flights, int src, int dst, int k) {
+        vector<vector<int>>f(k+2, vector<int>(n, INF));
+        f[0][src] = 0;
+        for (int t = 1; t <= k + 1; ++t) {
+            for (auto &&flight : flights) {
+                int j = flight[0], i = flight[1], cost = flight[2];
+                f[t][i] = min(f[t][i], f[t-1][j] + cost);
+            }
+        }
+        int ans = INF;
+        for (int t = 1; t <= k+1; ++t) {
+            ans = min(ans, f[t][dst]);
+        }
+        return (ans == INF ? -1 : ans);
+    }
+}
+
+void findCheapestPrice_test() {
+    int n, k, src, dst;
+    vector<vector<int>> flights;
+    n = 4, src = 0, dst = 3, k = 1;
+    flights = {{0, 1, 100},
+               {1, 2, 100},
+               {2, 0, 100},
+               {1, 3, 600},
+               {2, 3, 200}};
+    cout << findCheapestPrice::findCheapestPrice(n, flights, src, dst, k) << endl;
+    n = 3, src = 0, dst = 2, k = 1;
+    flights = {{0, 1, 100},
+               {1, 2, 100},
+               {0, 2, 500}};
+    cout << findCheapestPrice::findCheapestPrice(n, flights, src, dst, k) << endl;
+}
+
+namespace rotatedDigits {
+    static constexpr int check[10] = {0, 0, 1, -1, -1, 1, 1, -1, 0, 1};
+    int rotatedDigits(int n) {
+        int ans = 0;
+        for (int i = 1; i <= n; ++i) {
+            string num = to_string(i);
+            bool valid = true, diff = false;
+            for (char ch: num) {
+                if (check[ch - '0'] == -1) {
+                    valid = false;
+                }
+                else if (check[ch - '0'] == 1) {
+                    diff = true;
+                }
+            }
+            if (valid && diff) {
+                ++ans;
+            }
+        }
+        return ans;
+    }
+}
+
+void rotatedDigits_test(){
+    int n = 10;
+    cout << rotatedDigits::rotatedDigits(n) << endl;
+}
+
 int main() {
-    kthSmallestPrimeFraction_test();
+    rotatedDigits_test();
     {
-    //isBipartite_test();
+    //findCheapestPrice_test();
+
+        //kthSmallestPrimeFraction_test();
+
+        //isBipartite_test();
 
         //letterCasePermutation_test();
 
