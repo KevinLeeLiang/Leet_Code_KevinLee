@@ -7719,17 +7719,18 @@ void kthSmallestPrimeFraction_test() {
 
 namespace findCheapestPrice {
     static constexpr int INF = 10000 * 101 + 1;
+
     int findCheapestPrice(int n, vector<vector<int>> &flights, int src, int dst, int k) {
-        vector<vector<int>>f(k+2, vector<int>(n, INF));
+        vector<vector<int>> f(k + 2, vector<int>(n, INF));
         f[0][src] = 0;
         for (int t = 1; t <= k + 1; ++t) {
             for (auto &&flight : flights) {
                 int j = flight[0], i = flight[1], cost = flight[2];
-                f[t][i] = min(f[t][i], f[t-1][j] + cost);
+                f[t][i] = min(f[t][i], f[t - 1][j] + cost);
             }
         }
         int ans = INF;
-        for (int t = 1; t <= k+1; ++t) {
+        for (int t = 1; t <= k + 1; ++t) {
             ans = min(ans, f[t][dst]);
         }
         return (ans == INF ? -1 : ans);
@@ -7755,6 +7756,7 @@ void findCheapestPrice_test() {
 
 namespace rotatedDigits {
     static constexpr int check[10] = {0, 0, 1, -1, -1, 1, 1, -1, 0, 1};
+
     int rotatedDigits(int n) {
         int ans = 0;
         for (int i = 1; i <= n; ++i) {
@@ -7763,8 +7765,7 @@ namespace rotatedDigits {
             for (char ch: num) {
                 if (check[ch - '0'] == -1) {
                     valid = false;
-                }
-                else if (check[ch - '0'] == 1) {
+                } else if (check[ch - '0'] == 1) {
                     diff = true;
                 }
             }
@@ -7776,15 +7777,72 @@ namespace rotatedDigits {
     }
 }
 
-void rotatedDigits_test(){
+void rotatedDigits_test() {
     int n = 10;
     cout << rotatedDigits::rotatedDigits(n) << endl;
 }
 
+namespace escapeGhosts {
+    int manhattanDistance(vector<int> &point1, vector<int> &point2) {
+        return abs(point1[0] - point2[0]) + abs(point1[1] - point2[1]);
+    }
+
+    bool escapeGhosts(vector<vector<int>> &ghosts, vector<int> &target) {
+        vector<int>src(2);
+        auto distance = manhattanDistance(src, target);
+        for (auto ghost : ghosts) {
+            if (manhattanDistance(ghost, target) <= distance) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+void escapeGhosts_test() {
+    vector<vector<int>> ghosts;
+    vector<int> target;
+    ghosts = {{1, 0},
+              {0, 3}};
+    target = {0, 1};
+    cout << escapeGhosts::escapeGhosts(ghosts, target) << endl;
+    ghosts = {{1, 0}};
+    target = {2, 0};
+    cout << escapeGhosts::escapeGhosts(ghosts, target) << endl;
+    ghosts = {{2, 0}};
+    target = {1, 0};
+    cout << escapeGhosts::escapeGhosts(ghosts, target) << endl;
+}
+
+namespace numTilings {
+    const long long mod = 1e9 + 7;
+    int numTilings(int n) {
+        vector<vector<long long>> dp(n + 1, vector<long long>(4));
+        dp[0][3] = 1;
+        for (int i = 1; i <= n; i++) {
+            dp[i][0] = dp[i - 1][3];
+            dp[i][1] = (dp[i - 1][0] + dp[i - 1][2]) % mod;
+            dp[i][2] = (dp[i - 1][0] + dp[i - 1][1]) % mod;
+            dp[i][3] = (dp[i - 1][0] + dp[i - 1][1] + dp[i - 1][2] + dp[i - 1][3]) % mod;
+        }
+        return dp[n][3];
+    }
+}
+void numTilings_test(){
+    int n =3;
+    cout << numTilings::numTilings(n) << endl;
+    n = 1;
+    cout << numTilings::numTilings(n) << endl;
+}
+
 int main() {
-    rotatedDigits_test();
+    numTilings_test();
     {
-    //findCheapestPrice_test();
+    //escapeGhosts_test();
+
+        //rotatedDigits_test();
+
+        //findCheapestPrice_test();
 
         //kthSmallestPrimeFraction_test();
 
