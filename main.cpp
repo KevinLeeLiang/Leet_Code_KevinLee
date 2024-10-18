@@ -7788,7 +7788,7 @@ namespace escapeGhosts {
     }
 
     bool escapeGhosts(vector<vector<int>> &ghosts, vector<int> &target) {
-        vector<int>src(2);
+        vector<int> src(2);
         auto distance = manhattanDistance(src, target);
         for (auto ghost : ghosts) {
             if (manhattanDistance(ghost, target) <= distance) {
@@ -7816,6 +7816,7 @@ void escapeGhosts_test() {
 
 namespace numTilings {
     const long long mod = 1e9 + 7;
+
     int numTilings(int n) {
         vector<vector<long long>> dp(n + 1, vector<long long>(4));
         dp[0][3] = 1;
@@ -7828,17 +7829,80 @@ namespace numTilings {
         return dp[n][3];
     }
 }
-void numTilings_test(){
-    int n =3;
+
+void numTilings_test() {
+    int n = 3;
     cout << numTilings::numTilings(n) << endl;
     n = 1;
     cout << numTilings::numTilings(n) << endl;
 }
 
+namespace customSortString {
+    string customSortString(string order, string s) {
+        vector<int>val(26);
+        for (int i = 0; i < order.size(); ++i) {
+            val[order[i] - 'a'] = i + 1;
+        }
+        sort(s.begin(), s.end(), [&](char c0, char c1) {
+            return val[c0 - 'a'] < val[c1 - 'a'];
+        });
+        return s;
+    }
+}
+
+void customSortString_test(){
+    string order = "cba";
+    string s = "abcd";
+    cout << customSortString::customSortString(order, s) << endl;
+    order = "cbafg";
+    s = "abcd";
+    cout << customSortString::customSortString(order, s) << endl;
+}
+
+namespace numMatchingSubseq {
+    int numMatchingSubseq(string s, vector<string>& words) {
+        vector<queue<pair<int, int>>> queues(26);
+        for (int i = 0; i < words.size(); ++i) {
+            queues[words[i][0] - 'a'].emplace(i, 0);
+        }
+        int res = 0;
+        for (char c : s) {
+            auto &q = queues[c - 'a'];
+            int size = q.size();
+            while (size--) {
+                auto [i, j] = q.front();
+                q.pop();
+                ++j;
+                if (j == words[i].size()) {
+                    ++res;
+                } else {
+                    queues[words[i][j] - 'a'].emplace(i, j);
+                }
+            }
+        }
+        return res;
+    }
+}
+
+void numMatchingSubseq_test(){
+    string s;
+    vector<string>words;
+    s = "abcde";
+    words = {"a","bb","acd","ace"};
+    cout << numMatchingSubseq::numMatchingSubseq(s, words) << endl;
+    s = "dsahjpjauf";
+    words = {"ahjpjau", "ja","ahbwzgqnuk","tnmlanowax"};
+    cout << numMatchingSubseq::numMatchingSubseq(s, words) << endl;
+}
+
 int main() {
-    numTilings_test();
+    numMatchingSubseq_test();
     {
-    //escapeGhosts_test();
+    //customSortString_test();
+
+        //numTilings_test();
+
+        //escapeGhosts_test();
 
         //rotatedDigits_test();
 
