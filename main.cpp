@@ -7835,9 +7835,86 @@ void numTilings_test(){
     cout << numTilings::numTilings(n) << endl;
 }
 
+namespace preimageSizeFZF {
+    int zeta(long x) {
+        int res = 0;
+        while (x) {
+            res += x / 5;
+            x /= 5;
+        }
+        return res;
+    }
+
+    int help(int k) {
+        long long r = 5LL * k;
+        long long l = 0;
+        while (l <= r) {
+            long long mid = (l + r) / 2;
+            if (zeta(mid) < k) {
+                l = mid + 1;
+            } else {
+                r = mid - 1;
+            }
+        }
+        return r + 1;
+    }
+    int preimageSizeFZF(int k) {
+        return help(k + 1) - help(k);
+    }
+}
+
+void preimageSizeFZF_test(){
+    int k;
+    k = 0;
+    cout << preimageSizeFZF::preimageSizeFZF(k) << endl;
+    k = 5;
+    cout << preimageSizeFZF::preimageSizeFZF(k) << endl;
+    k = 3;
+    cout << preimageSizeFZF::preimageSizeFZF(k) << endl;
+}
+
+namespace validTicTacToe {
+    bool win(vector<string>board, char p) {
+        for (int i = 0; i < 3; ++i) {
+            if ((p == board[0][i] && p == board[1][i] && p == board[2][i]) ||
+                (p == board[i][0] && p == board[i][1] && p == board[i][2])) {
+                return true;
+            }
+        }
+        return ((p == board[0][0] && p == board[1][1] && p == board[2][2]) ||
+                (p == board[0][2] && p == board[1][1] && p == board[2][0]));
+    }
+    bool validTicTacToe(vector<string>& board) {
+        int xCount = 0, oCount = 0;
+        for (string & row : board) {
+            for (char c : row) {
+                xCount = (c == 'X') ? (xCount + 1) : xCount;
+                oCount = (c == 'O') ? (oCount + 1) : oCount;
+            }
+        }
+        return !((oCount != xCount && oCount != xCount - 1) ||
+                 (oCount != xCount - 1 && win(board, 'X')) ||
+                 (oCount != xCount && win(board, 'O')));
+    }
+}
+
+void validTicTacToe_test(){
+    vector<string>board;
+    board = {"O  ","   ","   "};
+    cout << validTicTacToe::validTicTacToe(board) << endl;
+    board = {"XOX"," X ","   "};
+    cout << validTicTacToe::validTicTacToe(board) << endl;
+    board = {"XOX","O O","XOX"};
+    cout << validTicTacToe::validTicTacToe(board) << endl;
+}
+
 int main() {
-    numTilings_test();
+    validTicTacToe_test();
     {
+    //preimageSizeFZF_test();
+
+    //numTilings_test();
+
     //escapeGhosts_test();
 
         //rotatedDigits_test();
