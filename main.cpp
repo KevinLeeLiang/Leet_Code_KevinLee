@@ -7908,9 +7908,57 @@ void validTicTacToe_test(){
     cout << validTicTacToe::validTicTacToe(board) << endl;
 }
 
+namespace numSubarrayBoundedMax {
+    int numSubarrayBoundedMax(vector<int>& nums, int left, int right) {
+        int res = 0, last2 = -1, last1 = -1;
+        for (int i = 0; i < nums.size(); i++) {
+            if (nums[i] >= left && nums[i] <= right) {
+                last1 = i;
+            } else if (nums[i] > right) {
+                last2 = i;
+                last1 = -1;
+            }
+            if (last1 != -1) {
+                res += last1 - last2;
+            }
+        }
+        return res;
+    }
+}
+
+void numSubarrayBoundedMax_test(){
+    vector<int>nums;
+    int left, right;
+    nums = {2,1,4,3};
+    left = 2, right = 3;
+    cout << numSubarrayBoundedMax::numSubarrayBoundedMax(nums, left, right) << endl;
+    nums = {2,9,2,5,6};
+    left = 2, right = 8;
+    cout << numSubarrayBoundedMax::numSubarrayBoundedMax(nums, left, right) << endl;
+
+}
+
+namespace rotateString {
+    bool rotateString(string s, string goal) {
+        return s.size() ==  goal.size() && (s + s).find(goal) != string::npos;
+    }
+}
+
+void rotateString_test(){
+    string s = "abcde";
+    string goal = "cdeab";
+    cout << rotateString::rotateString(s, goal) << endl;
+    s = "abcde", goal = "abced";
+    cout << rotateString::rotateString(s, goal) << endl;
+}
+
 int main() {
-    validTicTacToe_test();
+    rotateString_test();
     {
+    //numSubarrayBoundedMax_test();
+
+    //validTicTacToe_test();
+
     //preimageSizeFZF_test();
 
     //numTilings_test();
