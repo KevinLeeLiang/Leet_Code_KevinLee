@@ -7839,7 +7839,7 @@ void numTilings_test() {
 
 namespace customSortString {
     string customSortString(string order, string s) {
-        vector<int>val(26);
+        vector<int> val(26);
         for (int i = 0; i < order.size(); ++i) {
             val[order[i] - 'a'] = i + 1;
         }
@@ -7850,7 +7850,7 @@ namespace customSortString {
     }
 }
 
-void customSortString_test(){
+void customSortString_test() {
     string order = "cba";
     string s = "abcd";
     cout << customSortString::customSortString(order, s) << endl;
@@ -7860,7 +7860,7 @@ void customSortString_test(){
 }
 
 namespace numMatchingSubseq {
-    int numMatchingSubseq(string s, vector<string>& words) {
+    int numMatchingSubseq(string s, vector<string> &words) {
         vector<queue<pair<int, int>>> queues(26);
         for (int i = 0; i < words.size(); ++i) {
             queues[words[i][0] - 'a'].emplace(i, 0);
@@ -7870,7 +7870,7 @@ namespace numMatchingSubseq {
             auto &q = queues[c - 'a'];
             int size = q.size();
             while (size--) {
-                auto [i, j] = q.front();
+                auto[i, j] = q.front();
                 q.pop();
                 ++j;
                 if (j == words[i].size()) {
@@ -7884,25 +7884,240 @@ namespace numMatchingSubseq {
     }
 }
 
-void numMatchingSubseq_test(){
+namespace preimageSizeFZF {
+    int zeta(long x) {
+        int res = 0;
+        while (x) {
+            res += x / 5;
+            x /= 5;
+        }
+        return res;
+    }
+
+    int help(int k) {
+        long long r = 5LL * k;
+        long long l = 0;
+        while (l <= r) {
+            long long mid = (l + r) / 2;
+            if (zeta(mid) < k) {
+                l = mid + 1;
+            } else {
+                r = mid - 1;
+            }
+        }
+        return r + 1;
+    }
+
+    int preimageSizeFZF(int k) {
+        return help(k + 1) - help(k);
+    }
+}
+
+void preimageSizeFZF_test() {
+    int k;
+    k = 0;
+    cout << preimageSizeFZF::preimageSizeFZF(k) << endl;
+    k = 5;
+    cout << preimageSizeFZF::preimageSizeFZF(k) << endl;
+    k = 3;
+    cout << preimageSizeFZF::preimageSizeFZF(k) << endl;
+}
+
+namespace validTicTacToe {
+    bool win(vector<string> board, char p) {
+        for (int i = 0; i < 3; ++i) {
+            if ((p == board[0][i] && p == board[1][i] && p == board[2][i]) ||
+                (p == board[i][0] && p == board[i][1] && p == board[i][2])) {
+                return true;
+            }
+        }
+        return ((p == board[0][0] && p == board[1][1] && p == board[2][2]) ||
+                (p == board[0][2] && p == board[1][1] && p == board[2][0]));
+    }
+
+    bool validTicTacToe(vector<string> &board) {
+        int xCount = 0, oCount = 0;
+        for (string &row : board) {
+            for (char c : row) {
+                xCount = (c == 'X') ? (xCount + 1) : xCount;
+                oCount = (c == 'O') ? (oCount + 1) : oCount;
+            }
+        }
+        return !((oCount != xCount && oCount != xCount - 1) ||
+                 (oCount != xCount - 1 && win(board, 'X')) ||
+                 (oCount != xCount && win(board, 'O')));
+    }
+}
+
+void validTicTacToe_test() {
+    vector<string> board;
+    board = {"O  ", "   ", "   "};
+    cout << validTicTacToe::validTicTacToe(board) << endl;
+    board = {"XOX", " X ", "   "};
+    cout << validTicTacToe::validTicTacToe(board) << endl;
+    board = {"XOX", "O O", "XOX"};
+    cout << validTicTacToe::validTicTacToe(board) << endl;
+}
+
+namespace numSubarrayBoundedMax {
+    int numSubarrayBoundedMax(vector<int> &nums, int left, int right) {
+        int res = 0, last2 = -1, last1 = -1;
+        for (int i = 0; i < nums.size(); i++) {
+            if (nums[i] >= left && nums[i] <= right) {
+                last1 = i;
+            } else if (nums[i] > right) {
+                last2 = i;
+                last1 = -1;
+            }
+            if (last1 != -1) {
+                res += last1 - last2;
+            }
+        }
+        return res;
+    }
+}
+
+void numMatchingSubseq_test() {
     string s;
-    vector<string>words;
+    vector<string> words;
     s = "abcde";
-    words = {"a","bb","acd","ace"};
+    words = {"a", "bb", "acd", "ace"};
     cout << numMatchingSubseq::numMatchingSubseq(s, words) << endl;
     s = "dsahjpjauf";
-    words = {"ahjpjau", "ja","ahbwzgqnuk","tnmlanowax"};
+    words = {"ahjpjau", "ja", "ahbwzgqnuk", "tnmlanowax"};
     cout << numMatchingSubseq::numMatchingSubseq(s, words) << endl;
 }
 
+void numSubarrayBoundedMax_test() {
+    vector<int> nums;
+    int left, right;
+    nums = {2, 1, 4, 3};
+    left = 2, right = 3;
+    cout << numSubarrayBoundedMax::numSubarrayBoundedMax(nums, left, right) << endl;
+    nums = {2, 9, 2, 5, 6};
+    left = 2, right = 8;
+    cout << numSubarrayBoundedMax::numSubarrayBoundedMax(nums, left, right) << endl;
+
+}
+
+namespace rotateString {
+    bool rotateString(string s, string goal) {
+        return s.size() == goal.size() && (s + s).find(goal) != string::npos;
+    }
+}
+
+void rotateString_test() {
+    string s = "abcde";
+    string goal = "cdeab";
+    cout << rotateString::rotateString(s, goal) << endl;
+    s = "abcde", goal = "abced";
+    cout << rotateString::rotateString(s, goal) << endl;
+}
+
+namespace allPathsSourceTarget {
+    vector<vector<int>> ans;
+    vector<int> stk;
+    void dfs(vector<vector<int>>& graph, int x, int n) {
+        if (x == n) {
+            ans.push_back(stk);
+            return;
+        }
+        for (auto &y : graph[x]) {
+            stk.push_back(y);
+            dfs(graph, y, n);
+            stk.pop_back();
+        }
+    }
+
+    vector<vector<int>> allPathsSourceTarget(vector<vector<int>> &graph) {
+        ans.clear();
+        stk.clear();
+        stk.push_back(0);
+        dfs(graph, 0, graph.size() - 1);
+        return ans;
+    }
+}
+
+void allPathsSourceTarget_test() {
+    vector<vector<int>> paths;
+    vector<vector<int>> graph = {{1, 2},
+                                 {3},
+                                 {3},
+                                 {}};
+    paths = allPathsSourceTarget::allPathsSourceTarget(graph);
+    for (auto path : paths) {
+        print_vector(path);
+    }
+    cout << "++++++++++++++++++" << endl;
+    graph = {{4, 3, 1},
+             {3, 2, 4},
+             {3},
+             {4},
+             {}};
+    paths = allPathsSourceTarget::allPathsSourceTarget(graph);
+    for (auto path : paths) {
+        print_vector(path);
+    }
+    cout << "++++++++++++++++++" << endl;
+}
+
+namespace bestRotation {
+    int bestRotation(vector<int>& nums) {
+        int n = nums.size();
+        vector<int>diffs(n);
+        for (int i = 0; i < n; ++i) {
+            int low = (i + 1) % n;
+            int high = (i - nums[i] + n + 1) % n;
+            diffs[low]++;
+            diffs[high]--;
+            if (low >= high) {
+                diffs[0]++;
+            }
+        }
+        int bestIndex = 0;
+        int maxScore = 0;
+        int score = 0;
+        for (int i = 0; i < n; ++i) {
+            score += diffs[i];
+            if (score > maxScore) {
+                bestIndex = i;
+                maxScore = score;
+            }
+        }
+        return bestIndex;
+    }
+};
+
+void bestRotation_test() {
+    vector<int>nums;
+    nums = {2,3,1,4,0};
+    cout << bestRotation::bestRotation(nums) << endl;
+    nums = {1,3,0,2,4};
+    cout << bestRotation::bestRotation(nums) << endl;
+
+}
+
 int main() {
-    numMatchingSubseq_test();
+    bestRotation_test();
     {
-    //customSortString_test();
+    //allPathsSourceTarget_test();
+
+        //rotateString_test();
+
+        //numSubarrayBoundedMax_test();
+
+        //validTicTacToe_test();
+
+        //preimageSizeFZF_test();
+
+        //numMatchingSubseq_test();
+
+        //customSortString_test();
 
         //numTilings_test();
 
         //escapeGhosts_test();
+
 
         //rotatedDigits_test();
 
