@@ -8017,7 +8017,8 @@ void rotateString_test() {
 namespace allPathsSourceTarget {
     vector<vector<int>> ans;
     vector<int> stk;
-    void dfs(vector<vector<int>>& graph, int x, int n) {
+
+    void dfs(vector<vector<int>> &graph, int x, int n) {
         if (x == n) {
             ans.push_back(stk);
             return;
@@ -8062,9 +8063,9 @@ void allPathsSourceTarget_test() {
 }
 
 namespace bestRotation {
-    int bestRotation(vector<int>& nums) {
+    int bestRotation(vector<int> &nums) {
         int n = nums.size();
-        vector<int>diffs(n);
+        vector<int> diffs(n);
         for (int i = 0; i < n; ++i) {
             int low = (i + 1) % n;
             int high = (i - nums[i] + n + 1) % n;
@@ -8089,18 +8090,80 @@ namespace bestRotation {
 };
 
 void bestRotation_test() {
-    vector<int>nums;
-    nums = {2,3,1,4,0};
+    vector<int> nums;
+    nums = {2, 3, 1, 4, 0};
     cout << bestRotation::bestRotation(nums) << endl;
-    nums = {1,3,0,2,4};
+    nums = {1, 3, 0, 2, 4};
     cout << bestRotation::bestRotation(nums) << endl;
 
 }
 
+namespace champagneTower {
+    double champagneTower(int poured, int query_row, int query_glass) {
+        vector<double> row = {(double) poured};
+        for (int i = 1; i <= query_row; ++i) {
+            vector<double> nextRow(i + 1, 0.0);
+            for (int j = 0; j < row.size(); ++j) {
+                double volume = row[j];
+                if (volume > 1) {
+                    nextRow[j] += (volume - 1) / 2;
+                    nextRow[j + 1] += (volume - 1) / 2;
+                }
+            }
+            row = nextRow;
+        }
+        return min(1.0, row[query_glass]);
+    }
+}
+
+void champagneTower_test() {
+    int poured, query_row, query_glass;
+    poured = 1, query_row = 1, query_glass = 1;
+    cout << champagneTower::champagneTower(poured, query_row, query_glass) << endl;
+    poured = 2, query_row = 1, query_glass = 1;
+    cout << champagneTower::champagneTower(poured, query_row, query_glass) << endl;
+    poured = 100000009, query_row = 33, query_glass = 17;
+    cout << champagneTower::champagneTower(poured, query_row, query_glass) << endl;
+}
+
+namespace minSwap {
+    int minSwap(vector<int> &nums1, vector<int> &nums2) {
+        int n = nums1.size();
+        int a = 0, b = 1;
+        for (int i = 1; i < n; ++i) {
+            int at = a, bt = b;
+            a = b = n;
+            if (nums1[i] > nums1[i - 1] && nums2[i] > nums2[i - 1])  {
+                a = min(a, at);
+                b = min(b, bt + 1);
+            }
+            if (nums1[i] > nums2[i - 1] && nums2[i] > nums1[i - 1]) {
+                a = min(a, bt);
+                b = min(b, at + 1);
+            }
+        }
+        return min(a, b);
+    }
+}
+
+void minSwap_test() {
+    vector<int> nums1, nums2;
+    nums1 = {1, 3, 5, 4};
+    nums2 = {1, 2, 3, 7};
+    cout << minSwap::minSwap(nums1, nums2) << endl;
+    nums1 = {0, 3, 5, 8, 9};
+    nums2 = {2, 1, 4, 6, 9};
+    cout << minSwap::minSwap(nums1, nums2) << endl;
+}
+
 int main() {
-    bestRotation_test();
+    minSwap_test();
     {
-    //allPathsSourceTarget_test();
+        //champagneTower_test();
+
+        //bestRotation_test();
+
+        //allPathsSourceTarget_test();
 
         //rotateString_test();
 
