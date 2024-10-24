@@ -8133,7 +8133,7 @@ namespace minSwap {
         for (int i = 1; i < n; ++i) {
             int at = a, bt = b;
             a = b = n;
-            if (nums1[i] > nums1[i - 1] && nums2[i] > nums2[i - 1])  {
+            if (nums1[i] > nums1[i - 1] && nums2[i] > nums2[i - 1]) {
                 a = min(a, at);
                 b = min(b, bt + 1);
             }
@@ -8156,9 +8156,81 @@ void minSwap_test() {
     cout << minSwap::minSwap(nums1, nums2) << endl;
 }
 
+namespace uniqueMorseRepresentations {
+    int uniqueMorseRepresentations(vector<string> &words) {
+        vector<string> code_table;
+        code_table = {".-", "-...", "-.-.", "-..", ".", "..-.", "--.", "....", "..", ".---", "-.-", ".-..", "--", "-.",
+                      "---", ".--.", "--.-", ".-.", "...", "-", "..-", "...-", ".--", "-..-", "-.--", "--.."};
+        unordered_map<char, string>map;
+        for (int i = 0; i < code_table.size(); ++i) {
+            map[i + 'a'] = code_table[i];
+        }
+        unordered_set<string>code_set;
+        for (auto word : words) {
+            string s;
+            for (auto c : word) {
+                s = s + map[c];
+            }
+            code_set.insert(s);
+        }
+        return code_set.size();
+    }
+}
+
+void uniqueMorseRepresentations_test() {
+    vector<string> words;
+    words = {"gin", "zen", "gig", "msg"};
+    cout << uniqueMorseRepresentations::uniqueMorseRepresentations(words) << endl;
+    words = {"a"};
+    cout << uniqueMorseRepresentations::uniqueMorseRepresentations(words) << endl;
+}
+
+namespace splitArraySameAverage {
+    bool splitArraySameAverage(vector<int>& nums) {
+        int n = nums.size(), m = n / 2;
+        int sum = accumulate(nums.begin(), nums.end(), 0);
+        bool isPossible = false;
+        for (int i = 1; i <= m; ++i) {
+            if (sum * i % n == 0) {
+                isPossible = true;
+                break;
+            }
+        }
+        if (!isPossible) {
+            return false;
+        }
+        vector<unordered_set<int>>dp(m + 1);
+        dp[0].insert(0);
+        for (int num : nums) {
+            for (int i = m; i >= 1; --i) {
+                for (int x : dp[i - 1]) {
+                    int curr = x + num;
+                    if (curr * n == sum * i) {
+                        return true;
+                    }
+                    dp[i].emplace(curr);
+                }
+            }
+        }
+        return false;
+    }
+}
+
+void splitArraySameAverage_test(){
+    vector<int>nums;
+    nums = {1,2,3,4,5,6,7,8};
+    cout << splitArraySameAverage::splitArraySameAverage(nums) << endl;
+    nums = {3,1};
+    cout << splitArraySameAverage::splitArraySameAverage(nums) << endl;
+}
+
 int main() {
-    minSwap_test();
+    splitArraySameAverage_test();
     {
+    //uniqueMorseRepresentations_test();
+
+        //minSwap_test();
+
         //champagneTower_test();
 
         //bestRotation_test();
