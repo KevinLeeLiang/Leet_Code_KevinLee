@@ -8161,11 +8161,11 @@ namespace uniqueMorseRepresentations {
         vector<string> code_table;
         code_table = {".-", "-...", "-.-.", "-..", ".", "..-.", "--.", "....", "..", ".---", "-.-", ".-..", "--", "-.",
                       "---", ".--.", "--.-", ".-.", "...", "-", "..-", "...-", ".--", "-..-", "-.--", "--.."};
-        unordered_map<char, string>map;
+        unordered_map<char, string> map;
         for (int i = 0; i < code_table.size(); ++i) {
             map[i + 'a'] = code_table[i];
         }
-        unordered_set<string>code_set;
+        unordered_set<string> code_set;
         for (auto word : words) {
             string s;
             for (auto c : word) {
@@ -8186,7 +8186,7 @@ void uniqueMorseRepresentations_test() {
 }
 
 namespace splitArraySameAverage {
-    bool splitArraySameAverage(vector<int>& nums) {
+    bool splitArraySameAverage(vector<int> &nums) {
         int n = nums.size(), m = n / 2;
         int sum = accumulate(nums.begin(), nums.end(), 0);
         bool isPossible = false;
@@ -8199,7 +8199,7 @@ namespace splitArraySameAverage {
         if (!isPossible) {
             return false;
         }
-        vector<unordered_set<int>>dp(m + 1);
+        vector<unordered_set<int>> dp(m + 1);
         dp[0].insert(0);
         for (int num : nums) {
             for (int i = m; i >= 1; --i) {
@@ -8216,18 +8216,90 @@ namespace splitArraySameAverage {
     }
 }
 
-void splitArraySameAverage_test(){
-    vector<int>nums;
-    nums = {1,2,3,4,5,6,7,8};
+void splitArraySameAverage_test() {
+    vector<int> nums;
+    nums = {1, 2, 3, 4, 5, 6, 7, 8};
     cout << splitArraySameAverage::splitArraySameAverage(nums) << endl;
-    nums = {3,1};
+    nums = {3, 1};
     cout << splitArraySameAverage::splitArraySameAverage(nums) << endl;
 }
 
+namespace numberOfLines {
+    vector<int> numberOfLines(vector<int> &widths, string s) {
+        int line = 100;
+        int cur = 0;
+        int ansline = 0;
+        for (auto c : s) {
+            if (cur + widths[c - 'a'] <= 100) {
+                cur += widths[c - 'a'];
+            } else {
+                ansline++;
+                cur = widths[c - 'a'];
+            }
+        }
+        ansline = cur > 0 ? ansline + 1 : ansline;
+        return {ansline, cur};
+    }
+}
+
+void numberOfLines_test() {
+    vector<int> widths, ans;
+    string s;
+    s = "abcdefghijklmnopqrstuvwxyz";
+    widths = {10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10};
+    ans = numberOfLines::numberOfLines(widths, s);
+    print_vector(ans);
+    cout << "-------------" << endl;
+    widths = {4, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10};
+    s = "bbbcccdddaaa";
+    ans = numberOfLines::numberOfLines(widths, s);
+    print_vector(ans);
+    cout << "-------------" << endl;
+}
+
+namespace maxIncreaseKeepingSkyline {
+    int maxIncreaseKeepingSkyline(vector<vector<int>> &grid) {
+        int n = grid.size();
+        vector<int> rowMax(n);
+        vector<int> colMax(n);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                rowMax[i] = max(rowMax[i], grid[i][j]);
+                colMax[j] = max(colMax[j], grid[i][j]);
+            }
+        }
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                ans += min(rowMax[i], colMax[j]) - grid[i][j];
+            }
+        }
+        return ans;
+    }
+}
+
+void maxIncreaseKeepingSkyline_test() {
+    vector<vector<int>> grid;
+    grid = {{3, 0, 8, 4},
+            {2, 4, 5, 7},
+            {9, 2, 6, 3},
+            {0, 3, 1, 0}};
+    cout << maxIncreaseKeepingSkyline::maxIncreaseKeepingSkyline(grid) << endl;
+    grid = {{0, 0, 0, 0},
+            {0, 0, 0, 0},
+            {0, 0, 0, 0},
+            {0, 0, 0, 0}};
+    cout << maxIncreaseKeepingSkyline::maxIncreaseKeepingSkyline(grid) << endl;
+}
+
 int main() {
-    splitArraySameAverage_test();
+    maxIncreaseKeepingSkyline_test();
     {
-    //uniqueMorseRepresentations_test();
+        //numberOfLines_test();
+
+        //splitArraySameAverage_test();
+
+        //uniqueMorseRepresentations_test();
 
         //minSwap_test();
 
