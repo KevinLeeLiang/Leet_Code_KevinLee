@@ -8292,9 +8292,71 @@ void maxIncreaseKeepingSkyline_test() {
     cout << maxIncreaseKeepingSkyline::maxIncreaseKeepingSkyline(grid) << endl;
 }
 
+namespace xorGame {
+    bool xorGame(vector<int> &nums) {
+        if (nums.size() % 2 == 0) {
+            return true;
+        }
+        int xorsum = 0;
+        for (int num : nums) {
+            xorsum ^= num;
+        }
+        return xorsum == 0;
+    }
+}
+
+void xorGame_test() {
+    vector<int> nums;
+    nums = {1, 1, 2};
+    cout << xorGame::xorGame(nums) << endl;
+    nums = {1, 2};
+    cout << xorGame::xorGame(nums) << endl;
+    nums = {1, 2, 3};
+    cout << xorGame::xorGame(nums) << endl;
+}
+
+namespace largestTriangleArea {
+    double triangleArea(int x1, int y1, int x2, int y2, int x3, int y3) {
+        return 0.5 * abs(x1 * y2 + x2 * y3 + x3 * y1 - x1 * y3 - x2 * y1 - x3 * y2);
+    }
+    double largestTriangleArea(vector<vector<int>> &points) {
+        int n = points.size();
+        double ret = 0.0;
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                for (int k = j + 1; k < n; k++) {
+                    ret = max(ret, triangleArea(points[i][0], points[i][1], points[j][0], points[j][1], points[k][0], points[k][1]));
+                }
+            }
+        }
+        return ret;
+    }
+}
+
+void largestTriangleArea_test() {
+    vector<vector<int>> points;
+    points = {{0, 1},
+              {1, 0},
+              {0, 2},
+              {2, 0}};
+    cout << largestTriangleArea::largestTriangleArea(points) << endl;
+    points = {{1, 0},
+              {0, 0},
+              {0, 1}};
+    cout << largestTriangleArea::largestTriangleArea(points) << endl;
+    points = {{4, 6},
+              {6, 5},
+              {3, 1}};
+    cout << largestTriangleArea::largestTriangleArea(points) << endl;
+};
+
 int main() {
-    maxIncreaseKeepingSkyline_test();
+    largestTriangleArea_test();
     {
+        //xorGame_test();
+
+        //maxIncreaseKeepingSkyline_test();
+
         //numberOfLines_test();
 
         //splitArraySameAverage_test();
