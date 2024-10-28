@@ -8319,13 +8319,15 @@ namespace largestTriangleArea {
     double triangleArea(int x1, int y1, int x2, int y2, int x3, int y3) {
         return 0.5 * abs(x1 * y2 + x2 * y3 + x3 * y1 - x1 * y3 - x2 * y1 - x3 * y2);
     }
+
     double largestTriangleArea(vector<vector<int>> &points) {
         int n = points.size();
         double ret = 0.0;
         for (int i = 0; i < n; i++) {
             for (int j = i + 1; j < n; j++) {
                 for (int k = j + 1; k < n; k++) {
-                    ret = max(ret, triangleArea(points[i][0], points[i][1], points[j][0], points[j][1], points[k][0], points[k][1]));
+                    ret = max(ret, triangleArea(points[i][0], points[i][1], points[j][0], points[j][1], points[k][0],
+                                                points[k][1]));
                 }
             }
         }
@@ -8350,9 +8352,90 @@ void largestTriangleArea_test() {
     cout << largestTriangleArea::largestTriangleArea(points) << endl;
 };
 
+namespace largestSumOfAverages {
+    double largestSumOfAverages(vector<int> &nums, int k) {
+        int n = nums.size();
+        vector<double>prefix(n + 1);
+        for (int i = 0; i < n; ++i) {
+            prefix[i + 1] = prefix[i] + nums[i];
+        }
+        vector<vector<double>> dp(n + 1, vector<double>(k + 1));
+        for (int i = 1; i <= n; i++) {
+            dp[i][1] = prefix[i] / i;
+        }
+        for (int j = 2; j <= k; ++j) {
+            for (int i = j; i <= n; ++i) {
+                for (int x = j - 1; x < i; ++x) {
+                    dp[i][j] = max(dp[i][j], dp[x][j - 1] + (prefix[i] - prefix[x]) / (i - x));
+                }
+            }
+        }
+        return dp[n][k];
+    }
+}
+
+void largestSumOfAverages_test() {
+    vector<int> nums;
+    int k;
+    k = 3;
+    nums = {9, 1, 2, 3, 9};
+    cout << largestSumOfAverages::largestSumOfAverages(nums, k) << endl;
+    nums = {1, 2, 3, 4, 5, 6, 7};
+    k = 4;
+    cout << largestSumOfAverages::largestSumOfAverages(nums, k) << endl;
+}
+
+namespace pruneTree {
+    TreeNode::TreeNode* pruneTree(TreeNode::TreeNode* root) {
+        if (!root) {
+            return nullptr;
+        }
+        root->left = pruneTree(root->left);
+        root->right = pruneTree(root->right);
+        if (!root->left && !root->right && !root->val) {
+            return nullptr;
+        }
+        return root;
+    }
+}
+
+void pruneTree_test(){
+    vector<int>nums;
+    TreeNode::TreeNode*root, *ans_tree;
+    vector<vector<string>>ans;
+    nums = {1,-1,0,0,1};
+    root = create_treenode(nums, true);
+    ans_tree = pruneTree::pruneTree(root);
+    ans = printTree::printTree(ans_tree);
+    for (auto s : ans){
+        print_vector(s);
+    }
+    cout << "-------------" << endl;
+    nums = {1,0,1,0,0,0,1};
+    root = create_treenode(nums, true);
+    ans_tree = pruneTree::pruneTree(root);
+    ans = printTree::printTree(ans_tree);
+    for (auto s : ans){
+        print_vector(s);
+    }
+    cout << "-------------" << endl;
+    nums = {1,1,0,1,1,0,1,0};
+    root = create_treenode(nums, true);
+    ans_tree = pruneTree::pruneTree(root);
+    ans = printTree::printTree(ans_tree);
+    for (auto s : ans){
+        print_vector(s);
+    }
+    cout << "-------------" << endl;
+}
+
 int main() {
-    largestTriangleArea_test();
+    pruneTree_test();
     {
+    //largestSumOfAverages_test();
+
+        //largestTriangleArea_test();
+
         //xorGame_test();
 
         //maxIncreaseKeepingSkyline_test();
