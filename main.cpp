@@ -8355,7 +8355,7 @@ void largestTriangleArea_test() {
 namespace largestSumOfAverages {
     double largestSumOfAverages(vector<int> &nums, int k) {
         int n = nums.size();
-        vector<double>prefix(n + 1);
+        vector<double> prefix(n + 1);
         for (int i = 0; i < n; ++i) {
             prefix[i + 1] = prefix[i] + nums[i];
         }
@@ -8386,7 +8386,7 @@ void largestSumOfAverages_test() {
 }
 
 namespace pruneTree {
-    TreeNode::TreeNode* pruneTree(TreeNode::TreeNode* root) {
+    TreeNode::TreeNode *pruneTree(TreeNode::TreeNode *root) {
         if (!root) {
             return nullptr;
         }
@@ -8399,38 +8399,38 @@ namespace pruneTree {
     }
 }
 
-void pruneTree_test(){
-    vector<int>nums;
-    TreeNode::TreeNode*root, *ans_tree;
-    vector<vector<string>>ans;
-    nums = {1,-1,0,0,1};
+void pruneTree_test() {
+    vector<int> nums;
+    TreeNode::TreeNode *root, *ans_tree;
+    vector<vector<string>> ans;
+    nums = {1, -1, 0, 0, 1};
     root = create_treenode(nums, true);
     ans_tree = pruneTree::pruneTree(root);
     ans = printTree::printTree(ans_tree);
-    for (auto s : ans){
+    for (auto s : ans) {
         print_vector(s);
     }
     cout << "-------------" << endl;
-    nums = {1,0,1,0,0,0,1};
+    nums = {1, 0, 1, 0, 0, 0, 1};
     root = create_treenode(nums, true);
     ans_tree = pruneTree::pruneTree(root);
     ans = printTree::printTree(ans_tree);
-    for (auto s : ans){
+    for (auto s : ans) {
         print_vector(s);
     }
     cout << "-------------" << endl;
-    nums = {1,1,0,1,1,0,1,0};
+    nums = {1, 1, 0, 1, 1, 0, 1, 0};
     root = create_treenode(nums, true);
     ans_tree = pruneTree::pruneTree(root);
     ans = printTree::printTree(ans_tree);
-    for (auto s : ans){
+    for (auto s : ans) {
         print_vector(s);
     }
     cout << "-------------" << endl;
 }
 
 namespace numBusesToDestination {
-    int numBusesToDestination(vector<vector<int>>& routes, int source, int target) {
+    int numBusesToDestination(vector<vector<int>> &routes, int source, int target) {
         if (source == target) {
             return 0;
         }
@@ -8445,8 +8445,8 @@ namespace numBusesToDestination {
                 rec[site].push_back(i);
             }
         }
-        vector<int>dis(n ,-1);
-        queue<int>que;
+        vector<int> dis(n, -1);
+        queue<int> que;
         for (int bus: rec[source]) {
             dis[bus] = 1;
             que.push(bus);
@@ -8471,14 +8471,19 @@ namespace numBusesToDestination {
     }
 }
 
-void numBusesToDestination_test(){
+void numBusesToDestination_test() {
     vector<vector<int>> routes;
     int src, tar;
     src = 1, tar = 6;
-    routes = {{1,2,7},{3,6,7}};
+    routes = {{1, 2, 7},
+              {3, 6, 7}};
     cout << numBusesToDestination::numBusesToDestination(routes, src, tar) << endl;
     src = 15, tar = 12;
-    routes = {{7,12},{4,5,15},{6},{15,19},{9,12,13}};
+    routes = {{7,  12},
+              {4,  5,  15},
+              {6},
+              {15, 19},
+              {9,  12, 13}};
     cout << numBusesToDestination::numBusesToDestination(routes, src, tar) << endl;
 }
 
@@ -8502,8 +8507,8 @@ namespace ambiguousCoordinates {
             if (lt.empty()) continue;
             vector<string> rt = getPos(s.substr(l));
             if (rt.empty()) continue;
-            for (auto& i : lt) {
-                for (auto& j : rt) {
+            for (auto &i : lt) {
+                for (auto &j : rt) {
                     res.push_back("(" + i + ", " + j + ")");
                 }
             }
@@ -8512,31 +8517,112 @@ namespace ambiguousCoordinates {
     }
 }
 
-void ambiguousCoordinates_test(){
+void ambiguousCoordinates_test() {
     string s;
-    vector<string>ans;
+    vector<string> ans;
     s = "(123)";
-    ans = ambiguousCoordinates::ambiguousCoordinates(s) ;
+    ans = ambiguousCoordinates::ambiguousCoordinates(s);
     print_vector(ans);
     s = "(00011)";
-    ans = ambiguousCoordinates::ambiguousCoordinates(s) ;
+    ans = ambiguousCoordinates::ambiguousCoordinates(s);
     print_vector(ans);
     s = "(0123)";
-    ans = ambiguousCoordinates::ambiguousCoordinates(s) ;
+    ans = ambiguousCoordinates::ambiguousCoordinates(s);
     print_vector(ans);
     s = "(100)";
-    ans = ambiguousCoordinates::ambiguousCoordinates(s) ;
+    ans = ambiguousCoordinates::ambiguousCoordinates(s);
     print_vector(ans);
 }
 
+namespace numComponents {
+    int numComponents(ListNode *head, vector<int> &nums) {
+        unordered_set<int> num_set;
+        for (int num : nums) {
+            num_set.emplace(num);
+        }
+        bool in_set = false;
+        int res = 0;
+        while (head != nullptr) {
+            if (num_set.count(head->val)) {
+                if (!in_set) {
+                    in_set = true;
+                    res++;
+                }
+            } else {
+                in_set = false;
+            }
+            head = head->next;
+        }
+        return res;
+    }
+}
+
+void numComponents_test() {
+    vector<int> lists, nums;
+    ListNode *head;
+    nums = {0, 1, 3};
+    lists = {0, 1, 2, 3};
+    head = create_nodelist(lists);
+    cout << numComponents::numComponents(head, nums) << endl;
+    nums = {0, 3, 1, 4};
+    lists = {0, 1, 2, 3, 4};
+    head = create_nodelist(lists);
+    cout << numComponents::numComponents(head, nums) << endl;
+    nums = {0, 1, 3, 4, 5};
+    lists = {0, 1, 2, 3, 4, 5, 6};
+    head = create_nodelist(lists);
+    cout << numComponents::numComponents(head, nums) << endl;
+}
+
+namespace racecar {
+    const int MAXN = 10001;
+    const int MAXS = 14;
+    int cnt[MAXN][MAXS];
+    int dfs(int s, int dist) {
+        if (dist == 0) {
+            return 0;
+        }
+        if (cnt[dist][s] > 0) {
+            return cnt[dist][s];
+        }
+        int speed = (1 << s);
+        if (speed <= dist) {
+            return 1 + dfs(s + 1, dist - speed);
+        }
+        int ans = dfs(0, speed - dist) + 2;
+        for (int i = 0; i < s; ++i) {
+            ans = min(ans, 2 + 2 * i + dfs(i, dist));
+        }
+        return cnt[dist][s] = ans;
+    }
+    int racecar(int target) {
+        return dfs(0, target);
+    }
+}
+
+void racecar_test() {
+    int target;
+    target = 3;
+    cout << racecar::racecar(target) << endl;
+    target = 6;
+    cout << racecar::racecar(target) << endl;
+    target = 12;
+    cout << racecar::racecar(target) << endl;
+};
+
+
 int main() {
-    ambiguousCoordinates_test();
+    racecar_test();
     {
-    //numBusesToDestination_test();
+        //numComponents_test();
 
-    //pruneTree_test();
+        //ambiguousCoordinates_test();
 
-    //largestSumOfAverages_test();
+        //numBusesToDestination_test();
+
+        //pruneTree_test();
+
+        //largestSumOfAverages_test();
 
         //largestTriangleArea_test();
 
