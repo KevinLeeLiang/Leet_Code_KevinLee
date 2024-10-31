@@ -8659,12 +8659,27 @@ void mostCommonWord_test(){
 
 namespace minimumLengthEncoding {
     int minimumLengthEncoding(vector<string>& words) {
+        unordered_set<string> good(words.begin(), words.end());
+        for (const string& word: words) {
+            for (int k = 1; k < word.size(); ++k) {
+                good.erase(word.substr(k));
+            }
+        }
 
+        int ans = 0;
+        for (const string& word: good) {
+            ans += word.size() + 1;
+        }
+        return ans;
     }
 }
 
 void minimumLengthEncoding_test(){
-
+    vector<string>words;
+    words = {"time", "me", "bell"};
+    cout << minimumLengthEncoding::minimumLengthEncoding(words) << endl;
+    words = {"t"};
+    cout << minimumLengthEncoding::minimumLengthEncoding(words) << endl;
 }
 
 int main() {
