@@ -8610,10 +8610,70 @@ void racecar_test() {
     cout << racecar::racecar(target) << endl;
 };
 
+#include<regex>
+namespace mostCommonWord {
+    string mostCommonWord(string paragraph, vector<string>& banned) {
+        unordered_set<string> bannedSet;
+        for (auto & word : banned) {
+            bannedSet.emplace(word);
+        }
+        int maxFrequency = 0;
+        unordered_map<string, int> frequencies;
+        string word;
+        int length = paragraph.size();
+        for (int i = 0; i <= length; i++) {
+            if (i < length && isalpha(paragraph[i])) {
+                word.push_back(tolower(paragraph[i]));
+            } else if (word.size() > 0) {
+                if (!bannedSet.count(word)) {
+                    frequencies[word]++;
+                    maxFrequency = max(maxFrequency, frequencies[word]);
+                }
+                word = "";
+            }
+        }
+        string mostCommon = "";
+        for (auto &[word , frequency] : frequencies) {
+            if (frequency == maxFrequency) {
+                mostCommon = word;
+                break;
+            }
+        }
+        return mostCommon;
+    }
+}
+
+void mostCommonWord_test(){
+    string paragraph;
+    vector<string>banned;
+    paragraph = "Bob hit a ball, the hit BALL flew far after it was hit.";
+    banned = {"hit"};
+    cout << mostCommonWord::mostCommonWord(paragraph, banned) << endl;
+    paragraph ="a.";
+    banned = {};
+    cout << mostCommonWord::mostCommonWord(paragraph, banned) << endl;
+    paragraph = "W. y; v? R! n? w, U! T; V? z, M! O. z, h; s' t' t? L? G; P, o? I; k? q. Y! x, t; f! m! Y. H' W. a, Q. d! w; s; r. X; H' S? t? V; X! Z, k; j; R? v, v! H, p; Z; m! v! M; S. D; Q? P, Z. w! t? m' Y' R. c? U' z! r' T; q. J; Z? z! n? X? M; T! N, K! s? v. T? Y. e; S. q; u! V? j? O; P. U, L. m, w. w, U? o, u, z? P? P! p, I. G. x; j, I; u. q. W? S. O' N, O; F! z? s, e' W, w! y. Y' t; c; n! Z! Z; n; u! m' f, z! U! V! n' t; p? V! W; y' R; z! k, y? U; x, U; w? J; x? T; h. D. R; k; m. X' n; w' s; F! x. e! x; x; n; z. R, V, r, N' P; t; w! r? O. P. W; z; W? p. v; k; r; U; v; P. S! V; U? b' g? x, q; r! P? J' o? o. j' v; y, q, I' Y, M' i; b? l; q? W' W' f, S? s! K; G? O! m? Q. X' h. S' t! Y? Z, n. Y? V; z. r. U! R? Y! o; u, L! Z, w, d; x. z; R, o. q! y; x! l? l. S' T; R' t' y? u! V' Y; w, Z? U! k. Q? x! x; L! I! T, L? V. q? k. Z, E. K' x, O; n! Y, r. x! e! M; S; J' p' Y! N. T? i, M. u? c? x! u? P. y, P? f? S. T; V; l, y. J. s; T? Q! q; l; u; W, Z. V. h? X. w. V, n. O' s; u; j? Z' Q? g! x, I, i, r' y?";
+    banned = {"y","t","j","a","s","o","b","c","d","x","q","z","l","k","w","v","r","f","u","g"};
+    cout << mostCommonWord::mostCommonWord(paragraph, banned) << endl;
+}
+
+namespace minimumLengthEncoding {
+    int minimumLengthEncoding(vector<string>& words) {
+
+    }
+}
+
+void minimumLengthEncoding_test(){
+
+}
 
 int main() {
-    racecar_test();
+    minimumLengthEncoding_test();
     {
+    //mostCommonWord_test();
+
+    //racecar_test();
+
         //numComponents_test();
 
         //ambiguousCoordinates_test();
