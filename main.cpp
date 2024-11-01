@@ -8578,6 +8578,7 @@ namespace racecar {
     const int MAXN = 10001;
     const int MAXS = 14;
     int cnt[MAXN][MAXS];
+
     int dfs(int s, int dist) {
         if (dist == 0) {
             return 0;
@@ -8595,6 +8596,7 @@ namespace racecar {
         }
         return cnt[dist][s] = ans;
     }
+
     int racecar(int target) {
         return dfs(0, target);
     }
@@ -8611,10 +8613,11 @@ void racecar_test() {
 };
 
 #include<regex>
+
 namespace mostCommonWord {
-    string mostCommonWord(string paragraph, vector<string>& banned) {
+    string mostCommonWord(string paragraph, vector<string> &banned) {
         unordered_set<string> bannedSet;
-        for (auto & word : banned) {
+        for (auto &word : banned) {
             bannedSet.emplace(word);
         }
         int maxFrequency = 0;
@@ -8633,7 +8636,7 @@ namespace mostCommonWord {
             }
         }
         string mostCommon = "";
-        for (auto &[word , frequency] : frequencies) {
+        for (auto &[word, frequency] : frequencies) {
             if (frequency == maxFrequency) {
                 mostCommon = word;
                 break;
@@ -8643,51 +8646,122 @@ namespace mostCommonWord {
     }
 }
 
-void mostCommonWord_test(){
+void mostCommonWord_test() {
     string paragraph;
-    vector<string>banned;
+    vector<string> banned;
     paragraph = "Bob hit a ball, the hit BALL flew far after it was hit.";
     banned = {"hit"};
     cout << mostCommonWord::mostCommonWord(paragraph, banned) << endl;
-    paragraph ="a.";
+    paragraph = "a.";
     banned = {};
     cout << mostCommonWord::mostCommonWord(paragraph, banned) << endl;
     paragraph = "W. y; v? R! n? w, U! T; V? z, M! O. z, h; s' t' t? L? G; P, o? I; k? q. Y! x, t; f! m! Y. H' W. a, Q. d! w; s; r. X; H' S? t? V; X! Z, k; j; R? v, v! H, p; Z; m! v! M; S. D; Q? P, Z. w! t? m' Y' R. c? U' z! r' T; q. J; Z? z! n? X? M; T! N, K! s? v. T? Y. e; S. q; u! V? j? O; P. U, L. m, w. w, U? o, u, z? P? P! p, I. G. x; j, I; u. q. W? S. O' N, O; F! z? s, e' W, w! y. Y' t; c; n! Z! Z; n; u! m' f, z! U! V! n' t; p? V! W; y' R; z! k, y? U; x, U; w? J; x? T; h. D. R; k; m. X' n; w' s; F! x. e! x; x; n; z. R, V, r, N' P; t; w! r? O. P. W; z; W? p. v; k; r; U; v; P. S! V; U? b' g? x, q; r! P? J' o? o. j' v; y, q, I' Y, M' i; b? l; q? W' W' f, S? s! K; G? O! m? Q. X' h. S' t! Y? Z, n. Y? V; z. r. U! R? Y! o; u, L! Z, w, d; x. z; R, o. q! y; x! l? l. S' T; R' t' y? u! V' Y; w, Z? U! k. Q? x! x; L! I! T, L? V. q? k. Z, E. K' x, O; n! Y, r. x! e! M; S; J' p' Y! N. T? i, M. u? c? x! u? P. y, P? f? S. T; V; l, y. J. s; T? Q! q; l; u; W, Z. V. h? X. w. V, n. O' s; u; j? Z' Q? g! x, I, i, r' y?";
-    banned = {"y","t","j","a","s","o","b","c","d","x","q","z","l","k","w","v","r","f","u","g"};
+    banned = {"y", "t", "j", "a", "s", "o", "b", "c", "d", "x", "q", "z", "l", "k", "w", "v", "r", "f", "u", "g"};
     cout << mostCommonWord::mostCommonWord(paragraph, banned) << endl;
 }
 
 namespace minimumLengthEncoding {
-    int minimumLengthEncoding(vector<string>& words) {
+    int minimumLengthEncoding(vector<string> &words) {
         unordered_set<string> good(words.begin(), words.end());
-        for (const string& word: words) {
+        for (const string &word: words) {
             for (int k = 1; k < word.size(); ++k) {
                 good.erase(word.substr(k));
             }
         }
 
         int ans = 0;
-        for (const string& word: good) {
+        for (const string &word: good) {
             ans += word.size() + 1;
         }
         return ans;
     }
 }
 
-void minimumLengthEncoding_test(){
-    vector<string>words;
+void minimumLengthEncoding_test() {
+    vector<string> words;
     words = {"time", "me", "bell"};
     cout << minimumLengthEncoding::minimumLengthEncoding(words) << endl;
     words = {"t"};
     cout << minimumLengthEncoding::minimumLengthEncoding(words) << endl;
 }
 
-int main() {
-    minimumLengthEncoding_test();
-    {
-    //mostCommonWord_test();
+namespace shortestToChar {
+    vector<int> shortestToChar(string s, char c) {
+        int n = s.length();
+        vector<int>ans(n);
+        for (int i = 0, idx = -n; i < n; ++i) {
+            if (s[i] == c) {
+                idx = i;
+            }
+            ans[i] = i - idx;
+        }
+        for (int i = n - 1, idx = 2 * n; i >= 0; --i) {
+            if (s[i] == c) {
+                idx = i;
+            }
+            ans[i] = min(ans[i], idx - i);
+        }
+        return ans;
+    }
+}
 
-    //racecar_test();
+void shortestToChar_test(){
+    string s;
+    char c;
+    vector<int>ans;
+    s = "loveleetcode";
+    c = 'e';
+    ans = shortestToChar::shortestToChar(s, c);
+    print_vector(ans);
+    s = "aaab";
+    c = 'b';
+    ans = shortestToChar::shortestToChar(s, c);
+    print_vector(ans);
+}
+
+namespace flipgame{
+    int flipgame(vector<int>& fronts, vector<int>& backs) {
+        int res = 3000, n = fronts.size();
+        unordered_set<int> same;
+        for (int i = 0; i < n; ++i) {
+            if (fronts[i] == backs[i]) {
+                same.insert(fronts[i]);
+            }
+        }
+        for (int &x : fronts) {
+            if (x < res && same.count(x) == 0) {
+                res = x;
+            }
+        }
+        for (int &x : backs) {
+            if (x < res && same.count(x) == 0) {
+                res = x;
+            }
+        }
+        return res % 3000;
+    }
+}
+
+void flipgame_test(){
+    vector<int>fronts, backs;
+    fronts = {1,2,4,4,7};
+    backs = {1,3,4,1,3};
+    cout << flipgame::flipgame(fronts, backs) << endl;
+    fronts = {1};
+    backs = {1};
+    cout << flipgame::flipgame(fronts, backs) << endl;
+}
+
+int main() {
+    flipgame_test();
+    {
+    //shortestToChar_test();
+
+    //minimumLengthEncoding_test();
+
+        //mostCommonWord_test();
+
+        //racecar_test();
 
         //numComponents_test();
 
