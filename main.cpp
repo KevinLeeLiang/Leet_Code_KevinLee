@@ -8688,7 +8688,7 @@ void minimumLengthEncoding_test() {
 namespace shortestToChar {
     vector<int> shortestToChar(string s, char c) {
         int n = s.length();
-        vector<int>ans(n);
+        vector<int> ans(n);
         for (int i = 0, idx = -n; i < n; ++i) {
             if (s[i] == c) {
                 idx = i;
@@ -8705,10 +8705,10 @@ namespace shortestToChar {
     }
 }
 
-void shortestToChar_test(){
+void shortestToChar_test() {
     string s;
     char c;
-    vector<int>ans;
+    vector<int> ans;
     s = "loveleetcode";
     c = 'e';
     ans = shortestToChar::shortestToChar(s, c);
@@ -8719,8 +8719,8 @@ void shortestToChar_test(){
     print_vector(ans);
 }
 
-namespace flipgame{
-    int flipgame(vector<int>& fronts, vector<int>& backs) {
+namespace flipgame {
+    int flipgame(vector<int> &fronts, vector<int> &backs) {
         int res = 3000, n = fronts.size();
         unordered_set<int> same;
         for (int i = 0; i < n; ++i) {
@@ -8742,22 +8742,89 @@ namespace flipgame{
     }
 }
 
-void flipgame_test(){
-    vector<int>fronts, backs;
-    fronts = {1,2,4,4,7};
-    backs = {1,3,4,1,3};
+void flipgame_test() {
+    vector<int> fronts, backs;
+    fronts = {1, 2, 4, 4, 7};
+    backs = {1, 3, 4, 1, 3};
     cout << flipgame::flipgame(fronts, backs) << endl;
     fronts = {1};
     backs = {1};
     cout << flipgame::flipgame(fronts, backs) << endl;
 }
 
-int main() {
-    flipgame_test();
-    {
-    //shortestToChar_test();
+namespace numFriendRequests {
+    int numFriendRequests(vector<int> &ages) {
+        int n = ages.size();
+        sort(ages.begin(), ages.end());
+        int left = 0, right = 0, ans = 0;
+        for (int age : ages) {
+            if (age < 15) {
+                continue;
+            }
+            while (ages[left] <= 0.5 * age + 7) {
+                ++left;
+            }
+            while (right + 1 < n && ages[right + 1] <= age) {
+                ++right;
+            }
+            ans += right - left;
+        }
+        return ans;
+    }
+}
 
-    //minimumLengthEncoding_test();
+void numFriendRequests_test() {
+    vector<int> ages;
+    ages = {16, 16};
+    cout << numFriendRequests::numFriendRequests(ages) << endl;
+    ages = {16, 17, 18};
+    cout << numFriendRequests::numFriendRequests(ages) << endl;
+    ages = {20, 30, 100, 110, 120};
+    cout << numFriendRequests::numFriendRequests(ages) << endl;
+}
+
+namespace maxProfitAssignment {
+    int maxProfitAssignment(vector<int> &difficulty, vector<int> &profit, vector<int> &worker) {
+        vector<pair<int, int>> jobs;
+        int n = profit.size(), res = 0, i = 0, best = 0;
+        for (int j = 0; j < n; ++j) {
+            jobs.emplace_back(difficulty[j], profit[j]);
+        }
+        sort(jobs.begin(), jobs.end());
+        sort(worker.begin(), worker.end());
+        for (int w : worker) {
+            while (i < n && w >= jobs[i].first) {
+                best = max(best, jobs[i].second);
+                i++;
+            }
+            res += best;
+        }
+        return res;
+    }
+}
+
+void maxProfitAssignment_test() {
+    vector<int> difficulty, profit, worker;
+    difficulty = {2, 4, 6, 8, 10};
+    profit = {10, 20, 30, 40, 50};
+    worker = {4, 5, 6, 7};
+    cout << maxProfitAssignment::maxProfitAssignment(difficulty, profit, worker) << endl;
+    difficulty = {85, 47, 57};
+    profit = {24, 66, 99};
+    worker = {40, 25, 25};
+    cout << maxProfitAssignment::maxProfitAssignment(difficulty, profit, worker) << endl;
+}
+
+int main() {
+    maxProfitAssignment_test();
+    {
+        //numFriendRequests_test();
+
+        //flipgame_test();
+
+        //shortestToChar_test();
+
+        //minimumLengthEncoding_test();
 
         //mostCommonWord_test();
 
