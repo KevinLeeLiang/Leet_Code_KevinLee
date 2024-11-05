@@ -8815,9 +8815,184 @@ void maxProfitAssignment_test() {
     cout << maxProfitAssignment::maxProfitAssignment(difficulty, profit, worker) << endl;
 }
 
+namespace largestIsland {
+    const vector<int> d = {0, -1, 0, 1, 0};
+
+    bool valid(int n, int x, int y) {
+        return x >= 0 && x < n && y >= 0 && y < n;
+    }
+
+    int dfs(const vector<vector<int>> &grid, int x, int y, vector<vector<int>> &tag, int t) {
+        int n = grid.size(), res = 1;
+        tag[x][y] = t;
+        for (int i = 0; i < 4; i++) {
+            int x1 = x + d[i], y1 = y + d[i + 1];
+            if (valid(n, x1, y1) && grid[x1][y1] == 1 && tag[x1][y1] == 0) {
+                res += dfs(grid, x1, y1, tag, t);
+            }
+        }
+        return res;
+    }
+
+    int largestIsland(vector<vector<int>> &grid) {
+        int n = grid.size(), res = 0;
+        vector<vector<int>> tag(n, vector<int>(n));
+        unordered_map<int, int> area;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 1 && tag[i][j] == 0) {
+                    int t = i * n + j + 1;
+                    area[t] = dfs(grid, i, j, tag, t);
+                    res = max(res, area[t]);
+                }
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 0) {
+                    int z = 1;
+                    unordered_set<int> connected;
+                    for (int k = 0; k < 4; k++) {
+                        int x = i + d[k], y = j + d[k + 1];
+                        if (!valid(n, x, y) || tag[x][y] == 0 || connected.count(tag[x][y]) > 0) {
+                            continue;
+                        }
+                        z += area[tag[x][y]];
+                        connected.insert(tag[x][y]);
+                    }
+                    res = max(res, z);
+                }
+            }
+        }
+        return res;
+    }
+}
+
+void largestIsland_test() {
+    vector<vector<int>> grid;
+    grid = {{1, 0},
+            {0, 1}};
+    cout << largestIsland::largestIsland(grid) << endl;
+    grid = {{1, 1},
+            {1, 1}};
+    cout << largestIsland::largestIsland(grid) << endl;
+    grid = {{1, 1},
+            {1, 1}};
+    cout << largestIsland::largestIsland(grid) << endl;
+}
+
+namespace uniqueLetterString {
+    int uniqueLetterString(string s) {
+        unordered_map<char, vector<int>> index;
+        for (int i = 0; i < s.size(); ++i) {
+            index[s[i]].emplace_back(i);
+        }
+        int res = 0;
+        for (auto &&[_, arr]: index) {
+            arr.insert(arr.begin(), -1);
+            arr.emplace_back(s.size());
+            for (int i = 1; i < arr.size() - 1; i++) {
+                res += (arr[i] - arr[i - 1]) * (arr[i + 1] - arr[i]);
+            }
+        }
+        return res;
+    }
+}
+
+void uniqueLetterString_test() {
+    string s;
+    s = "ABC";
+    cout << uniqueLetterString::uniqueLetterString(s) << endl;
+    s = "ABA";
+    cout << uniqueLetterString::uniqueLetterString(s) << endl;
+    s = "LEETCODE";
+    cout << uniqueLetterString::uniqueLetterString(s) << endl;
+}
+
+namespace consecutiveNumbersSum {
+    bool isKConsecutive(int n, int k) {
+        if (k % 2 == 1) {
+            return n % k == 0;
+        } else {
+            return n % k != 0 && 2 * n % k == 0;
+        }
+    }
+
+    int consecutiveNumbersSum(int n) {
+        int ans = 0;
+        int bound = 2 * n;
+        for (int k = 1; k * (k + 1) <= bound; ++k) {
+            if (isKConsecutive(n, k)) {
+                ans++;
+            }
+        }
+        return ans;
+    }
+}
+
+void consecutiveNumbersSum_test() {
+    int n;
+    n = 5;
+    cout << consecutiveNumbersSum::consecutiveNumbersSum(n) << endl;
+    n = 9;
+    cout << consecutiveNumbersSum::consecutiveNumbersSum(n) << endl;
+}
+
+namespace largeGroupPositions {
+    vector<vector<int>> largeGroupPositions(string s) {
+        vector<vector<int>>ans;
+        int n = s.size();
+        int num = 1;
+        for (int i = 0; i < n; ++i) {
+            if (i == n || s[i] != s[i + 1]) {
+                if (num >= 3) {
+                    ans.push_back({i - num + 1, i});
+                }
+                num = 1;
+            } else {
+                num++;
+            }
+        }
+        return ans;
+    }
+}
+
+void largeGroupPositions_test() {
+    string s;
+    vector<vector<int>> ans;
+    s = "abbxxxxzzy";
+    ans = largeGroupPositions::largeGroupPositions(s);
+    for (auto list : ans)
+        print_vector(list);
+    cout << "++++++++++" << endl;
+    s = "abc";
+    ans = largeGroupPositions::largeGroupPositions(s);
+    for (auto list : ans)
+        print_vector(list);
+    cout << "++++++++++" << endl;
+    s = "abcdddeeeeaabbbcd";
+    ans = largeGroupPositions::largeGroupPositions(s);
+    for (auto list : ans)
+        print_vector(list);
+    cout << "++++++++++" << endl;
+    s = "aba";
+    ans = largeGroupPositions::largeGroupPositions(s);
+    for (auto list : ans)
+        print_vector(list);
+    cout << "++++++++++" << endl;
+}
+
 int main() {
-    maxProfitAssignment_test();
+    largeGroupPositions_test();
     {
+        //consecutiveNumbersSum_test();
+
+        //uniqueLetterString_test();
+
+        //largestIsland_test();
+
+        //maxProfitAssignment_test();
+
         //numFriendRequests_test();
 
         //flipgame_test();
