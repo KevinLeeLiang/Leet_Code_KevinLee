@@ -8940,7 +8940,7 @@ void consecutiveNumbersSum_test() {
 
 namespace largeGroupPositions {
     vector<vector<int>> largeGroupPositions(string s) {
-        vector<vector<int>>ans;
+        vector<vector<int>> ans;
         int n = s.size();
         int num = 1;
         for (int i = 0; i < n; ++i) {
@@ -8982,9 +8982,80 @@ void largeGroupPositions_test() {
     cout << "++++++++++" << endl;
 }
 
+namespace maskPII {
+    vector<string> country = {"", "+*-", "+**-", "+***-"};
+
+    string maskPII(string s) {
+        string res;
+        int at = s.find("@");
+        if (at != string::npos) {
+            transform(s.begin(), s.end(), s.begin(), ::tolower);
+            return s.substr(0, 1) + "*****" + s.substr(at - 1);
+        }
+        s = regex_replace(s, regex("[^0-9]"), "");
+        return country[s.size() - 10] + "***-***-" + s.substr(s.size() - 4);
+    }
+}
+
+void maskPII_test() {
+    string s;
+    s = "LeetCode@LeetCode.com";
+    cout << maskPII::maskPII(s) << endl;
+    s = "AB@qq.com";
+    cout << maskPII::maskPII(s) << endl;
+    s = "1(234)567-890";
+    cout << maskPII::maskPII(s) << endl;
+}
+
+namespace flipAndInvertImage {
+    vector<vector<int>> flipAndInvertImage(vector<vector<int>> &image) {
+        int n = image.size();
+        for (int i = 0; i < n; i++) {
+            int left = 0, right = n - 1;
+            while (left < right) {
+                if (image[i][left] == image[i][right]) {
+                    image[i][left] ^= 1;
+                    image[i][right] ^= 1;
+                }
+                left++;
+                right--;
+            }
+            if (left == right) {
+                image[i][left] ^= 1;
+            }
+        }
+        return image;
+    }
+}
+
+void flipAndInvertImage_test() {
+    vector<vector<int>> image, ans;
+    image = {{1, 1, 0},
+             {1, 0, 1},
+             {0, 0, 0}};
+    ans = flipAndInvertImage::flipAndInvertImage(image);
+    for (auto row : ans) {
+        print_vector(row);
+    }
+    cout << "+++++++++++++" << endl;
+    image = {{1, 1, 0, 0},
+             {1, 0, 0, 1},
+             {0, 1, 1, 1},
+             {1, 0, 1, 0}};
+    ans = flipAndInvertImage::flipAndInvertImage(image);
+    for (auto row : ans) {
+        print_vector(row);
+    }
+    cout << "+++++++++++++" << endl;
+}
+
 int main() {
-    largeGroupPositions_test();
+    flipAndInvertImage_test();
     {
+        //maskPII_test();
+
+        //largeGroupPositions_test();
+
         //consecutiveNumbersSum_test();
 
         //uniqueLetterString_test();
