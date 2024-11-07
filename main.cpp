@@ -9049,9 +9049,135 @@ void flipAndInvertImage_test() {
     cout << "+++++++++++++" << endl;
 }
 
+namespace findReplaceString {
+    string findReplaceString(string s, vector<int> &indices, vector<string> &sources, vector<string> &targets) {
+        int n = s.size();
+        int m = indices.size();
+        vector<int> ops(m);
+        iota(ops.begin(), ops.end(), 0);
+        sort(ops.begin(), ops.end(), [&](int i, int j) {
+            return indices[i] < indices[j];
+        });
+        string ans;
+        int pt = 0;
+        for (int i = 0; i < n;) {
+            while (pt < m && indices[ops[pt]] < i) {
+                ++pt;
+            }
+            bool succeed = false;
+            while (pt < m && indices[ops[pt]] == i) {
+                if (s.substr(i, sources[ops[pt]].size()) == sources[ops[pt]]) {
+                    succeed = true;
+                    break;
+                }
+                ++pt;
+            }
+            if (succeed) {
+                ans += targets[ops[pt]];
+                i += sources[ops[pt]].size();
+            } else {
+                ans += s[i];
+                ++i;
+            }
+        }
+        return ans;
+    }
+}
+
+void findReplaceString_test() {
+    string s;
+    vector<int> indices;
+    vector<string> sources;
+    vector<string> targets;
+    s = "abcd";
+    indices = {0, 2};
+    sources = {"a", "cd"};
+    targets = {"eee", "fff"};
+    cout << findReplaceString::findReplaceString(s, indices, sources, targets) << endl;
+    cout << "++++++++++" << endl;
+    s = "abcd";
+    indices = {0, 2};
+    sources = {"ab", "ec"};
+    targets = {"eee", "ffff"};
+    cout << findReplaceString::findReplaceString(s, indices, sources, targets) << endl;
+    cout << "++++++++++" << endl;
+}
+
+namespace sumOfDistancesInTree {
+    vector<int> ans, sz, dp;
+    vector<vector<int>> graph;
+
+    void dfs(int u, int f) {
+        sz[u] = 1;
+        dp[u] = 0;
+        for (auto& v: graph[u]) {
+            if (v == f) {
+                continue;
+            }
+            dfs(v, u);
+            dp[u] += dp[v] + sz[v];
+            sz[u] += sz[v];
+        }
+    }
+
+    void dfs2(int u, int f) {
+        ans[u] = dp[u];
+        for (auto& v: graph[u]) {
+            if (v == f) {
+                continue;
+            }
+            int pu = dp[u], pv = dp[v];
+            int su = sz[u], sv = sz[v];
+
+            dp[u] -= dp[v] + sz[v];
+            sz[u] -= sz[v];
+            dp[v] += dp[u] + sz[u];
+            sz[v] += sz[u];
+
+            dfs2(v, u);
+
+            dp[u] = pu, dp[v] = pv;
+            sz[u] = su, sz[v] = sv;
+        }
+    }
+
+    vector<int> sumOfDistancesInTree(int n, vector<vector<int>> &edges) {
+        ans.resize(n, 0);
+        sz.resize(n, 0);
+        dp.resize(n, 0);
+        graph.resize(n, {});
+        for (auto& edge: edges) {
+            int u = edge[0], v = edge[1];
+            graph[u].emplace_back(v);
+            graph[v].emplace_back(u);
+        }
+        dfs(0, -1);
+        dfs2(0, -1);
+        return ans;
+
+    }
+}
+
+void sumOfDistancesInTree_test() {
+    int n = 6;
+    vector<vector<int>> edges;
+    vector<int>ans;
+    edges = {{0, 1},
+             {0, 2},
+             {2, 3},
+             {2, 4},
+             {2, 5}};
+    ans = sumOfDistancesInTree::sumOfDistancesInTree(n, edges);
+    print_vector(ans);
+}
+
 int main() {
-    flipAndInvertImage_test();
+    sumOfDistancesInTree_test();
     {
+        //findReplaceString_test();
+
+        //flipAndInvertImage_test();
+
         //maskPII_test();
 
         //largeGroupPositions_test();
