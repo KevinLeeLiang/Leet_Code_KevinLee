@@ -9110,7 +9110,7 @@ namespace sumOfDistancesInTree {
     void dfs(int u, int f) {
         sz[u] = 1;
         dp[u] = 0;
-        for (auto& v: graph[u]) {
+        for (auto &v: graph[u]) {
             if (v == f) {
                 continue;
             }
@@ -9122,7 +9122,7 @@ namespace sumOfDistancesInTree {
 
     void dfs2(int u, int f) {
         ans[u] = dp[u];
-        for (auto& v: graph[u]) {
+        for (auto &v: graph[u]) {
             if (v == f) {
                 continue;
             }
@@ -9146,7 +9146,7 @@ namespace sumOfDistancesInTree {
         sz.resize(n, 0);
         dp.resize(n, 0);
         graph.resize(n, {});
-        for (auto& edge: edges) {
+        for (auto &edge: edges) {
             int u = edge[0], v = edge[1];
             graph[u].emplace_back(v);
             graph[v].emplace_back(u);
@@ -9161,7 +9161,7 @@ namespace sumOfDistancesInTree {
 void sumOfDistancesInTree_test() {
     int n = 6;
     vector<vector<int>> edges;
-    vector<int>ans;
+    vector<int> ans;
     edges = {{0, 1},
              {0, 2},
              {2, 3},
@@ -9171,9 +9171,106 @@ void sumOfDistancesInTree_test() {
     print_vector(ans);
 }
 
+namespace numSimilarGroups {
+    vector<int> f;
+
+    int find(int &x) {
+        return f[x] == x ? x : f[x] = find(f[x]);
+    }
+
+    bool check(string &s1, string &s2, int length) {
+        int num = 0;
+        for (int i = 0; i < length; ++i) {
+            if (s1[i] != s2[i]) {
+                num++;
+            }
+            if (num > 2) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    int numSimilarGroups(vector<string> &strs) {
+        int n = strs.size();
+        int m = strs[0].length();
+        f.resize(n);
+        for (int i = 0; i < n; ++i) {
+            f[i] = i;
+        }
+        for (int i = 0; i < n; ++i) {
+            for (int j = i + 1; j < n; ++j) {
+                int fi = find(i), fj = find(j);
+                if (fi == fj) {
+                    continue;
+                }
+                if (check(strs[i], strs[j], m)) {
+                    f[fi] = fj;
+                }
+            }
+        }
+        int ret = 0;
+        for (int i = 0; i < n; ++i) {
+            if (f[i] == i) {
+                ret++;
+            }
+        }
+        return ret;
+    }
+}
+
+void numSimilarGroups_test() {
+    vector<string> strs;
+    strs = {"tars", "rats", "arts", "star"};
+    cout << numSimilarGroups::numSimilarGroups(strs) << endl;
+    strs = {"omv", "ovm"};
+    cout << numSimilarGroups::numSimilarGroups(strs) << endl;
+}
+
+namespace numMagicSquaresInside {
+    vector<int> m = {8, 1, 6, 7, 2, 9, 4, 3, 8, 1, 6, 7, 2, 9, 4, 3};
+
+    bool IsMagic(vector<int> &v) {
+        for (int i = 0; i < 8; i += 2)
+            if (m[i] == v[0])
+                return v == vector<int>(m.begin() + i, m.begin() + i + 8)
+                       || v == vector<int>(m.rbegin() + 7 - i, m.rbegin() + 15 - i);
+        return false;//奇数元素
+    }
+
+    int numMagicSquaresInside(vector<vector<int>> &grid) {
+        int di[8] = {-1, -1, -1, 0, 1, 1, 1, 0};
+        int dj[8] = {-1, 0, 1, 1, 1, 0, -1, -1};
+        int count = 0;
+        for (int i = 1; i < grid.size() - 1; i++)
+            for (int j = 1; j < grid[0].size() - 1; j++)
+                if (grid[i][j] == 5) {
+                    vector<int> around;
+                    for (int k = 0; k < 8; k++)
+                        around.push_back(grid[i + di[k]][j + dj[k]]);
+                    count += IsMagic(around);
+                }
+        return count;
+    }
+}
+
+void numMagicSquaresInside_test() {
+    vector<vector<int>> grid;
+    grid = {{4, 3, 8, 4},
+            {9, 5, 1, 9},
+            {2, 7, 6, 2}};
+    cout << numMagicSquaresInside::numMagicSquaresInside(grid) << endl;
+    grid = {{8}};
+    cout << numMagicSquaresInside::numMagicSquaresInside(grid) << endl;
+}
+
 int main() {
-    sumOfDistancesInTree_test();
+    numMagicSquaresInside_test();
     {
+        //numSimilarGroups_test();
+
+        //sumOfDistancesInTree_test();
+
         //findReplaceString_test();
 
         //flipAndInvertImage_test();
