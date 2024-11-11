@@ -9264,9 +9264,46 @@ void numMagicSquaresInside_test() {
     cout << numMagicSquaresInside::numMagicSquaresInside(grid) << endl;
 }
 
+namespace canVisitAllRooms {
+    vector<int>vis;
+    int num;
+    void dfs(vector<vector<int>>&rooms, int x) {
+        vis[x] = true;
+        num++;
+        for (auto &it : rooms[x]) {
+            if (!vis[it]) {
+                dfs(rooms, it);
+            }
+        }
+    }
+    bool canVisitAllRooms(vector<vector<int>> &rooms) {
+        int n = rooms.size();
+        num = 0;
+        vis.resize(n);
+        dfs(rooms, 0);
+        return num == n;
+    }
+}
+
+void canVisitAllRooms_test() {
+    vector<vector<int>> rooms;
+    rooms = {{1},
+             {2},
+             {3},
+             {}};
+    cout << canVisitAllRooms::canVisitAllRooms(rooms) << endl;
+    rooms = {{1, 3},
+             {3, 0, 1},
+             {2},
+             {0}};
+    cout << canVisitAllRooms::canVisitAllRooms(rooms) << endl;
+}
+
 int main() {
-    numMagicSquaresInside_test();
+    canVisitAllRooms_test();
     {
+        //numMagicSquaresInside_test();
+
         //numSimilarGroups_test();
 
         //sumOfDistancesInTree_test();
