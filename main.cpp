@@ -9299,9 +9299,60 @@ void canVisitAllRooms_test() {
     cout << canVisitAllRooms::canVisitAllRooms(rooms) << endl;
 }
 
+namespace backspaceCompare {
+    bool backspaceCompare(string s, string t) {
+        stack<char>stks, stkt;
+        for (auto c : s) {
+            if (c == '#') {
+                if (stks.empty()) {
+                    continue;
+                }
+                stks.pop();
+            } else {
+                stks.push(c);
+            }
+        }
+        for (auto c : t) {
+            if (c == '#') {
+                if (stkt.empty()) {
+                    continue;
+                }
+                stkt.pop();
+            } else {
+                stkt.push(c);
+            }
+        }
+        while (!stks.empty() && !stkt.empty()) {
+            auto cs = stks.top();
+            auto ct = stkt.top();
+            stks.pop();
+            stkt.pop();
+            if (cs != ct) {
+                return false;
+            }
+        }
+        return stks.empty() && stkt.empty() ? true : false;
+    }
+}
+
+void backspaceCompare_test() {
+    string s, t;
+    s = "ab#c";
+    t = "ad#c";
+    cout << backspaceCompare::backspaceCompare(s, t) << endl;
+    s = "ab##";
+    t = "c#d#";
+    cout << backspaceCompare::backspaceCompare(s, t) << endl;
+    s = "a#c";
+    t = "b";
+    cout << backspaceCompare::backspaceCompare(s, t) << endl;
+}
+
 int main() {
-    canVisitAllRooms_test();
+    backspaceCompare_test();
     {
+    //canVisitAllRooms_test();
+
         //numMagicSquaresInside_test();
 
         //numSimilarGroups_test();
