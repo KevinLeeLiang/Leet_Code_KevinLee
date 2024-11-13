@@ -9265,9 +9265,10 @@ void numMagicSquaresInside_test() {
 }
 
 namespace canVisitAllRooms {
-    vector<int>vis;
+    vector<int> vis;
     int num;
-    void dfs(vector<vector<int>>&rooms, int x) {
+
+    void dfs(vector<vector<int>> &rooms, int x) {
         vis[x] = true;
         num++;
         for (auto &it : rooms[x]) {
@@ -9276,6 +9277,7 @@ namespace canVisitAllRooms {
             }
         }
     }
+
     bool canVisitAllRooms(vector<vector<int>> &rooms) {
         int n = rooms.size();
         num = 0;
@@ -9301,7 +9303,7 @@ void canVisitAllRooms_test() {
 
 namespace backspaceCompare {
     bool backspaceCompare(string s, string t) {
-        stack<char>stks, stkt;
+        stack<char> stks, stkt;
         for (auto c : s) {
             if (c == '#') {
                 if (stks.empty()) {
@@ -9348,10 +9350,86 @@ void backspaceCompare_test() {
     cout << backspaceCompare::backspaceCompare(s, t) << endl;
 }
 
+namespace longestMountain {
+    int longestMountain(vector<int> &arr) {
+        int n = arr.size();
+        if (n == 0) {
+            return 0;
+        }
+        vector<int> left(n), right(n);
+        for (int i = 1; i < n; ++i) {
+            left[i] = (arr[i - 1] < arr[i] ? left[i - 1] + 1 : 0);
+        }
+        for (int i = n - 2; i >= 0; --i) {
+            right[i] = (arr[i + 1] < arr[i] ? right[i + 1] + 1 : 0);
+        }
+        int ans = 0;
+        for (int i = 0; i < n; ++i) {
+            if (left[i] > 0 && right[i] > 0) {
+                ans = max(ans, left[i] + right[i] + 1);
+            }
+        }
+        return ans;
+    }
+}
+
+void longestMountain_test() {
+    vector<int> arr;
+    arr = {2, 1, 4, 7, 3, 2, 5};
+    cout << longestMountain::longestMountain(arr) << endl;
+    arr = {2, 2, 2};
+    cout << longestMountain::longestMountain(arr) << endl;
+}
+
+namespace isNStraightHand {
+    bool isNStraightHand(vector<int> &hand, int groupSize) {
+        int n = hand.size();
+        if (n % groupSize != 0) {
+            return false;
+        }
+        sort(hand.begin(), hand.end());
+        unordered_map<int, int> cnt;
+        for (auto & num : hand) {
+            cnt[num]++;
+        }
+        for (auto & x : hand) {
+            if (!cnt.count(x)) {
+                continue;
+            }
+            for (int j = 0; j < groupSize; j++) {
+                int num = x + j;
+                if (!cnt.count(num)) {
+                    return false;
+                }
+                cnt[num]--;
+                if (cnt[num] == 0) {
+                    cnt.erase(num);
+                }
+            }
+        }
+        return true;
+    }
+}
+
+void isNStraightHand_test() {
+    vector<int> hand;
+    int group_size;
+    hand = {1, 2, 3, 6, 2, 3, 4, 7, 8};
+    group_size = 3;
+    cout << isNStraightHand::isNStraightHand(hand, group_size) << endl;
+    hand = {1, 2, 3, 4, 5};
+    group_size = 4;
+    cout << isNStraightHand::isNStraightHand(hand, group_size) << endl;
+}
+
 int main() {
-    backspaceCompare_test();
+    isNStraightHand_test();
     {
-    //canVisitAllRooms_test();
+        //longestMountain_test();
+
+        //backspaceCompare_test();
+
+        //canVisitAllRooms_test();
 
         //numMagicSquaresInside_test();
 
