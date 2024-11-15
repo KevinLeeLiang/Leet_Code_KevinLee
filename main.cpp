@@ -9485,7 +9485,7 @@ namespace maxDistToClosest {
             if (r == seats.size()) {
                 res = max(res, r - l - 1);
             } else {
-                 res = max(res, (r - l) / 2);
+                res = max(res, (r - l) / 2);
             }
             l = r;
         }
@@ -9506,18 +9506,18 @@ void maxDistToClosest_test() {
 }
 
 namespace rectangleArea {
-    int rectangleArea(vector<vector<int>>& rectangles) {
+    int rectangleArea(vector<vector<int>> &rectangles) {
         int n = rectangles.size();
-        vector<int>hbound;
-        for (const auto&rect : rectangles) {
+        vector<int> hbound;
+        for (const auto &rect : rectangles) {
             hbound.push_back(rect[1]);
             hbound.push_back(rect[3]);
         }
         sort(hbound.begin(), hbound.end());
         hbound.erase(unique(hbound.begin(), hbound.end()), hbound.end());
         int m = hbound.size();
-        vector<int>seg(m - 1);
-        vector<tuple<int, int, int>>sweep;
+        vector<int> seg(m - 1);
+        vector<tuple<int, int, int>> sweep;
         for (int i = 0; i < n; ++i) {
             // 左边界
             sweep.emplace_back(rectangles[i][0], i, 1);
@@ -9537,7 +9537,7 @@ namespace rectangleArea {
             }
             // 一次性地处理掉一批横坐标相同的左右边界
             for (int k = i; k <= j; ++k) {
-                auto&& [_, idx, diff] = sweep[k];
+                auto&&[_, idx, diff] = sweep[k];
                 int left = rectangles[idx][1], right = rectangles[idx][3];
                 for (int x = 0; x < m - 1; ++x) {
                     if (left <= hbound[x] && hbound[x + 1] <= right) {
@@ -9559,16 +9559,96 @@ namespace rectangleArea {
 }
 
 void rectangleArea_test() {
-    vector<vector<int>>rectangles;
-    rectangles = {{0,0,2,2},{1,0,2,3},{1,0,3,1}};
+    vector<vector<int>> rectangles;
+    rectangles = {{0, 0, 2, 2},
+                  {1, 0, 2, 3},
+                  {1, 0, 3, 1}};
     cout << rectangleArea::rectangleArea(rectangles) << endl;
-    rectangles = {{0,0,1000000000,1000000000}};
+    rectangles = {{0, 0, 1000000000, 1000000000}};
     cout << rectangleArea::rectangleArea(rectangles) << endl;
 }
 
+namespace loudAndRich {
+    vector<int> loudAndRich(vector<vector<int>> &richer, vector<int> &quiet) {
+        int n = quiet.size();
+        vector<vector<int>> g(n);
+        for (auto &r : richer) {
+            g[r[1]].emplace_back(r[0]);
+        }
+        vector<int> ans(n, -1);
+        function<void(int)> dfs = [&](int x) {
+            if (ans[x] != -1) {
+                return;
+            }
+            ans[x] = x;
+            for (int y : g[x]) {
+                dfs(y);
+                if (quiet[ans[y]] < quiet[ans[x]]) {
+                    ans[x] = ans[y];
+                }
+            }
+        };
+        for (int i = 0; i < n; ++i) {
+            dfs(i);
+        }
+        return ans;
+    }
+}
+
+void loudAndRich_test() {
+    vector<vector<int>> richer;
+    vector<int> quiet;
+    richer = {{1, 0},
+              {2, 1},
+              {3, 1},
+              {3, 7},
+              {4, 3},
+              {5, 3},
+              {6, 3}};
+    quiet = {3, 2, 5, 4, 6, 1, 7, 0};
+    vector<int> ans;
+    ans = loudAndRich::loudAndRich(richer, quiet);
+    print_vector(ans);
+    richer = {};
+    quiet = {0};
+    ans = loudAndRich::loudAndRich(richer, quiet);
+    print_vector(ans);
+}
+
+namespace peakIndexInMountainArray {
+    int peakIndexInMountainArray(vector<int> &arr) {
+        int n = arr.size();
+        int left = 1, right = n - 2, ans = 0;
+        while (left <= right){
+            int mid = (left + right) / 2;
+            if (arr[mid] > arr[mid + 1]) {
+                ans = mid;
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return ans;
+    }
+}
+
+void peakIndexInMountainArray_test() {
+    vector<int> arr;
+    arr = {0, 1, 0};
+    cout << peakIndexInMountainArray::peakIndexInMountainArray(arr) << endl;
+    arr = {0, 2, 1, 0};
+    cout << peakIndexInMountainArray::peakIndexInMountainArray(arr) << endl;
+    arr = {0, 10, 5, 2};
+    cout << peakIndexInMountainArray::peakIndexInMountainArray(arr) << endl;
+}
+
 int main() {
-    rectangleArea_test();
+    peakIndexInMountainArray_test();
     {
+        //loudAndRich_test();
+
+        //rectangleArea_test();
+
         //maxDistToClosest_test();
 
         //shortestPathLength_test();
