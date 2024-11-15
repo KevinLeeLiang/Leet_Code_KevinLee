@@ -9389,10 +9389,10 @@ namespace isNStraightHand {
         }
         sort(hand.begin(), hand.end());
         unordered_map<int, int> cnt;
-        for (auto & num : hand) {
+        for (auto &num : hand) {
             cnt[num]++;
         }
-        for (auto & x : hand) {
+        for (auto &x : hand) {
             if (!cnt.count(x)) {
                 continue;
             }
@@ -9422,9 +9422,159 @@ void isNStraightHand_test() {
     cout << isNStraightHand::isNStraightHand(hand, group_size) << endl;
 }
 
+namespace shortestPathLength {
+    int shortestPathLength(vector<vector<int>> &graph) {
+        int n = graph.size();
+        queue<tuple<int, int, int>> q;
+        vector<vector<int>> seen(n, vector<int>(1 << n));
+        for (int i = 0; i < n; ++i) {
+            q.emplace(i, 1 << i, 0);
+            seen[i][1 << i] = true;
+        }
+
+        int ans = 0;
+        while (!q.empty()) {
+            auto[u, mask, dist] = q.front();
+            q.pop();
+            if (mask == (1 << n) - 1) {
+                ans = dist;
+                break;
+            }
+            // 搜索相邻的节点
+            for (int v: graph[u]) {
+                // 将 mask 的第 v 位置为 1
+                int mask_v = mask | (1 << v);
+                if (!seen[v][mask_v]) {
+                    q.emplace(v, mask_v, dist + 1);
+                    seen[v][mask_v] = true;
+                }
+            }
+        }
+        return ans;
+    }
+}
+
+void shortestPathLength_test() {
+    vector<vector<int>> graph;
+    graph = {{1, 2, 3},
+             {0},
+             {0},
+             {0}};
+    cout << shortestPathLength::shortestPathLength(graph) << endl;
+    graph = {{1},
+             {0, 2, 4},
+             {1, 3, 4},
+             {2},
+             {1, 2}};
+    cout << shortestPathLength::shortestPathLength(graph) << endl;
+}
+
+namespace maxDistToClosest {
+    int maxDistToClosest(vector<int> &seats) {
+        int l = 0;
+        int res = 0;
+        while (l < seats.size() && seats[l] == 0) {
+            ++l;
+        }
+        res = max(res, l);
+        while (l < seats.size()) {
+            int r = l + 1;
+            while (r < seats.size() && seats[r] == 0) {
+                ++r;
+            }
+            if (r == seats.size()) {
+                res = max(res, r - l - 1);
+            } else {
+                 res = max(res, (r - l) / 2);
+            }
+            l = r;
+        }
+        return res;
+    }
+}
+
+void maxDistToClosest_test() {
+    vector<int> seats;
+//    seats = {1, 0, 0, 0, 1, 0, 1};
+//    cout << maxDistToClosest::maxDistToClosest(seats) << endl;
+//    seats = {1, 0, 0, 0};
+//    cout << maxDistToClosest::maxDistToClosest(seats) << endl;
+//    seats = {0, 1};
+//    cout << maxDistToClosest::maxDistToClosest(seats) << endl;
+    seats = {0, 0, 1, 1};
+    cout << maxDistToClosest::maxDistToClosest(seats) << endl;
+}
+
+namespace rectangleArea {
+    int rectangleArea(vector<vector<int>>& rectangles) {
+        int n = rectangles.size();
+        vector<int>hbound;
+        for (const auto&rect : rectangles) {
+            hbound.push_back(rect[1]);
+            hbound.push_back(rect[3]);
+        }
+        sort(hbound.begin(), hbound.end());
+        hbound.erase(unique(hbound.begin(), hbound.end()), hbound.end());
+        int m = hbound.size();
+        vector<int>seg(m - 1);
+        vector<tuple<int, int, int>>sweep;
+        for (int i = 0; i < n; ++i) {
+            // 左边界
+            sweep.emplace_back(rectangles[i][0], i, 1);
+            // 右边界
+            sweep.emplace_back(rectangles[i][2], i, -1);
+        }
+        sort(sweep.begin(), sweep.end());
+
+        long long ans = 0;
+        for (int i = 0; i < sweep.size(); ++i) {
+            int j = i;
+            while (j + 1 < sweep.size() && get<0>(sweep[i]) == get<0>(sweep[j + 1])) {
+                ++j;
+            }
+            if (j + 1 == sweep.size()) {
+                break;
+            }
+            // 一次性地处理掉一批横坐标相同的左右边界
+            for (int k = i; k <= j; ++k) {
+                auto&& [_, idx, diff] = sweep[k];
+                int left = rectangles[idx][1], right = rectangles[idx][3];
+                for (int x = 0; x < m - 1; ++x) {
+                    if (left <= hbound[x] && hbound[x + 1] <= right) {
+                        seg[x] += diff;
+                    }
+                }
+            }
+            int cover = 0;
+            for (int k = 0; k < m - 1; ++k) {
+                if (seg[k] > 0) {
+                    cover += (hbound[k + 1] - hbound[k]);
+                }
+            }
+            ans += static_cast<long long>(cover) * (get<0>(sweep[j + 1]) - get<0>(sweep[j]));
+            i = j;
+        }
+        return ans % static_cast<int>(1e9 + 7);
+    }
+}
+
+void rectangleArea_test() {
+    vector<vector<int>>rectangles;
+    rectangles = {{0,0,2,2},{1,0,2,3},{1,0,3,1}};
+    cout << rectangleArea::rectangleArea(rectangles) << endl;
+    rectangles = {{0,0,1000000000,1000000000}};
+    cout << rectangleArea::rectangleArea(rectangles) << endl;
+}
+
 int main() {
-    isNStraightHand_test();
+    rectangleArea_test();
     {
+        //maxDistToClosest_test();
+
+        //shortestPathLength_test();
+
+        //isNStraightHand_test();
+
         //longestMountain_test();
 
         //backspaceCompare_test();
