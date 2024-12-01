@@ -9619,7 +9619,7 @@ namespace peakIndexInMountainArray {
     int peakIndexInMountainArray(vector<int> &arr) {
         int n = arr.size();
         int left = 1, right = n - 2, ans = 0;
-        while (left <= right){
+        while (left <= right) {
             int mid = (left + right) / 2;
             if (arr[mid] > arr[mid + 1]) {
                 ans = mid;
@@ -9642,9 +9642,134 @@ void peakIndexInMountainArray_test() {
     cout << peakIndexInMountainArray::peakIndexInMountainArray(arr) << endl;
 }
 
+namespace decodeAtIndex {
+    string decodeAtIndex(string s, int k) {
+        long size = 0;
+        int N = s.size();
+
+        // Find size = length of decoded string
+        for (int i = 0; i < N; ++i) {
+            if (isdigit(s[i]))
+                size *= s[i] - '0';
+            else
+                size++;
+        }
+        for (int i = N - 1; i >= 0; --i) {
+            k %= size;
+            if (k == 0 && isalpha(s[i]))
+                return (string) "" + s[i];
+
+            if (isdigit(s[i]))
+                size /= s[i] - '0';
+            else
+                size--;
+        }
+        return "";
+    }
+}
+
+void decodeAtIndex_test() {
+    string s;
+    int k;
+//    s = "leet2code3";
+//    k = 10;
+//    cout << decodeAtIndex::decodeAtIndex(s, k) << endl;
+//    s = "ha22";
+//    k = 5;
+//    cout << decodeAtIndex::decodeAtIndex(s, k) << endl;
+    s = "a2345678999999999999999";
+    k = 1;
+    cout << decodeAtIndex::decodeAtIndex(s, k) << endl;
+}
+
+namespace numRescueBoats {
+    int numRescueBoats(vector<int> &people, int limit) {
+        int ans = 0;
+        sort(people.begin(), people.end());
+        int light = 0, heavy = people.size() - 1;
+        while (light <= heavy) {
+            if (people[light] + people[heavy] > limit) {
+                --heavy;
+            } else {
+                ++light;
+                --heavy;
+            }
+            ++ans;
+        }
+        return ans;
+    }
+}
+
+void numRescueBoats_test() {
+    vector<int> people;
+    int limit;
+//    people = {1, 2};
+//    limit = 3;
+//    cout << numRescueBoats::numRescueBoats(people, limit) << endl;
+    people = {3, 2, 2, 1};
+    limit = 3;
+    cout << numRescueBoats::numRescueBoats(people, limit) << endl;
+    people = {3, 5, 3, 4};
+    limit = 5;
+    cout << numRescueBoats::numRescueBoats(people, limit) << endl;
+}
+
+namespace reachableNodes {
+    int encode(int u, int v, int n) {
+        return u*n +v;
+    }
+    int reachableNodes(vector<vector<int>>& edges, int maxMoves, int n) {
+        vector<vector<pair<int, int>>> adList(n);
+        for (auto &edge: edges) {
+            int u = edge[0], v = edge[1], nodes = edge[2];
+            adList[u].emplace_back(v, nodes);
+            adList[v].emplace_back(u, nodes);
+        }
+        unordered_map<int, int>used;
+        unordered_set<int>visited;
+        int reachableNodes = 0;
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>>pq;
+        pq.emplace(0,0);
+        while(!pq.empty() && pq.top().first <= maxMoves) {
+            auto [step, u] = pq.top();
+            pq.pop();
+            if (visited.count(u)) {
+                continue;
+            }
+            visited.emplace(u);
+            reachableNodes++;
+            for (auto [v, nodes] : adList[u]) {
+                if (nodes + step + 1 <= maxMoves && !visited.count(v)) {
+                    pq.emplace(nodes + step + 1, v);
+                }
+                used[encode(u,v, n)] = min(nodes, maxMoves - step);
+            }
+        }
+        for (auto &edge : edges) {
+            int u = edge[0], v = edge[1], nodes = edge[2];
+            reachableNodes += min(nodes, used[encode(u,v, n)] + used[encode(v, u, n)]);
+        }
+        return reachableNodes;
+    }
+}
+
+void reachableNodes_test(){
+    vector<vector<int>>edges;
+    int n, max_moves;
+    edges = {{0,1,10},{0,2,1},{1,2,2}};
+    max_moves = 6;
+    cout << reachableNodes::reachableNodes(edges, max_moves, n) << endl;
+}
+
 int main() {
-    peakIndexInMountainArray_test();
+    reachableNodes_test();
     {
+    //numRescueBoats_test();
+
+        //decodeAtIndex_test();
+
+        //peakIndexInMountainArray_test();
+
         //loudAndRich_test();
 
         //rectangleArea_test();
