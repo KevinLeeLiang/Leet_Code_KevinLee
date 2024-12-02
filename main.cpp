@@ -9716,55 +9716,159 @@ void numRescueBoats_test() {
 
 namespace reachableNodes {
     int encode(int u, int v, int n) {
-        return u*n +v;
+        return u * n + v;
     }
-    int reachableNodes(vector<vector<int>>& edges, int maxMoves, int n) {
+
+    int reachableNodes(vector<vector<int>> &edges, int maxMoves, int n) {
         vector<vector<pair<int, int>>> adList(n);
         for (auto &edge: edges) {
             int u = edge[0], v = edge[1], nodes = edge[2];
             adList[u].emplace_back(v, nodes);
             adList[v].emplace_back(u, nodes);
         }
-        unordered_map<int, int>used;
-        unordered_set<int>visited;
+        unordered_map<int, int> used;
+        unordered_set<int> visited;
         int reachableNodes = 0;
-        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>>pq;
-        pq.emplace(0,0);
-        while(!pq.empty() && pq.top().first <= maxMoves) {
-            auto [step, u] = pq.top();
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+        pq.emplace(0, 0);
+        while (!pq.empty() && pq.top().first <= maxMoves) {
+            auto[step, u] = pq.top();
             pq.pop();
             if (visited.count(u)) {
                 continue;
             }
             visited.emplace(u);
             reachableNodes++;
-            for (auto [v, nodes] : adList[u]) {
+            for (auto[v, nodes] : adList[u]) {
                 if (nodes + step + 1 <= maxMoves && !visited.count(v)) {
                     pq.emplace(nodes + step + 1, v);
                 }
-                used[encode(u,v, n)] = min(nodes, maxMoves - step);
+                used[encode(u, v, n)] = min(nodes, maxMoves - step);
             }
         }
         for (auto &edge : edges) {
             int u = edge[0], v = edge[1], nodes = edge[2];
-            reachableNodes += min(nodes, used[encode(u,v, n)] + used[encode(v, u, n)]);
+            reachableNodes += min(nodes, used[encode(u, v, n)] + used[encode(v, u, n)]);
         }
         return reachableNodes;
     }
 }
 
-void reachableNodes_test(){
-    vector<vector<int>>edges;
+void reachableNodes_test() {
+    vector<vector<int>> edges;
     int n, max_moves;
-    edges = {{0,1,10},{0,2,1},{1,2,2}};
+    edges = {{0, 1, 10},
+             {0, 2, 1},
+             {1, 2, 2}};
     max_moves = 6;
     cout << reachableNodes::reachableNodes(edges, max_moves, n) << endl;
 }
 
+namespace uncommonFromSentences {
+    vector<string> wordsSplit(string str) {
+        vector<string> words;
+        size_t start = 0, end;
+        while ((end = str.find(' ', start)) != std::string::npos) {
+            words.push_back(str.substr(start, end - start));  // 提取子字符串
+            start = end + 1;  // 更新开始位置
+        }
+        words.push_back(str.substr(start));
+        return words;
+    }
+
+    vector<string> uncommonFromSentences(string s1, string s2) {
+        unordered_map<string, int> map;
+        vector<string> words1, words2, ans;
+        words1 = uncommonFromSentences::wordsSplit(s1);
+        words2 = uncommonFromSentences::wordsSplit(s2);
+        for (auto &word : words1) {
+            map[word]++;
+        }
+        for (auto &word : words2) {
+            map[word]++;
+        }
+        for (unordered_map<string, int>::const_iterator it = map.cbegin(); it != map.cend(); ++it) {
+            if (it->second == 1) {
+                ans.push_back(it->first);
+            }
+        }
+        return ans;
+    }
+}
+
+void uncommonFromSentences_test() {
+    string s1, s2;
+    vector<string> ans;
+    s1 = "this apple is sweet";
+    s2 = "this apple is sour";
+    ans = uncommonFromSentences::uncommonFromSentences(s1, s2);
+    print_vector(ans);
+    s1 = "apple apple";
+    s2 = "banana";
+    ans = uncommonFromSentences::uncommonFromSentences(s1, s2);
+    print_vector(ans);
+}
+
+namespace spiralMatrixIII {
+    vector<vector<int>> spiralMatrixIII(int rows, int cols, int rStart, int cStart) {
+        vector<vector<int>> res;
+        vector<pair<int, int>> around = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};  //顺时针方向
+        int x = rStart, y = cStart, num = 1, dir = 0;  //{x, y}为当前位置，num为当前查找的数字，dir为当前的方向
+        int Left = cStart - 1, Right = cStart + 1, Upper = rStart - 1, Bottom = rStart + 1;  //四个方向的边界
+        while (num <= rows * cols) {
+            if (x >= 0 && x < rows && y >= 0 && y < cols) {  //{x， y}位置在矩阵中
+                res.push_back({x, y});
+                num += 1;
+            }
+            if (dir == 0 && y == Right) {  //向右到右边界
+                dir += 1;  //调转方向向下
+                Right += 1;  //右边界右移
+            }
+            else if (dir == 1 &&  x == Bottom) {  //向下到底边界
+                dir += 1;
+                Bottom += 1;  //底边界下移
+            }
+            else if (dir == 2 && y == Left) {  //向左到左边界
+                dir += 1;
+                Left--;  //左边界左移
+            }
+            else if (dir == 3 && x == Upper) {  //向上到上边界
+                dir = 0;
+                Upper--;  //上边界上移
+            }
+            x += around[dir].first;   //下一个节点
+            y += around[dir].second;
+        }
+        return res;
+    }
+}
+
+void spiralMatrixIII_test(){
+    int rows, cols, rStart, cStart;
+    vector<vector<int>> ans;
+    rows = 1, cols = 4;
+    rStart = 0, cStart = 0;
+    ans = spiralMatrixIII::spiralMatrixIII(rows, cols, rStart, cStart);
+    for (auto list : ans) {
+        print_vector(list);
+    }
+    cout << "------------" <<endl;
+    rows = 5, cols = 6, rStart = 1, cStart = 4;
+    ans = spiralMatrixIII::spiralMatrixIII(rows, cols, rStart, cStart);
+    for (auto list : ans) {
+        print_vector(list);
+    }
+    cout << "------------" <<endl;
+}
+
 int main() {
-    reachableNodes_test();
+    spiralMatrixIII_test();
     {
-    //numRescueBoats_test();
+        //uncommonFromSentences_test();
+
+        //reachableNodes_test();
+
+        //numRescueBoats_test();
 
         //decodeAtIndex_test();
 
