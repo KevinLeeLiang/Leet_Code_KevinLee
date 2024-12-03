@@ -9861,9 +9861,109 @@ void spiralMatrixIII_test(){
     cout << "------------" <<endl;
 }
 
+namespace possibleBipartition {
+    bool dfs(int curnode, int nowcolor, vector<int>&color, const vector<vector<int>>&g) {
+        color[curnode] = nowcolor;
+        for (auto& nextnode : g[curnode]) {
+            if (color[nextnode] && color[nextnode] == color[curnode]) {
+                return false;
+            }
+            if (!color[nextnode] && !dfs(nextnode, 3 ^ nowcolor, color, g)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    bool possibleBipartition(int n, vector<vector<int>>& dislikes) {
+        vector<int>color(n + 1, 0);
+        vector<vector<int>> g(n + 1);
+        for (auto& p : dislikes) {
+            g[p[0]].push_back(p[1]);
+            g[p[1]].push_back(p[0]);
+        }
+        for (int i = 1; i <= n; ++i) {
+            if (color[i] == 0 && !dfs(i, 1, color, g)) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+void possibleBipartition_test(){
+    vector<vector<int>>dislikes;
+    int n;
+    n = 4;
+    dislikes = {{1,2}, {1,3}, {2,4}};
+    cout << possibleBipartition::possibleBipartition(n, dislikes) << endl;
+    n = 3;
+    dislikes = {{1,2}, {1,3}, {2,3}};
+    cout << possibleBipartition::possibleBipartition(n, dislikes) << endl;
+    n = 5;
+    dislikes = {{1,2}, {2,3}, {3,4}, {4,5}, {1,5}};
+    cout << possibleBipartition::possibleBipartition(n, dislikes) << endl;
+}
+
+namespace superEggDrop {
+    unordered_map<int, int> memo;
+    int dp(int k, int n) {
+        if (memo.find(n * 100 + k) == memo.end()) {
+            int ans;
+            if (n == 0) {
+                ans = 0;
+            } else if (k == 1) {
+                ans = n;
+            } else {
+                int lo = 1, hi = n;
+                while (lo + 1 < hi) {
+                    int x = (lo + hi) / 2;
+                    int t1 = dp(k - 1, x - 1);
+                    int t2 = dp(k, n - x);
+
+                    if (t1 < t2) {
+                        lo = x;
+                    } else if (t1 > t2) {
+                        hi = x;
+                    } else {
+                        lo = hi = x;
+                    }
+                }
+
+                ans = 1 + min(max(dp(k - 1, lo - 1), dp(k, n - lo)),
+                              max(dp(k - 1, hi - 1), dp(k, n - hi)));
+            }
+
+            memo[n * 100 + k] = ans;
+        }
+
+        return memo[n * 100 + k];
+    }
+
+    int superEggDrop(int k, int n) {
+        return dp(k, n);
+    }
+}
+
+void superEggDrop_test(){
+    int k, n;
+    k = 1;
+    n = 2;
+    cout << superEggDrop::superEggDrop(k, n) << endl;
+    k = 2;
+    n = 4;
+    cout << superEggDrop::superEggDrop(k, n) << endl;
+    k = 3;
+    n = 14;
+    cout << superEggDrop::superEggDrop(k, n) << endl;
+}
+
 int main() {
-    spiralMatrixIII_test();
+    superEggDrop_test();
     {
+        //possibleBipartition_test();
+
+        //spiralMatrixIII_test();
+
         //uncommonFromSentences_test();
 
         //reachableNodes_test();
