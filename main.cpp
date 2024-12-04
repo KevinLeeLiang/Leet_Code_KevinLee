@@ -9812,7 +9812,10 @@ void uncommonFromSentences_test() {
 namespace spiralMatrixIII {
     vector<vector<int>> spiralMatrixIII(int rows, int cols, int rStart, int cStart) {
         vector<vector<int>> res;
-        vector<pair<int, int>> around = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};  //顺时针方向
+        vector<pair<int, int>> around = {{0,  1},
+                                         {1,  0},
+                                         {0,  -1},
+                                         {-1, 0}};  //顺时针方向
         int x = rStart, y = cStart, num = 1, dir = 0;  //{x, y}为当前位置，num为当前查找的数字，dir为当前的方向
         int Left = cStart - 1, Right = cStart + 1, Upper = rStart - 1, Bottom = rStart + 1;  //四个方向的边界
         while (num <= rows * cols) {
@@ -9823,16 +9826,13 @@ namespace spiralMatrixIII {
             if (dir == 0 && y == Right) {  //向右到右边界
                 dir += 1;  //调转方向向下
                 Right += 1;  //右边界右移
-            }
-            else if (dir == 1 &&  x == Bottom) {  //向下到底边界
+            } else if (dir == 1 && x == Bottom) {  //向下到底边界
                 dir += 1;
                 Bottom += 1;  //底边界下移
-            }
-            else if (dir == 2 && y == Left) {  //向左到左边界
+            } else if (dir == 2 && y == Left) {  //向左到左边界
                 dir += 1;
                 Left--;  //左边界左移
-            }
-            else if (dir == 3 && x == Upper) {  //向上到上边界
+            } else if (dir == 3 && x == Upper) {  //向上到上边界
                 dir = 0;
                 Upper--;  //上边界上移
             }
@@ -9843,7 +9843,7 @@ namespace spiralMatrixIII {
     }
 }
 
-void spiralMatrixIII_test(){
+void spiralMatrixIII_test() {
     int rows, cols, rStart, cStart;
     vector<vector<int>> ans;
     rows = 1, cols = 4;
@@ -9852,19 +9852,19 @@ void spiralMatrixIII_test(){
     for (auto list : ans) {
         print_vector(list);
     }
-    cout << "------------" <<endl;
+    cout << "------------" << endl;
     rows = 5, cols = 6, rStart = 1, cStart = 4;
     ans = spiralMatrixIII::spiralMatrixIII(rows, cols, rStart, cStart);
     for (auto list : ans) {
         print_vector(list);
     }
-    cout << "------------" <<endl;
+    cout << "------------" << endl;
 }
 
 namespace possibleBipartition {
-    bool dfs(int curnode, int nowcolor, vector<int>&color, const vector<vector<int>>&g) {
+    bool dfs(int curnode, int nowcolor, vector<int> &color, const vector<vector<int>> &g) {
         color[curnode] = nowcolor;
-        for (auto& nextnode : g[curnode]) {
+        for (auto &nextnode : g[curnode]) {
             if (color[nextnode] && color[nextnode] == color[curnode]) {
                 return false;
             }
@@ -9874,10 +9874,11 @@ namespace possibleBipartition {
         }
         return true;
     }
-    bool possibleBipartition(int n, vector<vector<int>>& dislikes) {
-        vector<int>color(n + 1, 0);
+
+    bool possibleBipartition(int n, vector<vector<int>> &dislikes) {
+        vector<int> color(n + 1, 0);
         vector<vector<int>> g(n + 1);
-        for (auto& p : dislikes) {
+        for (auto &p : dislikes) {
             g[p[0]].push_back(p[1]);
             g[p[1]].push_back(p[0]);
         }
@@ -9890,22 +9891,31 @@ namespace possibleBipartition {
     }
 }
 
-void possibleBipartition_test(){
-    vector<vector<int>>dislikes;
+void possibleBipartition_test() {
+    vector<vector<int>> dislikes;
     int n;
     n = 4;
-    dislikes = {{1,2}, {1,3}, {2,4}};
+    dislikes = {{1, 2},
+                {1, 3},
+                {2, 4}};
     cout << possibleBipartition::possibleBipartition(n, dislikes) << endl;
     n = 3;
-    dislikes = {{1,2}, {1,3}, {2,3}};
+    dislikes = {{1, 2},
+                {1, 3},
+                {2, 3}};
     cout << possibleBipartition::possibleBipartition(n, dislikes) << endl;
     n = 5;
-    dislikes = {{1,2}, {2,3}, {3,4}, {4,5}, {1,5}};
+    dislikes = {{1, 2},
+                {2, 3},
+                {3, 4},
+                {4, 5},
+                {1, 5}};
     cout << possibleBipartition::possibleBipartition(n, dislikes) << endl;
 }
 
 namespace superEggDrop {
     unordered_map<int, int> memo;
+
     int dp(int k, int n) {
         if (memo.find(n * 100 + k) == memo.end()) {
             int ans;
@@ -9944,7 +9954,7 @@ namespace superEggDrop {
     }
 }
 
-void superEggDrop_test(){
+void superEggDrop_test() {
     int k, n;
     k = 1;
     n = 2;
@@ -9957,9 +9967,83 @@ void superEggDrop_test(){
     cout << superEggDrop::superEggDrop(k, n) << endl;
 }
 
+namespace fairCandySwap {
+    vector<int> fairCandySwap(vector<int> &aliceSizes, vector<int> &bobSizes) {
+        unordered_map<int, int>map_alice, map_bob;
+        int alice_sum = accumulate(aliceSizes.begin(), aliceSizes.end(), 0);
+        int bob_sum = accumulate(bobSizes.begin(), bobSizes.end(), 0);
+        unordered_set<int>alice_set, bob_set;
+        for (auto& num : aliceSizes) {
+            map_alice[num] = (bob_sum - alice_sum + 2 * num) / 2;
+        }
+        for (auto& num : bobSizes) {
+            map_bob[num] = (alice_sum - bob_sum + 2 * num) / 2;
+        }
+        for (auto& num : aliceSizes) {
+            if (map_bob.find(map_alice[num]) != map_bob.end()) {
+                return {num, map_alice[num]};
+            }
+        }
+    }
+}
+
+void fairCandySwap_test() {
+    vector<int> aliceSizes, bobSizes, ans;
+    aliceSizes = {1, 1}, bobSizes = {2, 2};
+    ans = fairCandySwap::fairCandySwap(aliceSizes, bobSizes);
+    print_vector(ans);
+    aliceSizes = {1, 2}, bobSizes = {2, 3};
+    ans = fairCandySwap::fairCandySwap(aliceSizes, bobSizes);
+    print_vector(ans);
+    aliceSizes = {2}, bobSizes = {1, 3};
+    ans = fairCandySwap::fairCandySwap(aliceSizes, bobSizes);
+    print_vector(ans);
+    aliceSizes = {1, 2, 5}, bobSizes = {2, 4};
+    ans = fairCandySwap::fairCandySwap(aliceSizes, bobSizes);
+    print_vector(ans);
+}
+
+namespace constructFromPrePost {
+    TreeNode::TreeNode* constructFromPrePost(vector<int>& preorder, vector<int>& postorder) {
+        int n = preorder.size();
+        unordered_map<int, int> postMap;
+        for (int i = 0; i < n; i++) {
+            postMap[postorder[i]] = i;
+        }
+        function<TreeNode::TreeNode *(int, int, int, int)> dfs = [&](int preLeft, int preRight, int postLeft, int postRight) -> TreeNode * {
+            if (preLeft > preRight) {
+                return nullptr;
+            }
+            int leftCount = 0;
+            if (preLeft < preRight) {
+                leftCount = postMap[preorder[preLeft + 1]] - postLeft + 1;
+            }
+            return new TreeNode::TreeNode(preorder[preLeft],
+                                dfs(preLeft + 1, preLeft + leftCount, postLeft, postLeft + leftCount - 1),
+                                dfs(preLeft + leftCount + 1, preRight, postLeft + leftCount, postRight - 1));
+        };
+        return dfs(0, n - 1, 0, n - 1);
+    }
+}
+
+void constructFromPrePost_test(){
+    vector<int>preorder, postorder;
+    TreeNode::TreeNode* ans;
+    preorder = {1,2,4,5,3,6,7}, postorder = {4,5,2,6,7,3,1};
+    ans = constructFromPrePost::constructFromPrePost(preorder, postorder);
+    printTree::printTree(ans);
+    preorder = {1}, postorder = {1};
+    ans = constructFromPrePost::constructFromPrePost(preorder, postorder);
+    printTree::printTree(ans);
+}
+
 int main() {
-    superEggDrop_test();
+    constructFromPrePost_test();
     {
+    //fairCandySwap_test();
+
+        //superEggDrop_test();
+
         //possibleBipartition_test();
 
         //spiralMatrixIII_test();
