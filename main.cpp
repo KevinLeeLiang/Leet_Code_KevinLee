@@ -9969,17 +9969,17 @@ void superEggDrop_test() {
 
 namespace fairCandySwap {
     vector<int> fairCandySwap(vector<int> &aliceSizes, vector<int> &bobSizes) {
-        unordered_map<int, int>map_alice, map_bob;
+        unordered_map<int, int> map_alice, map_bob;
         int alice_sum = accumulate(aliceSizes.begin(), aliceSizes.end(), 0);
         int bob_sum = accumulate(bobSizes.begin(), bobSizes.end(), 0);
-        unordered_set<int>alice_set, bob_set;
-        for (auto& num : aliceSizes) {
+        unordered_set<int> alice_set, bob_set;
+        for (auto &num : aliceSizes) {
             map_alice[num] = (bob_sum - alice_sum + 2 * num) / 2;
         }
-        for (auto& num : bobSizes) {
+        for (auto &num : bobSizes) {
             map_bob[num] = (alice_sum - bob_sum + 2 * num) / 2;
         }
-        for (auto& num : aliceSizes) {
+        for (auto &num : aliceSizes) {
             if (map_bob.find(map_alice[num]) != map_bob.end()) {
                 return {num, map_alice[num]};
             }
@@ -10004,13 +10004,14 @@ void fairCandySwap_test() {
 }
 
 namespace constructFromPrePost {
-    TreeNode::TreeNode* constructFromPrePost(vector<int>& preorder, vector<int>& postorder) {
+    TreeNode::TreeNode *constructFromPrePost(vector<int> &preorder, vector<int> &postorder) {
         int n = preorder.size();
         unordered_map<int, int> postMap;
         for (int i = 0; i < n; i++) {
             postMap[postorder[i]] = i;
         }
-        function<TreeNode::TreeNode *(int, int, int, int)> dfs = [&](int preLeft, int preRight, int postLeft, int postRight) -> TreeNode * {
+        function<TreeNode::TreeNode *(int, int, int, int)> dfs = [&](int preLeft, int preRight, int postLeft,
+                                                                     int postRight) -> TreeNode::TreeNode * {
             if (preLeft > preRight) {
                 return nullptr;
             }
@@ -10019,17 +10020,17 @@ namespace constructFromPrePost {
                 leftCount = postMap[preorder[preLeft + 1]] - postLeft + 1;
             }
             return new TreeNode::TreeNode(preorder[preLeft],
-                                dfs(preLeft + 1, preLeft + leftCount, postLeft, postLeft + leftCount - 1),
-                                dfs(preLeft + leftCount + 1, preRight, postLeft + leftCount, postRight - 1));
+                                          dfs(preLeft + 1, preLeft + leftCount, postLeft, postLeft + leftCount - 1),
+                                          dfs(preLeft + leftCount + 1, preRight, postLeft + leftCount, postRight - 1));
         };
         return dfs(0, n - 1, 0, n - 1);
     }
 }
 
-void constructFromPrePost_test(){
-    vector<int>preorder, postorder;
-    TreeNode::TreeNode* ans;
-    preorder = {1,2,4,5,3,6,7}, postorder = {4,5,2,6,7,3,1};
+void constructFromPrePost_test() {
+    vector<int> preorder, postorder;
+    TreeNode::TreeNode *ans;
+    preorder = {1, 2, 4, 5, 3, 6, 7}, postorder = {4, 5, 2, 6, 7, 3, 1};
     ans = constructFromPrePost::constructFromPrePost(preorder, postorder);
     printTree::printTree(ans);
     preorder = {1}, postorder = {1};
@@ -10037,10 +10038,73 @@ void constructFromPrePost_test(){
     printTree::printTree(ans);
 }
 
+namespace findAndReplacePattern {
+    bool match(string &word, string &pattern) {
+        unordered_map<char, char>map;
+        for (int i = 0; i < word.size(); ++i) {
+            char x = word[i], y = pattern[i];
+            if (!map.count(x)) {
+                map[x] = y;
+            } else if (map[x] != y) {
+                return false;
+            }
+        }
+        return true;
+    }
+    vector<string> findAndReplacePattern(vector<string>& words, string pattern) {
+        vector<string>ans;
+        for (auto& word : words) {
+            if (match(word, pattern) && match(pattern, word)) {
+                ans.emplace_back(word);
+            }
+        }
+        return ans;
+    }
+}
+
+void findAndReplacePattern_test(){
+    vector<string>words,ans;
+    string pattern;
+    words = {"abc","deq","mee","aqq","dkd","ccc"};
+    pattern = "abb";
+    ans = findAndReplacePattern::findAndReplacePattern(words, pattern);
+    print_vector(ans);
+    words = {"a","b","c"};
+    pattern = "a";
+    ans = findAndReplacePattern::findAndReplacePattern(words, pattern);
+    print_vector(ans);
+}
+
+namespace sumSubseqWidths {
+    int sumSubseqWidths(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        long long res = 0, mod = 1e9+7;
+        long long x = nums[0], y = 2;
+        for (int j = 1; j < nums.size(); ++j) {
+            res = (res + nums[j] * (y - 1) - x) % mod;
+            x = (x * 2 + nums[j]) % mod;
+            y = y * 2 % mod;
+        }
+        return (res + mod) % mod;
+    }
+}
+
+void sumSubseqWidths_test(){
+    vector<int>nums;
+    nums = {2,1,3};
+    cout << sumSubseqWidths::sumSubseqWidths(nums) << endl;
+    nums = {2};
+    cout << sumSubseqWidths::sumSubseqWidths(nums) << endl;
+}
+
 int main() {
-    constructFromPrePost_test();
+    sumSubseqWidths_test();
     {
-    //fairCandySwap_test();
+        //findAndReplacePattern_test();
+
+        //constructFromPrePost_test();
+
+        //fairCandySwap_test();
 
         //superEggDrop_test();
 
