@@ -10040,7 +10040,7 @@ void constructFromPrePost_test() {
 
 namespace findAndReplacePattern {
     bool match(string &word, string &pattern) {
-        unordered_map<char, char>map;
+        unordered_map<char, char> map;
         for (int i = 0; i < word.size(); ++i) {
             char x = word[i], y = pattern[i];
             if (!map.count(x)) {
@@ -10051,9 +10051,10 @@ namespace findAndReplacePattern {
         }
         return true;
     }
-    vector<string> findAndReplacePattern(vector<string>& words, string pattern) {
-        vector<string>ans;
-        for (auto& word : words) {
+
+    vector<string> findAndReplacePattern(vector<string> &words, string pattern) {
+        vector<string> ans;
+        for (auto &word : words) {
             if (match(word, pattern) && match(pattern, word)) {
                 ans.emplace_back(word);
             }
@@ -10062,23 +10063,23 @@ namespace findAndReplacePattern {
     }
 }
 
-void findAndReplacePattern_test(){
-    vector<string>words,ans;
+void findAndReplacePattern_test() {
+    vector<string> words, ans;
     string pattern;
-    words = {"abc","deq","mee","aqq","dkd","ccc"};
+    words = {"abc", "deq", "mee", "aqq", "dkd", "ccc"};
     pattern = "abb";
     ans = findAndReplacePattern::findAndReplacePattern(words, pattern);
     print_vector(ans);
-    words = {"a","b","c"};
+    words = {"a", "b", "c"};
     pattern = "a";
     ans = findAndReplacePattern::findAndReplacePattern(words, pattern);
     print_vector(ans);
 }
 
 namespace sumSubseqWidths {
-    int sumSubseqWidths(vector<int>& nums) {
+    int sumSubseqWidths(vector<int> &nums) {
         sort(nums.begin(), nums.end());
-        long long res = 0, mod = 1e9+7;
+        long long res = 0, mod = 1e9 + 7;
         long long x = nums[0], y = 2;
         for (int j = 1; j < nums.size(); ++j) {
             res = (res + nums[j] * (y - 1) - x) % mod;
@@ -10089,17 +10090,83 @@ namespace sumSubseqWidths {
     }
 }
 
-void sumSubseqWidths_test(){
-    vector<int>nums;
-    nums = {2,1,3};
+void sumSubseqWidths_test() {
+    vector<int> nums;
+    nums = {2, 1, 3};
     cout << sumSubseqWidths::sumSubseqWidths(nums) << endl;
     nums = {2};
     cout << sumSubseqWidths::sumSubseqWidths(nums) << endl;
 }
 
+namespace surfaceArea {
+    int surfaceArea(vector<vector<int>> &grid) {
+        int dr[]{0, 1, 0, -1};
+        int dc[]{1, 0, -1, 0};
+
+        int N = grid.size();
+        int ans = 0;
+
+        for (int r = 0; r < N; ++r) {
+            for (int c = 0; c < N; ++c) {
+                if (grid[r][c] > 0) {
+                    ans += 2;
+                    for (int k = 0; k < 4; ++k) {
+                        int nr = r + dr[k];
+                        int nc = c + dc[k];
+                        int nv = 0;
+                        if (0 <= nr && nr < N && 0 <= nc && nc < N) {
+                            nv = grid[nr][nc];
+                        }
+
+                        ans += max(grid[r][c] - nv, 0);
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+}
+
+void surfaceArea_test() {
+    vector<vector<int>> grid;
+    grid = {{1, 2},
+            {3, 4}};
+    cout << surfaceArea::surfaceArea(grid) << endl;
+    grid = {{1, 1, 1},
+            {1, 0, 1},
+            {1, 1, 1}};
+    cout << surfaceArea::surfaceArea(grid) << endl;
+}
+
+namespace numSpecialEquivGroups {
+    int numSpecialEquivGroups(vector<string>& words) {
+        unordered_set<string>set;
+        for (auto& s : words) {
+            char count[52];
+            for (int i = 0; i < s.size(); ++i) {
+                count[s[i] - 'a' + 26 * (i%2)] ++;
+            }
+            set.insert(string(count));
+        }
+        return set.size();
+    }
+}
+
+void numSpecialEquivGroups_test() {
+    vector<string> words;
+    words = {"abcd","cdab","cbad","xyzz","zzxy","zzyx"};
+    cout << numSpecialEquivGroups::numSpecialEquivGroups(words) << endl;
+    words = {"abc","acb","bac","bca","cab","cba"};
+    cout << numSpecialEquivGroups::numSpecialEquivGroups(words) << endl;
+}
+
 int main() {
-    sumSubseqWidths_test();
+    numSpecialEquivGroups_test();
     {
+        //surfaceArea_test();
+
+        //sumSubseqWidths_test();
+
         //findAndReplacePattern_test();
 
         //constructFromPrePost_test();
