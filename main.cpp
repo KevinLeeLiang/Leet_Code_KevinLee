@@ -10160,9 +10160,53 @@ void numSpecialEquivGroups_test() {
     cout << numSpecialEquivGroups::numSpecialEquivGroups(words) << endl;
 }
 
+namespace allPossibleFBT {
+    vector<TreeNode::TreeNode*> allPossibleFBT(int n) {
+        vector<TreeNode::TreeNode*>fullBinaryTrees;
+        if (n % 2 == 0) {
+            return fullBinaryTrees;
+        }
+        if (n == 1) {
+            fullBinaryTrees = {new TreeNode::TreeNode(1)};
+            return fullBinaryTrees;
+        }
+        for (int i = 1; i < n; i += 2) {
+            vector<TreeNode::TreeNode*>leftSubtrees = allPossibleFBT(i);
+            vector<TreeNode::TreeNode*>rightSubtrees = allPossibleFBT(n - i - 1);
+            for (TreeNode::TreeNode* leftSubtree : leftSubtrees) {
+                for (TreeNode::TreeNode* rightSubtree : rightSubtrees) {
+                    TreeNode::TreeNode *root = new TreeNode::TreeNode(1, leftSubtree, rightSubtree);
+                    fullBinaryTrees.emplace_back(root);
+                }
+            }
+        }
+        return fullBinaryTrees;
+    }
+}
+
+void allPossibleFBT_test(){
+    int n;
+    vector<TreeNode::TreeNode*>ans;
+    n = 7;
+    ans = allPossibleFBT::allPossibleFBT(n);
+    for (auto* node : ans) {
+        auto s = TreeNode::print_tree(node);
+        cout << s << endl;
+    }
+    cout << "-----------" <<endl;
+    n = 3;
+    ans = allPossibleFBT::allPossibleFBT(n);
+    for (auto* node : ans) {
+        auto s = TreeNode::print_tree(node);
+        cout << s << endl;
+    }
+}
+
 int main() {
-    numSpecialEquivGroups_test();
+    allPossibleFBT_test();
     {
+        //numSpecialEquivGroups_test();
+
         //surfaceArea_test();
 
         //sumSubseqWidths_test();
