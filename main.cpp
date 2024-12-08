@@ -10202,9 +10202,91 @@ void allPossibleFBT_test(){
     }
 }
 
+namespace isMonotonic {
+    bool isMonotonic(vector<int>& nums) {
+        int mono = -1;
+        if (nums.size() == 1) {
+            return true;
+        }
+        for (int i = 1; i < nums.size(); ++i) {
+            if(nums[i - 1] < nums[i]) {
+                if (mono == -1) {
+                    mono = 1;
+                } else if (mono == 2) {
+                    return false;
+                }
+            } else if (nums[i - 1] > nums[i]) {
+                if(mono == -1) {
+                    mono = 2;
+                } else if (mono == 1) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+}
+
+void isMonotonic_test(){
+    vector<int>nums;
+    nums = {1,2,2,};
+    cout << isMonotonic::isMonotonic(nums) << endl;
+    nums = {6,5,4,4};
+    cout << isMonotonic::isMonotonic(nums) << endl;
+    nums = {1,3,2};
+    cout << isMonotonic::isMonotonic(nums) << endl;
+}
+
+namespace increasingBST {
+    TreeNode::TreeNode*resNode;
+    void inorder(TreeNode::TreeNode *node) {
+        if (node == nullptr) {
+            return;
+        }
+        inorder(node->left);
+
+        // 在中序遍历的过程中修改节点指向
+        resNode->right = node;
+        node->left = nullptr;
+        resNode = node;
+
+        inorder(node->right);
+    }
+
+    TreeNode::TreeNode *increasingBST(TreeNode::TreeNode *root) {
+        TreeNode::TreeNode *dummyNode = new TreeNode::TreeNode(-1);
+        resNode = dummyNode;
+        inorder(root);
+        return dummyNode->right;
+    }
+}
+
+void increasingBST_test(){
+    vector<int>nums;
+    TreeNode::TreeNode*root, *ans;
+    vector<vector<string>>output;
+    string s;
+    nums = {5,3,6,2,4,0,8,1,0,0,0,7,9};
+    root = create_treenode(nums, false);
+    ans = increasingBST::increasingBST(root);
+    s = TreeNode::print_tree(ans);
+    cout << s << endl;
+    cout << "-----------" << endl;
+    nums = {5,1,7};
+    root = create_treenode(nums, false);
+    ans = increasingBST::increasingBST(root);
+    s = TreeNode::print_tree(ans);
+    cout <<s << endl;
+    cout << "-----------" << endl;
+}
+
 int main() {
-    allPossibleFBT_test();
+    increasingBST_test();
     {
+        //isMonotonic_test();
+
+        //allPossibleFBT_test();
+
         //numSpecialEquivGroups_test();
 
         //surfaceArea_test();
