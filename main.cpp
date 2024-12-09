@@ -10139,12 +10139,12 @@ void surfaceArea_test() {
 }
 
 namespace numSpecialEquivGroups {
-    int numSpecialEquivGroups(vector<string>& words) {
-        unordered_set<string>set;
-        for (auto& s : words) {
+    int numSpecialEquivGroups(vector<string> &words) {
+        unordered_set<string> set;
+        for (auto &s : words) {
             char count[52];
             for (int i = 0; i < s.size(); ++i) {
-                count[s[i] - 'a' + 26 * (i%2)] ++;
+                count[s[i] - 'a' + 26 * (i % 2)]++;
             }
             set.insert(string(count));
         }
@@ -10154,15 +10154,15 @@ namespace numSpecialEquivGroups {
 
 void numSpecialEquivGroups_test() {
     vector<string> words;
-    words = {"abcd","cdab","cbad","xyzz","zzxy","zzyx"};
+    words = {"abcd", "cdab", "cbad", "xyzz", "zzxy", "zzyx"};
     cout << numSpecialEquivGroups::numSpecialEquivGroups(words) << endl;
-    words = {"abc","acb","bac","bca","cab","cba"};
+    words = {"abc", "acb", "bac", "bca", "cab", "cba"};
     cout << numSpecialEquivGroups::numSpecialEquivGroups(words) << endl;
 }
 
 namespace allPossibleFBT {
-    vector<TreeNode::TreeNode*> allPossibleFBT(int n) {
-        vector<TreeNode::TreeNode*>fullBinaryTrees;
+    vector<TreeNode::TreeNode *> allPossibleFBT(int n) {
+        vector<TreeNode::TreeNode *> fullBinaryTrees;
         if (n % 2 == 0) {
             return fullBinaryTrees;
         }
@@ -10171,10 +10171,10 @@ namespace allPossibleFBT {
             return fullBinaryTrees;
         }
         for (int i = 1; i < n; i += 2) {
-            vector<TreeNode::TreeNode*>leftSubtrees = allPossibleFBT(i);
-            vector<TreeNode::TreeNode*>rightSubtrees = allPossibleFBT(n - i - 1);
-            for (TreeNode::TreeNode* leftSubtree : leftSubtrees) {
-                for (TreeNode::TreeNode* rightSubtree : rightSubtrees) {
+            vector<TreeNode::TreeNode *> leftSubtrees = allPossibleFBT(i);
+            vector<TreeNode::TreeNode *> rightSubtrees = allPossibleFBT(n - i - 1);
+            for (TreeNode::TreeNode *leftSubtree : leftSubtrees) {
+                for (TreeNode::TreeNode *rightSubtree : rightSubtrees) {
                     TreeNode::TreeNode *root = new TreeNode::TreeNode(1, leftSubtree, rightSubtree);
                     fullBinaryTrees.emplace_back(root);
                 }
@@ -10184,39 +10184,39 @@ namespace allPossibleFBT {
     }
 }
 
-void allPossibleFBT_test(){
+void allPossibleFBT_test() {
     int n;
-    vector<TreeNode::TreeNode*>ans;
+    vector<TreeNode::TreeNode *> ans;
     n = 7;
     ans = allPossibleFBT::allPossibleFBT(n);
-    for (auto* node : ans) {
+    for (auto *node : ans) {
         auto s = TreeNode::print_tree(node);
         cout << s << endl;
     }
-    cout << "-----------" <<endl;
+    cout << "-----------" << endl;
     n = 3;
     ans = allPossibleFBT::allPossibleFBT(n);
-    for (auto* node : ans) {
+    for (auto *node : ans) {
         auto s = TreeNode::print_tree(node);
         cout << s << endl;
     }
 }
 
 namespace isMonotonic {
-    bool isMonotonic(vector<int>& nums) {
+    bool isMonotonic(vector<int> &nums) {
         int mono = -1;
         if (nums.size() == 1) {
             return true;
         }
         for (int i = 1; i < nums.size(); ++i) {
-            if(nums[i - 1] < nums[i]) {
+            if (nums[i - 1] < nums[i]) {
                 if (mono == -1) {
                     mono = 1;
                 } else if (mono == 2) {
                     return false;
                 }
             } else if (nums[i - 1] > nums[i]) {
-                if(mono == -1) {
+                if (mono == -1) {
                     mono = 2;
                 } else if (mono == 1) {
                     return false;
@@ -10227,18 +10227,19 @@ namespace isMonotonic {
     }
 }
 
-void isMonotonic_test(){
-    vector<int>nums;
-    nums = {1,2,2,};
+void isMonotonic_test() {
+    vector<int> nums;
+    nums = {1, 2, 2,};
     cout << isMonotonic::isMonotonic(nums) << endl;
-    nums = {6,5,4,4};
+    nums = {6, 5, 4, 4};
     cout << isMonotonic::isMonotonic(nums) << endl;
-    nums = {1,3,2};
+    nums = {1, 3, 2};
     cout << isMonotonic::isMonotonic(nums) << endl;
 }
 
 namespace increasingBST {
-    TreeNode::TreeNode*resNode;
+    TreeNode::TreeNode *resNode;
+
     void inorder(TreeNode::TreeNode *node) {
         if (node == nullptr) {
             return;
@@ -10261,28 +10262,94 @@ namespace increasingBST {
     }
 }
 
-void increasingBST_test(){
-    vector<int>nums;
-    TreeNode::TreeNode*root, *ans;
-    vector<vector<string>>output;
+void increasingBST_test() {
+    vector<int> nums;
+    TreeNode::TreeNode *root, *ans;
+    vector<vector<string>> output;
     string s;
-    nums = {5,3,6,2,4,0,8,1,0,0,0,7,9};
+    nums = {5, 3, 6, 2, 4, 0, 8, 1, 0, 0, 0, 7, 9};
     root = create_treenode(nums, false);
     ans = increasingBST::increasingBST(root);
     s = TreeNode::print_tree(ans);
     cout << s << endl;
     cout << "-----------" << endl;
-    nums = {5,1,7};
+    nums = {5, 1, 7};
     root = create_treenode(nums, false);
     ans = increasingBST::increasingBST(root);
     s = TreeNode::print_tree(ans);
-    cout <<s << endl;
+    cout << s << endl;
     cout << "-----------" << endl;
 }
 
+namespace subarrayBitwiseORs {
+    int subarrayBitwiseORs(vector<int> &arr) {
+        // ors 保留前面子数组的或运算的所有结果值
+        unordered_set<int> res, ors;
+        for (int x:arr) {
+            unordered_set<int> tmp;
+            // 将 ors 中的各元素与当前元素进行或运算
+            for (auto it = ors.begin(); it != ors.end(); it++)
+                tmp.insert((*it) | x);
+            // 插入当前元素
+            tmp.insert(x);
+            ors = tmp;
+            // 与原来保存所有或运算结果值的res做并集
+            for (auto it = tmp.begin(); it != tmp.end(); it++)
+                res.insert(*it);
+        }
+        return res.size();
+    }
+}
+
+void subarrayBitwiseORs_test() {
+    vector<int> arr;
+    arr = {0};
+    cout << subarrayBitwiseORs::subarrayBitwiseORs(arr) << endl;
+    arr = {1, 1, 2};
+    cout << subarrayBitwiseORs::subarrayBitwiseORs(arr) << endl;
+    arr = {1, 2, 4};
+    cout << subarrayBitwiseORs::subarrayBitwiseORs(arr) << endl;
+}
+
+namespace orderlyQueue {
+    string orderlyQueue(string s, int k) {
+        if (k == 1) {
+            string smallest = s;
+            int n = s.size();
+            for (int i = 1; i < n; i++) {
+                char c = s[0];
+                s = s.substr(1);
+                s.push_back(c);
+                if (s < smallest) {
+                    smallest = s;
+                }
+            }
+            return smallest;
+        } else {
+            sort(s.begin(), s.end());
+            return s;
+        }
+    }
+}
+
+void orderlyQueue_test() {
+    string s;
+    int k;
+    s = "cba";
+    k = 1;
+    cout << orderlyQueue::orderlyQueue(s, k) << endl;
+    s = "baaca";
+    k = 3;
+    cout << orderlyQueue::orderlyQueue(s, k) << endl;
+}
+
 int main() {
-    increasingBST_test();
+    orderlyQueue_test();
     {
+        //subarrayBitwiseORs_test();
+
+        //increasingBST_test();
+
         //isMonotonic_test();
 
         //allPossibleFBT_test();
