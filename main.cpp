@@ -10344,10 +10344,10 @@ void orderlyQueue_test() {
 }
 
 namespace atMostNGivenDigitSet {
-    int atMostNGivenDigitSet(vector<string>& digits, int n) {
+    int atMostNGivenDigitSet(vector<string> &digits, int n) {
         string s = to_string(n);
         int m = digits.size(), k = s.size();
-        vector<vector<int>>dp(k + 1, vector<int>(2));
+        vector<vector<int>> dp(k + 1, vector<int>(2));
         dp[0][1] = 1;
         for (int i = 1; i <= k; ++i) {
             for (int j = 0; j < m; ++j) {
@@ -10367,10 +10367,10 @@ namespace atMostNGivenDigitSet {
     }
 }
 
-void atMostNGivenDigitSet_test(){
-  vector<string>digits;
+void atMostNGivenDigitSet_test() {
+    vector<string> digits;
     int n;
-    digits = {"1","3","5","7"};
+    digits = {"1", "3", "5", "7"};
     n = 100;
     cout << atMostNGivenDigitSet::atMostNGivenDigitSet(digits, n) << endl;
     digits = {"1", "4", "9"};
@@ -10384,7 +10384,7 @@ void atMostNGivenDigitSet_test(){
 namespace numPermsDISequence {
     int numPermsDISequence(string s) {
         int i, j, size = s.size(), sum = 0, mod = 1000000007;
-        vector<vector<int>>dp(size + 1, vector<int>(size + 1));
+        vector<vector<int>> dp(size + 1, vector<int>(size + 1));
         dp[0][0] = 1;
         for (i = 1; i <= size; ++i) {
             if (s[i - 1] == 'D') {
@@ -10406,7 +10406,7 @@ namespace numPermsDISequence {
     }
 }
 
-void numPermsDISequence_test(){
+void numPermsDISequence_test() {
     string s;
     s = "DID";
     cout << numPermsDISequence::numPermsDISequence(s) << endl;
@@ -10414,12 +10414,76 @@ void numPermsDISequence_test(){
     cout << numPermsDISequence::numPermsDISequence(s) << endl;
 }
 
-int main() {
-    numPermsDISequence_test();
-    {
-    //atMostNGivenDigitSet_test();
+namespace totalFruit {
+    int totalFruit(vector<int> &fruits) {
+        int n = fruits.size();
+        unordered_map<int, int> cnt;
 
-    //orderlyQueue_test();
+        int left = 0, ans = 0;
+        for (int right = 0; right < n; ++right) {
+            ++cnt[fruits[right]];
+            while (cnt.size() > 2) {
+                auto it = cnt.find(fruits[left]);
+                --it->second;
+                if (it->second == 0) {
+                    cnt.erase(it);
+                }
+                ++left;
+            }
+            ans = max(ans, right - left + 1);
+        }
+        return ans;
+    }
+}
+
+void totalFruit_test() {
+    vector<int> fruits;
+    fruits = {1, 2, 1};
+    cout << totalFruit::totalFruit(fruits) << endl;
+    fruits = {0, 1, 2, 2};
+    cout << totalFruit::totalFruit(fruits) << endl;
+    fruits = {1, 2, 3, 2, 2};
+    cout << totalFruit::totalFruit(fruits) << endl;
+    fruits = {3, 3, 3, 1, 2, 1, 1, 2, 3, 3, 4};
+    cout << totalFruit::totalFruit(fruits) << endl;
+}
+
+namespace sortArrayByParity {
+    vector<int> sortArrayByParity(vector<int>& nums) {
+        int left = 0, right = nums.size() - 1;
+        while (left < right) {
+            while (left < right and nums[left] % 2 == 0) {
+                left++;
+            }
+            while (left < right and nums[right] % 2 == 1) {
+                right--;
+            }
+            if (left < right) {
+                swap(nums[left++], nums[right--]);
+            }
+        }
+        return nums;
+    }
+}
+
+void sortArrayByParity_test(){
+    vector<int>nums, ans;
+    nums = {3,1,2,4};
+    ans = sortArrayByParity::sortArrayByParity(nums);
+    print_vector(ans);
+    nums = {0};
+    ans = sortArrayByParity::sortArrayByParity(nums);
+    print_vector(ans);
+}
+
+int main() {
+    sortArrayByParity_test();
+    {
+        //numPermsDISequence_test();
+
+        //atMostNGivenDigitSet_test();
+
+        //orderlyQueue_test();
 
         //subarrayBitwiseORs_test();
 
