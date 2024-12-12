@@ -10323,7 +10323,7 @@ namespace orderlyQueue {
                 if (s < smallest) {
                     smallest = s;
                 }
-            } 
+            }
             return smallest;
         } else {
             sort(s.begin(), s.end());
