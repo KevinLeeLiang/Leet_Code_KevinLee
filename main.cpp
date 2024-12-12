@@ -10343,9 +10343,84 @@ void orderlyQueue_test() {
     cout << orderlyQueue::orderlyQueue(s, k) << endl;
 }
 
+namespace atMostNGivenDigitSet {
+    int atMostNGivenDigitSet(vector<string>& digits, int n) {
+        string s = to_string(n);
+        int m = digits.size(), k = s.size();
+        vector<vector<int>>dp(k + 1, vector<int>(2));
+        dp[0][1] = 1;
+        for (int i = 1; i <= k; ++i) {
+            for (int j = 0; j < m; ++j) {
+                if (digits[j][0] == s[i - 1]) {
+                    dp[i][1] = dp[i - 1][1];
+                } else if (digits[j][0] < s[i - 1]) {
+                    dp[i][0] += dp[i - 1][1];
+                } else {
+                    break;
+                }
+            }
+            if (i > 1) {
+                dp[i][0] += m + dp[i - 1][0] * m;
+            }
+        }
+        return dp[k][0] + dp[k][1];
+    }
+}
+
+void atMostNGivenDigitSet_test(){
+  vector<string>digits;
+    int n;
+    digits = {"1","3","5","7"};
+    n = 100;
+    cout << atMostNGivenDigitSet::atMostNGivenDigitSet(digits, n) << endl;
+    digits = {"1", "4", "9"};
+    n = 1000000000;
+    cout << atMostNGivenDigitSet::atMostNGivenDigitSet(digits, n) << endl;
+    digits = {"7"};
+    n = 8;
+    cout << atMostNGivenDigitSet::atMostNGivenDigitSet(digits, n) << endl;
+}
+
+namespace numPermsDISequence {
+    int numPermsDISequence(string s) {
+        int i, j, size = s.size(), sum = 0, mod = 1000000007;
+        vector<vector<int>>dp(size + 1, vector<int>(size + 1));
+        dp[0][0] = 1;
+        for (i = 1; i <= size; ++i) {
+            if (s[i - 1] == 'D') {
+                dp[i][i] = 0;
+                for (j = i - 1; j >= 0; --j) {
+                    dp[i][j] = (dp[i][j + 1] + dp[i - 1][j]) % mod;
+                }
+            } else {
+                dp[i][0] = 0;
+                for (j = 1; j <= i; ++j) {
+                    dp[i][j] = (dp[i][j - 1] + dp[i - 1][j - 1]) % mod;
+                }
+            }
+        }
+        for (j = 0; j <= size; ++j) {
+            sum = (sum + dp[size][j]) % mod;
+        }
+        return sum;
+    }
+}
+
+void numPermsDISequence_test(){
+    string s;
+    s = "DID";
+    cout << numPermsDISequence::numPermsDISequence(s) << endl;
+    s = "D";
+    cout << numPermsDISequence::numPermsDISequence(s) << endl;
+}
+
 int main() {
-    orderlyQueue_test();
+    numPermsDISequence_test();
     {
+    //atMostNGivenDigitSet_test();
+
+    //orderlyQueue_test();
+
         //subarrayBitwiseORs_test();
 
         //increasingBST_test();
