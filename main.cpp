@@ -10476,9 +10476,39 @@ void sortArrayByParity_test(){
     print_vector(ans);
 }
 
+namespace sumSubarrayMins {
+    int sumSubarrayMins(vector<int>& arr) {
+        int n = arr.size();
+        long long ans = 0;
+        long long mod = 1e9 + 7;
+        stack<int> monoStack;
+        vector<int> dp(n);
+        for (int i = 0; i < n; i++) {
+            while (!monoStack.empty() && arr[monoStack.top()] > arr[i]) {
+                monoStack.pop();
+            }
+            int k = monoStack.empty() ? (i + 1) : (i - monoStack.top());
+            dp[i] = k * arr[i] + (monoStack.empty() ? 0 : dp[i - k]);
+            ans = (ans + dp[i]) % mod;
+            monoStack.emplace(i);
+        }
+        return ans;
+    }
+}
+
+void sumSubarrayMins_test(){
+    vector<int>arr;
+    arr = {3,1,2,4};
+    cout << sumSubarrayMins::sumSubarrayMins(arr) << endl;
+    arr = {11,81,94,43,3};
+    cout << sumSubarrayMins::sumSubarrayMins(arr) << endl;
+}
+
 int main() {
-    sortArrayByParity_test();
+    sumSubarrayMins_test();
     {
+    //sortArrayByParity_test();
+
         //numPermsDISequence_test();
 
         //atMostNGivenDigitSet_test();
