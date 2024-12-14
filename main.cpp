@@ -10504,9 +10504,33 @@ void sumSubarrayMins_test(){
     cout << sumSubarrayMins::sumSubarrayMins(arr) << endl;
 }
 
+namespace smallestRangeI {
+    int smallestRangeI(vector<int>& nums, int k) {
+        int min_num = *min_element(nums.begin(), nums.end());
+        int max_num = *max_element(nums.begin(), nums.end());
+        return max_num - min_num <= 2*k ? 0 : max_num - min_num - 2*k;
+    }
+}
+
+void smallestRangleI_test() {
+    vector<int>nums;
+    int k;
+    nums = {1};
+    k = 0;
+    cout << smallestRangeI::smallestRangeI(nums, k) << endl;
+    nums = {0, 10};
+    k = 2;
+    cout << smallestRangeI::smallestRangeI(nums, k) << endl;
+    nums = {1,3,6};
+    k = 3;
+    cout << smallestRangeI::smallestRangeI(nums, k) << endl;
+}
+
 int main() {
-    sumSubarrayMins_test();
+    smallestRangleI_test();
     {
+    //sumSubarrayMins_test();
+
     //sortArrayByParity_test();
 
         //numPermsDISequence_test();
