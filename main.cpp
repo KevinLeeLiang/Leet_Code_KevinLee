@@ -10526,9 +10526,38 @@ void smallestRangleI_test() {
     cout << smallestRangeI::smallestRangeI(nums, k) << endl;
 }
 
+namespace smallestRangeII {
+    int smallestRangeII(vector<int>& nums, int k) {
+        sort(nums.begin(), nums.end());
+        int mi = nums[0], ma = nums.back();
+        int res = ma - mi;
+        for (int i = 0; i < nums.size() - 1; i++) {
+            int a = nums[i], b = nums[i + 1];
+            res = min(res, max(ma - k, a + k) - min(mi + k, b - k));
+        }
+        return res;
+    }
+}
+
+void smallestRangeII_test(){
+    vector<int>nums;
+    int k;
+    nums = {1};
+    k = 0;
+    cout << smallestRangeII::smallestRangeII(nums, k) << endl;
+    nums = {0,10};
+    k = 6;
+    cout << smallestRangeII::smallestRangeII(nums, k) << endl;
+    nums = {1,3,6};
+    k = 3;
+    cout << smallestRangeII::smallestRangeII(nums, k) << endl;
+}
+
 int main() {
-    smallestRangleI_test();
+    smallestRangeII_test();
     {
+    //smallestRangleI_test();
+
     //sumSubarrayMins_test();
 
     //sortArrayByParity_test();
