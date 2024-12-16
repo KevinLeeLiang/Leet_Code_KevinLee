@@ -10449,7 +10449,7 @@ void totalFruit_test() {
 }
 
 namespace sortArrayByParity {
-    vector<int> sortArrayByParity(vector<int>& nums) {
+    vector<int> sortArrayByParity(vector<int> &nums) {
         int left = 0, right = nums.size() - 1;
         while (left < right) {
             while (left < right and nums[left] % 2 == 0) {
@@ -10466,9 +10466,9 @@ namespace sortArrayByParity {
     }
 }
 
-void sortArrayByParity_test(){
-    vector<int>nums, ans;
-    nums = {3,1,2,4};
+void sortArrayByParity_test() {
+    vector<int> nums, ans;
+    nums = {3, 1, 2, 4};
     ans = sortArrayByParity::sortArrayByParity(nums);
     print_vector(ans);
     nums = {0};
@@ -10477,7 +10477,7 @@ void sortArrayByParity_test(){
 }
 
 namespace sumSubarrayMins {
-    int sumSubarrayMins(vector<int>& arr) {
+    int sumSubarrayMins(vector<int> &arr) {
         int n = arr.size();
         long long ans = 0;
         long long mod = 1e9 + 7;
@@ -10496,24 +10496,24 @@ namespace sumSubarrayMins {
     }
 }
 
-void sumSubarrayMins_test(){
-    vector<int>arr;
-    arr = {3,1,2,4};
+void sumSubarrayMins_test() {
+    vector<int> arr;
+    arr = {3, 1, 2, 4};
     cout << sumSubarrayMins::sumSubarrayMins(arr) << endl;
-    arr = {11,81,94,43,3};
+    arr = {11, 81, 94, 43, 3};
     cout << sumSubarrayMins::sumSubarrayMins(arr) << endl;
 }
 
 namespace smallestRangeI {
-    int smallestRangeI(vector<int>& nums, int k) {
+    int smallestRangeI(vector<int> &nums, int k) {
         int min_num = *min_element(nums.begin(), nums.end());
         int max_num = *max_element(nums.begin(), nums.end());
-        return max_num - min_num <= 2*k ? 0 : max_num - min_num - 2*k;
+        return max_num - min_num <= 2 * k ? 0 : max_num - min_num - 2 * k;
     }
 }
 
 void smallestRangleI_test() {
-    vector<int>nums;
+    vector<int> nums;
     int k;
     nums = {1};
     k = 0;
@@ -10521,13 +10521,13 @@ void smallestRangleI_test() {
     nums = {0, 10};
     k = 2;
     cout << smallestRangeI::smallestRangeI(nums, k) << endl;
-    nums = {1,3,6};
+    nums = {1, 3, 6};
     k = 3;
     cout << smallestRangeI::smallestRangeI(nums, k) << endl;
 }
 
 namespace smallestRangeII {
-    int smallestRangeII(vector<int>& nums, int k) {
+    int smallestRangeII(vector<int> &nums, int k) {
         sort(nums.begin(), nums.end());
         int mi = nums[0], ma = nums.back();
         int res = ma - mi;
@@ -10539,28 +10539,171 @@ namespace smallestRangeII {
     }
 }
 
-void smallestRangeII_test(){
-    vector<int>nums;
+void smallestRangeII_test() {
+    vector<int> nums;
     int k;
     nums = {1};
     k = 0;
     cout << smallestRangeII::smallestRangeII(nums, k) << endl;
-    nums = {0,10};
+    nums = {0, 10};
     k = 6;
     cout << smallestRangeII::smallestRangeII(nums, k) << endl;
-    nums = {1,3,6};
+    nums = {1, 3, 6};
     k = 3;
     cout << smallestRangeII::smallestRangeII(nums, k) << endl;
 }
 
+namespace sortArray {
+    vector<int> tmp;
+
+    void mergeSort(vector<int> &nums, int l, int r) {
+        if (l >= r) return;
+        int mid = (l + r) >> 1;
+        mergeSort(nums, l, mid);
+        mergeSort(nums, mid + 1, r);
+        int i = l, j = mid + 1;
+        int cnt = 0;
+        while (i <= mid && j <= r) {
+            if (nums[i] <= nums[j]) {
+                tmp[cnt++] = nums[i++];
+            } else {
+                tmp[cnt++] = nums[j++];
+            }
+        }
+        while (i <= mid) {
+            tmp[cnt++] = nums[i++];
+        }
+        while (j <= r) {
+            tmp[cnt++] = nums[j++];
+        }
+        for (int i = 0; i < r - l + 1; ++i) {
+            nums[i + l] = tmp[i];
+        }
+    }
+
+    vector<int> sortArray(vector<int> &nums) {
+        tmp.resize((int) nums.size(), 0);
+        mergeSort(nums, 0, (int) nums.size() - 1);
+        return nums;
+    }
+}
+
+void sortArray_test() {
+    vector<int> nums, ans;
+    nums = {5, 2, 3, 1};
+    ans = sortArray::sortArray(nums);
+    print_vector(ans);
+    nums = {5, 1, 1, 2, 0, 0};
+    ans = sortArray::sortArray(nums);
+    print_vector(ans);
+}
+
+namespace catMouseGame {
+    const int MOUSE_TURN = 0, CAT_TURN = 1;
+    const int DRAW = 0, MOUSE_WIN = 1, CAT_WIN = 2;
+    vector<vector<int>> graph;
+    vector<vector<vector<int>>> degrees;
+    vector<vector<vector<int>>> results;
+
+    vector<tuple<int, int, int>> GetPrevStates(int mouse, int cat, int turn) {
+        vector<tuple<int, int, int>> prevStates;
+        int prevTurn = turn == MOUSE_TURN ? CAT_TURN : MOUSE_TURN;
+        if (prevTurn == MOUSE_TURN) {
+            for (int & prev : graph[mouse]) {
+                prevStates.emplace_back(prev, cat, prevTurn);
+            }
+        } else {
+            for (int & prev : graph[cat]) {
+                if (prev != 0) {
+                    prevStates.emplace_back(mouse, prev, prevTurn);
+                }
+            }
+        }
+        return prevStates;
+    }
+    int catMouseGame(vector<vector<int>>& graph) {
+        int n = graph.size();
+        graph = graph;
+        degrees = vector<vector<vector<int>>>(n, vector<vector<int>>(n, vector<int>(2)));
+        results = vector<vector<vector<int>>>(n, vector<vector<int>>(n, vector<int>(2)));
+        queue<tuple<int, int, int>> qu;
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 1; j < n; j++) {
+                degrees[i][j][MOUSE_TURN] = graph[i].size();
+                degrees[i][j][CAT_TURN] = graph[j].size();
+            }
+        }
+        for (int node : graph[0]) {
+            for (int i = 0; i < n; i++) {
+                degrees[i][node][CAT_TURN]--;
+            }
+        }
+        for (int j = 1; j < n; j++) {
+            results[0][j][MOUSE_TURN] = MOUSE_WIN;
+            results[0][j][CAT_TURN] = MOUSE_WIN;
+            qu.emplace(0, j, MOUSE_TURN);
+            qu.emplace(0, j, CAT_TURN);
+        }
+        for (int i = 1; i < n; i++) {
+            results[i][i][MOUSE_TURN] = CAT_WIN;
+            results[i][i][CAT_TURN] = CAT_WIN;
+            qu.emplace(i, i, MOUSE_TURN);
+            qu.emplace(i, i, CAT_TURN);
+        }
+        while (!qu.empty()) {
+            auto [mouse, cat, turn] = qu.front();
+            qu.pop();
+            int result = results[mouse][cat][turn];
+            vector<tuple<int, int, int>> prevStates = GetPrevStates(mouse, cat, turn);
+            for (auto & [prevMouse, prevCat, prevTurn] : prevStates) {
+                if (results[prevMouse][prevCat][prevTurn] == DRAW) {
+                    bool canWin = (result == MOUSE_WIN && prevTurn == MOUSE_TURN) || (result == CAT_WIN && prevTurn == CAT_TURN);
+                    if (canWin) {
+                        results[prevMouse][prevCat][prevTurn] = result;
+                        qu.emplace(prevMouse, prevCat, prevTurn);
+                    } else if (--degrees[prevMouse][prevCat][prevTurn] == 0) {
+                        int loseResult = prevTurn == MOUSE_TURN ? CAT_WIN : MOUSE_WIN;
+                        results[prevMouse][prevCat][prevTurn] = loseResult;
+                        qu.emplace(prevMouse, prevCat, prevTurn);
+                    }
+                }
+            }
+        }
+        return results[1][2][MOUSE_TURN];
+    }
+
+}
+
+void catMouseGame_test() {
+    vector<vector<int>> ga;
+    ga.push_back({2,5});
+    ga.push_back({3});
+    ga.push_back({0, 4, 5});
+    ga.push_back({1, 4, 5});
+    ga.push_back({2,3});
+    ga.push_back({0,2,3});
+
+    cout << catMouseGame::catMouseGame(ga) << endl;
+    ga = {{1, 3},
+             {0},
+             {3},
+             {0, 2}};
+    cout << catMouseGame::catMouseGame(ga) << endl;
+}
+
 int main() {
-    smallestRangeII_test();
+    catMouseGame_test();
     {
-    //smallestRangleI_test();
+        //sortArray_test();
 
-    //sumSubarrayMins_test();
+        //smallestRangeII_test();
 
-    //sortArrayByParity_test();
+        //smallestRangleI_test();
+
+        //sumSubarrayMins_test();
+
+        //sortArrayByParity_test();
 
         //numPermsDISequence_test();
 
