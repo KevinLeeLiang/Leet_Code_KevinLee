@@ -10609,11 +10609,11 @@ namespace catMouseGame {
         vector<tuple<int, int, int>> prevStates;
         int prevTurn = turn == MOUSE_TURN ? CAT_TURN : MOUSE_TURN;
         if (prevTurn == MOUSE_TURN) {
-            for (int & prev : graph[mouse]) {
+            for (int &prev : graph[mouse]) {
                 prevStates.emplace_back(prev, cat, prevTurn);
             }
         } else {
-            for (int & prev : graph[cat]) {
+            for (int &prev : graph[cat]) {
                 if (prev != 0) {
                     prevStates.emplace_back(mouse, prev, prevTurn);
                 }
@@ -10621,7 +10621,8 @@ namespace catMouseGame {
         }
         return prevStates;
     }
-    int catMouseGame(vector<vector<int>>& graph) {
+
+    int catMouseGame(vector<vector<int>> &graph) {
         int n = graph.size();
         graph = graph;
         degrees = vector<vector<vector<int>>>(n, vector<vector<int>>(n, vector<int>(2)));
@@ -10652,13 +10653,14 @@ namespace catMouseGame {
             qu.emplace(i, i, CAT_TURN);
         }
         while (!qu.empty()) {
-            auto [mouse, cat, turn] = qu.front();
+            auto[mouse, cat, turn] = qu.front();
             qu.pop();
             int result = results[mouse][cat][turn];
             vector<tuple<int, int, int>> prevStates = GetPrevStates(mouse, cat, turn);
-            for (auto & [prevMouse, prevCat, prevTurn] : prevStates) {
+            for (auto &[prevMouse, prevCat, prevTurn] : prevStates) {
                 if (results[prevMouse][prevCat][prevTurn] == DRAW) {
-                    bool canWin = (result == MOUSE_WIN && prevTurn == MOUSE_TURN) || (result == CAT_WIN && prevTurn == CAT_TURN);
+                    bool canWin = (result == MOUSE_WIN && prevTurn == MOUSE_TURN) ||
+                                  (result == CAT_WIN && prevTurn == CAT_TURN);
                     if (canWin) {
                         results[prevMouse][prevCat][prevTurn] = result;
                         qu.emplace(prevMouse, prevCat, prevTurn);
@@ -10677,24 +10679,77 @@ namespace catMouseGame {
 
 void catMouseGame_test() {
     vector<vector<int>> ga;
-    ga.push_back({2,5});
+    ga.push_back({2, 5});
     ga.push_back({3});
     ga.push_back({0, 4, 5});
     ga.push_back({1, 4, 5});
-    ga.push_back({2,3});
-    ga.push_back({0,2,3});
+    ga.push_back({2, 3});
+    ga.push_back({0, 2, 3});
 
     cout << catMouseGame::catMouseGame(ga) << endl;
     ga = {{1, 3},
-             {0},
-             {3},
-             {0, 2}};
+          {0},
+          {3},
+          {0, 2}};
     cout << catMouseGame::catMouseGame(ga) << endl;
 }
 
+namespace hasGroupsSizeX {
+    int cnt[10000];
+    bool hasGroupsSizeX(vector<int> &deck) {
+        for (auto x: deck) cnt[x]++;
+        int g = -1;
+        for (int i = 0; i < 10000; ++i) {
+            if (cnt[i]) {
+                if (~g) {
+                    g = gcd(g, cnt[i]);
+                } else {
+                    g = cnt[i];
+                }
+            }
+        }
+        return g >= 2;
+    }
+}
+
+void hasGroupsSizeX_test() {
+    vector<int> deck;
+    deck = {1, 2, 3, 4, 4, 3, 2, 1};
+    cout << hasGroupsSizeX::hasGroupsSizeX(deck) << endl;
+    deck = {1, 1, 1, 2, 2, 2, 3, 3};
+    cout << hasGroupsSizeX::hasGroupsSizeX(deck) << endl;
+}
+
+namespace partitionDisjoint{
+    int partitionDisjoint(vector<int>& nums) {
+        int n = nums.size();
+        int leftMax = nums[0], leftPos = 0, curMax = nums[0];
+        for (int i = 1; i < n - 1; i++) {
+            curMax = max(curMax, nums[i]);
+            if (nums[i] < leftMax) {
+                leftMax = curMax;
+                leftPos = i;
+            }
+        }
+        return leftPos + 1;
+    }
+}
+
+void partitionDisjoint_test(){
+    vector<int>nums;
+    nums = {5,0,3,8,6};
+    cout << partitionDisjoint::partitionDisjoint(nums) << endl;
+    nums = {1,1,1,0,6,12};
+    cout << partitionDisjoint::partitionDisjoint(nums) << endl;
+}
+
 int main() {
-    catMouseGame_test();
+    partitionDisjoint_test();
     {
+        //hasGroupsSizeX_test();
+
+        //catMouseGame_test();
+
         //sortArray_test();
 
         //smallestRangeII_test();
