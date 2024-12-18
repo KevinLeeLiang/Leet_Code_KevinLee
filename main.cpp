@@ -10696,6 +10696,7 @@ void catMouseGame_test() {
 
 namespace hasGroupsSizeX {
     int cnt[10000];
+
     bool hasGroupsSizeX(vector<int> &deck) {
         for (auto x: deck) cnt[x]++;
         int g = -1;
@@ -10720,8 +10721,8 @@ void hasGroupsSizeX_test() {
     cout << hasGroupsSizeX::hasGroupsSizeX(deck) << endl;
 }
 
-namespace partitionDisjoint{
-    int partitionDisjoint(vector<int>& nums) {
+namespace partitionDisjoint {
+    int partitionDisjoint(vector<int> &nums) {
         int n = nums.size();
         int leftMax = nums[0], leftPos = 0, curMax = nums[0];
         for (int i = 1; i < n - 1; i++) {
@@ -10735,17 +10736,116 @@ namespace partitionDisjoint{
     }
 }
 
-void partitionDisjoint_test(){
-    vector<int>nums;
-    nums = {5,0,3,8,6};
+void partitionDisjoint_test() {
+    vector<int> nums;
+    nums = {5, 0, 3, 8, 6};
     cout << partitionDisjoint::partitionDisjoint(nums) << endl;
-    nums = {1,1,1,0,6,12};
+    nums = {1, 1, 1, 0, 6, 12};
     cout << partitionDisjoint::partitionDisjoint(nums) << endl;
 }
 
+namespace wordSubsets {
+    void statWord(std::string &word,std::vector<int> &cnt) {
+        std::vector<int> tmp_cnt(26,0);
+        for (auto &ch : word) {
+            tmp_cnt[ch-'a'] ++;
+        }
+        for (int i=0;i<26;i++) {
+            cnt[i] = std::max(cnt[i],tmp_cnt[i]);
+        }
+    }
+    bool isContained(vector<int> &lhs,vector<int> &rhs) {
+        for (int i=0;i<lhs.size();i++) {
+            if (rhs[i]) {
+                if (lhs[i] >= rhs[i]) {
+                    continue;
+                }
+                return false;
+            }
+        }
+        return true;
+    }
+    vector<string> wordSubsets(vector<string> &words1, vector<string> &words2) {
+        vector<string> ans;
+        std::vector<int> ch_cnt(26,0);
+        for (auto &word : words2) {
+            statWord(word,ch_cnt);
+        }
+
+        for (auto &word : words1) {
+            std::vector<int> tmp_cnt(26,0);
+            statWord(word, tmp_cnt);
+            if (isContained(tmp_cnt, ch_cnt)) {
+                ans.push_back(word);
+            }
+        }
+        return ans;
+    }
+}
+
+void wordSubsets_test() {
+    vector<string> words1, words2, ans;
+    words1 = {"amazon", "apple", "facebook", "google", "leetcode"};
+    words2 = {"e", "o"};
+    ans = wordSubsets::wordSubsets(words1, words2);
+    print_vector(ans);
+    words1 = {"amazon", "apple", "facebook", "google", "leetcode"};
+    words2 = {"l", "e"};
+    ans = wordSubsets::wordSubsets(words1, words2);
+    print_vector(ans);
+    words1 = {"amazon", "apple", "facebook", "google", "leetcode"};
+    words2 = {"e", "oo"};
+    ans = wordSubsets::wordSubsets(words1, words2);
+    print_vector(ans);
+    words1 = {"amazon", "apple", "facebook", "google", "leetcode"};
+    words2 = {"lo", "eo"};
+    ans = wordSubsets::wordSubsets(words1, words2);
+    print_vector(ans);
+    words1 = {"amazon", "apple", "facebook", "google", "leetcode"};
+    words2 = {"ec", "oc", "ceo"};
+    ans = wordSubsets::wordSubsets(words1, words2);
+    print_vector(ans);
+}
+
+namespace reverseOnlyLetters {
+    string reverseOnlyLetters(string s) {
+        int l, r;
+        l = 0;
+        r = s.size() - 1;
+        while (l < r) {
+            if (isalpha(s[l]) && isalpha(s[r])) {
+                swap(s[l], s[r]);
+                l++;
+                r--;
+            }
+            if (!isalpha(s[l])) {
+                l++;
+            }
+            if (!isalpha(s[r])) {
+                r--;
+            }
+        }
+        return s;
+    }
+}
+
+void reverseOnlyLetters_test() {
+    string s, ans;
+    s = "ab-cd";
+    cout << "dc-ba:" << reverseOnlyLetters::reverseOnlyLetters(s) << endl;
+    s = "a-bC-dEf-ghIj";
+    cout << "j-Ih-gfE-dCba:" << reverseOnlyLetters::reverseOnlyLetters(s) << endl;
+    s = "Test1ng-Leet=code-Q!";
+    cout << "Qedo1ct-eeLg=ntse-T!:" << reverseOnlyLetters::reverseOnlyLetters(s) << endl;
+}
+
 int main() {
-    partitionDisjoint_test();
+    reverseOnlyLetters_test();
     {
+        //wordSubsets_test();
+
+        //partitionDisjoint_test();
+
         //hasGroupsSizeX_test();
 
         //catMouseGame_test();
