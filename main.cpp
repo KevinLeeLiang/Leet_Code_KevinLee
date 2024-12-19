@@ -10745,17 +10745,18 @@ void partitionDisjoint_test() {
 }
 
 namespace wordSubsets {
-    void statWord(std::string &word,std::vector<int> &cnt) {
-        std::vector<int> tmp_cnt(26,0);
+    void statWord(std::string &word, std::vector<int> &cnt) {
+        std::vector<int> tmp_cnt(26, 0);
         for (auto &ch : word) {
-            tmp_cnt[ch-'a'] ++;
+            tmp_cnt[ch - 'a']++;
         }
-        for (int i=0;i<26;i++) {
-            cnt[i] = std::max(cnt[i],tmp_cnt[i]);
+        for (int i = 0; i < 26; i++) {
+            cnt[i] = std::max(cnt[i], tmp_cnt[i]);
         }
     }
-    bool isContained(vector<int> &lhs,vector<int> &rhs) {
-        for (int i=0;i<lhs.size();i++) {
+
+    bool isContained(vector<int> &lhs, vector<int> &rhs) {
+        for (int i = 0; i < lhs.size(); i++) {
             if (rhs[i]) {
                 if (lhs[i] >= rhs[i]) {
                     continue;
@@ -10765,15 +10766,16 @@ namespace wordSubsets {
         }
         return true;
     }
+
     vector<string> wordSubsets(vector<string> &words1, vector<string> &words2) {
         vector<string> ans;
-        std::vector<int> ch_cnt(26,0);
+        std::vector<int> ch_cnt(26, 0);
         for (auto &word : words2) {
-            statWord(word,ch_cnt);
+            statWord(word, ch_cnt);
         }
 
         for (auto &word : words1) {
-            std::vector<int> tmp_cnt(26,0);
+            std::vector<int> tmp_cnt(26, 0);
             statWord(word, tmp_cnt);
             if (isContained(tmp_cnt, ch_cnt)) {
                 ans.push_back(word);
@@ -10839,9 +10841,47 @@ void reverseOnlyLetters_test() {
     cout << "Qedo1ct-eeLg=ntse-T!:" << reverseOnlyLetters::reverseOnlyLetters(s) << endl;
 }
 
+namespace maxSubarraySumCircular {
+    int maxSubarraySumCircular(vector<int> &nums) {
+        int n = nums.size();
+        vector<int> leftMax(n);
+        // 对坐标为 0 处的元素单独处理，避免考虑子数组为空的情况
+        leftMax[0] = nums[0];
+        int leftSum = nums[0];
+        int pre = nums[0];
+        int res = nums[0];
+        for (int i = 1; i < n; ++i) {
+            pre = max(pre + nums[i], nums[i]);
+            res = max(res, pre);
+            leftSum += nums[i];
+            leftMax[i] = max(leftMax[i - 1], leftSum);
+        }
+        // 从右到左枚举后缀，固定后缀，选择最大前缀
+        int rightSum = 0;
+        for (int i = n - 1; i > 0; --i) {
+            rightSum += nums[i];
+            res = max(res, rightSum + leftMax[i - 1]);
+        }
+
+        return res;
+    }
+}
+
+void maxSubarraySumCircular_test() {
+    vector<int> nums;
+    nums = {1, -2, 3, -2};
+    cout << maxSubarraySumCircular::maxSubarraySumCircular(nums) << endl;
+    nums = {5, -3, 5};
+    cout << maxSubarraySumCircular::maxSubarraySumCircular(nums) << endl;
+    nums = {3, -2, 2, -3};
+    cout << maxSubarraySumCircular::maxSubarraySumCircular(nums) << endl;
+}
+
 int main() {
-    reverseOnlyLetters_test();
+    maxSubarraySumCircular_test();
     {
+        //reverseOnlyLetters_test();
+
         //wordSubsets_test();
 
         //partitionDisjoint_test();
