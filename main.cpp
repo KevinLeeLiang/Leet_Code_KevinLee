@@ -10877,9 +10877,144 @@ void maxSubarraySumCircular_test() {
     cout << maxSubarraySumCircular::maxSubarraySumCircular(nums) << endl;
 }
 
+namespace numMusicPlaylists {
+    int numMusicPlaylists(int n, int goal, int k) {
+        int N = n, L = goal, K = k;
+        const int mod = 1e9 + 7;
+
+        vector<vector<int>> dp(L + 1, vector<int>(N + 1));
+        dp[0][0] = 1;
+        for (int i = 1; i <= L; ++i)
+            for (int j = 1; j <= min(i, N); ++j) {
+                dp[i][j] += 1ll * dp[i - 1][j - 1] * (N - j + 1) % mod;
+                dp[i][j] += 1ll * dp[i - 1][j] * max(0, j - K) % mod;
+                dp[i][j] %= mod;
+            }
+
+        return dp[L][N];
+    }
+}
+
+void numMusicPlaylists_test() {
+    int goal, k, n;
+    goal = 3, n = 3, k = 1;
+    cout << numMusicPlaylists::numMusicPlaylists(n, goal, k) << endl;
+    goal = 3, n = 2, k = 0;
+    cout << numMusicPlaylists::numMusicPlaylists(n, goal, k) << endl;
+    goal = 3, n = 2, k = 1;
+    cout << numMusicPlaylists::numMusicPlaylists(n, goal, k) << endl;
+}
+
+namespace minAddToMakeValid {
+    int minAddToMakeValid(string s) {
+        int ans = 0;
+        int leftCount = 0;
+        for (auto &c : s) {
+            if (c == '(') {
+                leftCount++;
+            } else {
+                if (leftCount > 0) {
+                    leftCount--;
+                } else {
+                    ans++;
+                }
+            }
+        }
+        ans += leftCount;
+        return ans;
+    }
+}
+
+void minAddToMakeValid_test() {
+    string s;
+    s = "())";
+    cout << minAddToMakeValid::minAddToMakeValid(s) << endl;
+    s = "(((";
+    cout << minAddToMakeValid::minAddToMakeValid(s) << endl;
+}
+
+namespace sortArrayByParityII {
+    vector<int> sortArrayByParityII(vector<int> &nums) {
+        vector<int> ans(nums.size());
+        int index = 0;
+        for (int i = 0; i < nums.size(); ++i) {
+            if (nums[i] % 2 == 0) {
+                ans[index] = nums[i];
+                index += 2;
+            }
+        }
+        index = 1;
+        for (int i = 0; i < nums.size(); ++i) {
+            if (nums[i] % 2 == 1) {
+                ans[index] = nums[i];
+                index += 2;
+            }
+        }
+        return ans;
+    }
+}
+
+void sortArrayByParityII_test() {
+    vector<int> nums, ans;
+    nums = {4, 2, 5, 7};
+    ans = sortArrayByParityII::sortArrayByParityII(nums);
+    print_vector(ans);
+    nums = {2, 3};
+    ans = sortArrayByParityII::sortArrayByParityII(nums);
+    print_vector(ans);
+}
+
+namespace threeSumMulti {
+    int threeSumMulti(vector<int> &arr, int target) {
+        int mod = 1e9 + 7;  // 为防止溢出
+        int n = arr.size();
+        sort(arr.begin(), arr.end());
+        int res = 0;
+        for (int i = 0; i < n - 2; i++) {
+            if (arr[i] + arr[i + 1] + arr[i + 2] > target) return res;
+            if (arr[i] + arr[n - 1] + arr[n - 2] < target) continue;
+            int left = i + 1, right = n - 1;
+            while (left < right) {
+                int sum = arr[i] + arr[left] + arr[right];
+                if (sum < target) left++;
+                else if (sum > target) right--;
+                else if (arr[left] == arr[right]) {
+                    int diff = right - left + 1;
+                    res = (res + diff * (diff - 1) / 2) % mod;
+                    break;
+                } else {
+                    int l_cnt = 1, r_cnt = 1;
+                    while (arr[left + 1] == arr[left++]) l_cnt++;
+                    while (arr[right - 1] == arr[right--]) r_cnt++;
+                    res = (res + l_cnt * r_cnt) % mod;
+                }
+            }
+        }
+        return res;
+    }
+}
+
+void threeSumMulti_test() {
+    vector<int> arr;
+    int target = 8;
+    arr = {1, 1, 2, 2, 3, 3, 4, 4, 5, 5};
+    cout << threeSumMulti::threeSumMulti(arr, target) << endl;
+    target = 5;
+    arr = {1, 1, 2, 2, 2, 2};
+    cout << threeSumMulti::threeSumMulti(arr, target) << endl;
+}
+
 int main() {
-    maxSubarraySumCircular_test();
+    threeSumMulti_test();
     {
+        //sortArrayByParityII_test();
+
+        //minAddToMakeValid_test();
+
+        //numMusicPlaylists_test();
+
+        //maxSubarraySumCircular_test();
+
         //reverseOnlyLetters_test();
 
         //wordSubsets_test();
