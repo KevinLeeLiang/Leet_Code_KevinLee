@@ -11004,9 +11004,95 @@ void threeSumMulti_test() {
     cout << threeSumMulti::threeSumMulti(arr, target) << endl;
 }
 
+namespace minFlipsMonoIncr {
+    int minFlipsMonoIncr(string s) {
+        int dp0 = 0,dp1 = 0;
+        for (char c:s) {
+            int dp0New = dp0, dp1New = min(dp0, dp1);
+            if (c == '1') {
+                dp0New++;
+            } else {
+                dp1New++;
+            }
+            dp0 = dp0New;
+            dp1 = dp1New;
+        }
+        return min(dp0, dp1);
+    }
+}
+
+void minFlipsMonoIncr_test(){
+    string s;
+    s = "00110";
+    cout << minFlipsMonoIncr::minFlipsMonoIncr(s) << endl;
+    s = "010110";
+    cout << minFlipsMonoIncr::minFlipsMonoIncr(s) << endl;
+    s = "00011000";
+    cout << minFlipsMonoIncr::minFlipsMonoIncr(s) << endl;
+}
+
+namespace threeEqualParts {
+    vector<int> threeEqualParts(vector<int>& arr) {
+        int sum = accumulate(arr.begin(), arr.end(), 0);
+        if (sum % 3 != 0) {
+            return {-1, -1};
+        }
+        if (sum == 0) {
+            return {0, 2};
+        }
+
+        int partial = sum / 3;
+        int first = 0, second = 0, third = 0, cur = 0;
+        for (int i = 0; i < arr.size(); i++) {
+            if (arr[i] == 1) {
+                if (cur == 0) {
+                    first = i;
+                }
+                else if (cur == partial) {
+                    second = i;
+                }
+                else if (cur == 2 * partial) {
+                    third = i;
+                }
+                cur++;
+            }
+        }
+
+        int len = (int)arr.size() - third;
+        if (first + len <= second && second + len <= third) {
+            int i = 0;
+            while (third + i < arr.size()) {
+                if (arr[first + i] != arr[second + i] || arr[first + i] != arr[third + i]) {
+                    return {-1, -1};
+                }
+                i++;
+            }
+            return {first + len - 1, second + len};
+        }
+        return {-1, -1};
+    }
+}
+
+void threeEqualParts_test(){
+    vector<int>arr, ans;
+    arr = {1,0,1,0,1};
+    ans = threeEqualParts::threeEqualParts(arr);
+    print_vector(ans);
+    arr = {1,1,0,1,1};
+    ans = threeEqualParts::threeEqualParts(arr);
+    print_vector(ans);
+    arr = {1,1,0,0,1};
+    ans = threeEqualParts::threeEqualParts(arr);
+    print_vector(ans);
+}
+
 int main() {
-    threeSumMulti_test();
+    threeEqualParts_test();
     {
+        //minFlipsMonoIncr_test();
+
+        //threeSumMulti_test();
+
         //sortArrayByParityII_test();
 
         //minAddToMakeValid_test();
