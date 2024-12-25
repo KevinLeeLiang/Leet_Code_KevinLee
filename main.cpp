@@ -11006,7 +11006,7 @@ void threeSumMulti_test() {
 
 namespace minFlipsMonoIncr {
     int minFlipsMonoIncr(string s) {
-        int dp0 = 0,dp1 = 0;
+        int dp0 = 0, dp1 = 0;
         for (char c:s) {
             int dp0New = dp0, dp1New = min(dp0, dp1);
             if (c == '1') {
@@ -11021,7 +11021,7 @@ namespace minFlipsMonoIncr {
     }
 }
 
-void minFlipsMonoIncr_test(){
+void minFlipsMonoIncr_test() {
     string s;
     s = "00110";
     cout << minFlipsMonoIncr::minFlipsMonoIncr(s) << endl;
@@ -11032,7 +11032,7 @@ void minFlipsMonoIncr_test(){
 }
 
 namespace threeEqualParts {
-    vector<int> threeEqualParts(vector<int>& arr) {
+    vector<int> threeEqualParts(vector<int> &arr) {
         int sum = accumulate(arr.begin(), arr.end(), 0);
         if (sum % 3 != 0) {
             return {-1, -1};
@@ -11047,18 +11047,16 @@ namespace threeEqualParts {
             if (arr[i] == 1) {
                 if (cur == 0) {
                     first = i;
-                }
-                else if (cur == partial) {
+                } else if (cur == partial) {
                     second = i;
-                }
-                else if (cur == 2 * partial) {
+                } else if (cur == 2 * partial) {
                     third = i;
                 }
                 cur++;
             }
         }
 
-        int len = (int)arr.size() - third;
+        int len = (int) arr.size() - third;
         if (first + len <= second && second + len <= third) {
             int i = 0;
             while (third + i < arr.size()) {
@@ -11073,22 +11071,153 @@ namespace threeEqualParts {
     }
 }
 
-void threeEqualParts_test(){
-    vector<int>arr, ans;
-    arr = {1,0,1,0,1};
+void threeEqualParts_test() {
+    vector<int> arr, ans;
+    arr = {1, 0, 1, 0, 1};
     ans = threeEqualParts::threeEqualParts(arr);
     print_vector(ans);
-    arr = {1,1,0,1,1};
+    arr = {1, 1, 0, 1, 1};
     ans = threeEqualParts::threeEqualParts(arr);
     print_vector(ans);
-    arr = {1,1,0,0,1};
+    arr = {1, 1, 0, 0, 1};
     ans = threeEqualParts::threeEqualParts(arr);
     print_vector(ans);
 }
 
+namespace minMalwareSpread {
+    void dfs(vector<vector<int>> &graph, vector<int> &initialSet, vector<int> &infectedSet, int v) {
+        int n = graph.size();
+        for (int u = 0; u < n; u++) {
+            if (graph[v][u] == 0 || initialSet[u] == 1 || infectedSet[u] == 1) {
+                continue;
+            }
+            infectedSet[u] = 1;
+            dfs(graph, initialSet, infectedSet, u);
+        }
+    }
+
+    int minMalwareSpread(vector<vector<int>> &graph, vector<int> &initial) {
+        int n = graph.size();
+        vector<int> initialSet(n);
+        for (int v : initial) {
+            initialSet[v] = 1;
+        }
+        vector<vector<int>> infectedBy(n);
+        for (int v : initial) {
+            vector<int> infectedSet(n);
+            dfs(graph, initialSet, infectedSet, v);
+            for (int u = 0; u < n; u++) {
+                if (infectedSet[u] == 1) {
+                    infectedBy[u].push_back(v);
+                }
+            }
+        }
+        vector<int> count(n);
+        for (int u = 0; u < n; u++) {
+            if (infectedBy[u].size() == 1) {
+                count[infectedBy[u][0]]++;
+            }
+        }
+        int res = initial[0];
+        for (int v : initial) {
+            if (count[v] > count[res] || count[v] == count[res] && v < res) {
+                res = v;
+            }
+        }
+        return res;
+    }
+}
+
+void minMalwareSpread_test() {
+    vector<vector<int>> graph;
+    vector<int> initial;
+    graph = {{1, 1, 0},
+             {1, 1, 0},
+             {0, 0, 1}}, initial = {0, 1};
+    cout << minMalwareSpread::minMalwareSpread(graph, initial) << endl;
+    graph = {{1, 1, 0},
+             {1, 1, 1},
+             {0, 1, 1}}, initial = {0, 1};
+    cout << minMalwareSpread::minMalwareSpread(graph, initial) << endl;
+    graph = {{1, 1, 0, 0},
+             {1, 1, 1, 0},
+             {0, 1, 1, 1},
+             {0, 0, 1, 1}}, initial = {0, 1};
+    cout << minMalwareSpread::minMalwareSpread(graph, initial) << endl;
+}
+
+namespace numUniqueEmails {
+    int numUniqueEmails(vector<string> &emails) {
+        unordered_set<string> emailSet;
+        for (auto &email: emails) {
+            string local;
+            for (char c: email) {
+                if (c == '+' || c == '@') {
+                    break;
+                }
+                if (c != '.') {
+                    local += c;
+                }
+            }
+            emailSet.emplace(local + email.substr(email.find('@')));
+        }
+        return emailSet.size();
+    }
+}
+
+void numUniqueEmails_test() {
+    vector<string> emails;
+    emails = {"test.email+alex@leetcode.com", "test.e.mail+bob.cathy@leetcode.com",
+              "testemail+david@lee.tcode.com"};
+    cout << numUniqueEmails::numUniqueEmails(emails) << endl;
+    emails = {"a@leetcode.com", "b@leetcode.com", "c@leetcode.com"};
+    cout << numUniqueEmails::numUniqueEmails(emails) << endl;
+}
+
+namespace numSubarraysWithSum {
+    int numSubarraysWithSum(vector<int> &nums, int goal) {
+        int n = nums.size();
+        int left1 = 0, left2 = 0, right = 0;
+        int sum1 = 0, sum2 = 0;
+        int ret = 0;
+        while (right < n) {
+            sum1 -= nums[right];
+            while (left1 <= right && sum1 > goal) {
+                sum1 -= nums[left1];
+                left1++;
+            }
+            sum2 += nums[right];
+            while (left2 <= right && sum2 >= goal) {
+                sum2 -= nums[left2];
+                left2++;
+            }
+            ret += left2 - left1;
+            right ++;
+        }
+        return ret;
+    }
+}
+
+void numSubarraysWithSum_test() {
+    vector<int> nums;
+    int goal;
+    nums = {1, 0, 1, 0, 1};
+    goal = 2;
+    cout << numSubarraysWithSum::numSubarraysWithSum(nums, goal) << endl;
+    nums = {0, 0, 0, 0, 0};
+    goal = 0;
+    cout << numSubarraysWithSum::numSubarraysWithSum(nums, goal) << endl;
+}
+
 int main() {
-    threeEqualParts_test();
+    numSubarraysWithSum_test();
     {
+        //numUniqueEmails_test();
+
+        //minMalwareSpread_test();
+
+        //threeEqualParts_test();
+
         //minFlipsMonoIncr_test();
 
         //threeSumMulti_test();
