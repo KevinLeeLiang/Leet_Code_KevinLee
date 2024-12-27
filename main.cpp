@@ -11317,9 +11317,134 @@ void shortestBridge_test(){
     cout << ans << endl;
 }
 
+namespace knightDialer {
+    int mod = 1e9 + 7;
+    int knightDialer(int n) {
+        vector<vector<int>> moves = {
+                {4, 6},
+                {6, 8},
+                {7, 9},
+                {4, 8},
+                {3, 9, 0},
+                {},
+                {1, 7, 0},
+                {2, 6},
+                {1, 3},
+                {2, 4}
+        };
+        vector<vector<int>> d(2, vector<int>(10, 0));
+        fill(d[1].begin(), d[1].end(), 1);
+        for (int i = 2; i <= n; i++) {
+            int x = i & 1;
+            for (int j = 0; j < 10; j++) {
+                d[x][j] = 0;
+                for (int k : moves[j]) {
+                    d[x][j] = (d[x][j] + d[x ^ 1][k]) % mod;
+                }
+            }
+        }
+        int res = 0;
+        for (auto x : d[n % 2]) {
+            res = (res + x) % mod;
+        }
+        return res;
+    }
+}
+
+void knightDialer_test() {
+    int n;
+    n = 1;
+    cout << knightDialer::knightDialer(n) << endl;
+    n = 2;
+    cout << knightDialer::knightDialer(n) << endl;
+    n = 3131;
+    cout << knightDialer::knightDialer(n) << endl;
+}
+
+namespace movesToStamp {
+    vector<int> movesToStamp(string stamp, string target) {
+        int m = stamp.size();
+        int n = target.size();
+
+        // 使用 vector 代替原来的数组
+        vector<int> indegree(n - m + 1, m);
+        vector<vector<int>> graph(n);
+
+        // 队列，使用 vector
+        vector<int> queue(n - m + 1);
+        int l = 0, r = 0;
+
+        // O(n * m)，
+        // 判断位置为错误的点所影响的以i位置开头的点的错误点数进行建图或进队列
+        for (int i = 0; i <= n - m; ++i) {
+            // i开头....(m个)
+            // i+0 i+1 i+m-1
+            for (int j = 0; j < m; ++j) {
+                if (target[i + j] == stamp[j]) {
+                    if (--indegree[i] == 0) {
+                        queue[r++] = i;
+                    }
+                } else {
+                    // i + j
+                    // from : 错误的位置
+                    // to : i开头的下标
+                    graph[i + j].push_back(i);
+                }
+            }
+        }
+        // 以i开头后取消的同一个位置的取消错误不要重复统计
+        // 访问标记，使用 vector
+        vector<bool> visited(n, false);
+        vector<int> path;
+
+        // 队列处理
+        while (l < r) {
+            int cur = queue[l++];
+            path.push_back(cur);
+
+            for (int i = 0; i < m; ++i) {
+                // cur + i即，以i位置开头的点向后数出 为m个的
+                // 它能修正的位置,并且去清算删除它的影响
+                if (!visited[cur + i]) {
+                    visited[cur + i] = true;
+                    for (int next : graph[cur + i]) {
+                        if (--indegree[next] == 0) {
+                            queue[r++] = next;
+                        }
+                    }
+                }
+            }
+        }
+
+        // 如果路径大小没有达到应有的数量，返回空数组
+        if (path.size() != n - m + 1) {
+            return {};
+        }
+
+        // 逆序调整路径
+        reverse(path.begin(), path.end());
+        return path;
+    }
+}
+
+void movesToStamp_test(){
+    string stamp, target;
+    vector<int>ans;
+    stamp = "abc", target = "ababc";
+    ans = movesToStamp::movesToStamp(stamp, target);
+    print_vector(ans);
+    stamp = "abca", target = "aabcaca";
+    ans = movesToStamp::movesToStamp(stamp, target);
+    print_vector(ans);
+}
+
 int main() {
-    shortestBridge_test();
+    movesToStamp_test();
     {
+        //knightDialer_test();
+
+        //shortestBridge_test();
+
         //beautifulArray_test();
 
         //numSubarraysWithSum_test();
