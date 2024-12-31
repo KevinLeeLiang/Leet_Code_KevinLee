@@ -11192,7 +11192,7 @@ namespace numSubarraysWithSum {
                 left2++;
             }
             ret += left2 - left1;
-            right ++;
+            right++;
         }
         return ret;
     }
@@ -11210,35 +11210,37 @@ void numSubarraysWithSum_test() {
 }
 
 namespace beautifulArray {
-    unordered_map<int, vector<int>>mp;
-    vector<int>f(int N) {
+    unordered_map<int, vector<int>> mp;
+
+    vector<int> f(int N) {
         vector<int> ans(N, 0);
         int t = 0;
         if (mp.find(N) != mp.end()) {
             return mp[N];
         }
         if (N != 1) {
-            for (auto x : f((N+1)/2)){
-                ans[t++]= 2 * x - 1;
+            for (auto x : f((N + 1) / 2)) {
+                ans[t++] = 2 * x - 1;
             }
-            for (auto x : f(N/2)){
-                ans[t++] =  2 * x;
+            for (auto x : f(N / 2)) {
+                ans[t++] = 2 * x;
             }
-        }else {
+        } else {
             ans[0] = 1;
         }
         mp[N] = ans;
         return ans;
     }
+
     vector<int> beautifulArray(int n) {
         mp.clear();
         return f(n);
     }
 }
 
-void beautifulArray_test(){
+void beautifulArray_test() {
     int n;
-    vector<int>ans;
+    vector<int> ans;
     n = 4;
     ans = beautifulArray::beautifulArray(n);
     print_vector(ans);
@@ -11248,9 +11250,12 @@ void beautifulArray_test(){
 }
 
 namespace shortestBridge {
-    int shortestBridge(vector<vector<int>>& grid) {
+    int shortestBridge(vector<vector<int>> &grid) {
         int n = grid.size();
-        vector<vector<int>> dirs = {{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
+        vector<vector<int>> dirs = {{-1, 0},
+                                    {1,  0},
+                                    {0,  1},
+                                    {0,  -1}};
         vector<pair<int, int>> island;
         queue<pair<int, int>> qu;
 
@@ -11258,9 +11263,9 @@ namespace shortestBridge {
             for (int j = 0; j < n; ++j) {
                 if (grid[i][j] == 1) {
                     qu.emplace(i, j);
-                    grid[i][j] = - 1;
+                    grid[i][j] = -1;
                     while (!qu.empty()) {
-                        auto [x, y] = qu.front();
+                        auto[x, y] = qu.front();
                         qu.pop();
                         island.emplace_back(x, y);
                         for (int k = 0; k < 4; k++) {
@@ -11279,7 +11284,7 @@ namespace shortestBridge {
                     while (!qu.empty()) {
                         int sz = qu.size();
                         for (int i = 0; i < sz; ++i) {
-                            auto [x, y] = qu.front();
+                            auto[x, y] = qu.front();
                             qu.pop();
                             for (int k = 0; k < 4; ++k) {
                                 int nx = x + dirs[k][0];
@@ -11303,22 +11308,30 @@ namespace shortestBridge {
     }
 }
 
-void shortestBridge_test(){
-    vector<vector<int>>grid;
+void shortestBridge_test() {
+    vector<vector<int>> grid;
     int ans;
-    grid = {{0,1},{1,0}};
+    grid = {{0, 1},
+            {1, 0}};
     ans = shortestBridge::shortestBridge(grid);
     cout << ans << endl;
-    grid = {{0,1,0},{0,0,0},{0,0,1}};
+    grid = {{0, 1, 0},
+            {0, 0, 0},
+            {0, 0, 1}};
     ans = shortestBridge::shortestBridge(grid);
     cout << ans << endl;
-    grid = {{1,1,1,1,1},{1,0,0,0,1},{1,0,1,0,1},{1,0,0,0,1},{1,1,1,1,1}};
+    grid = {{1, 1, 1, 1, 1},
+            {1, 0, 0, 0, 1},
+            {1, 0, 1, 0, 1},
+            {1, 0, 0, 0, 1},
+            {1, 1, 1, 1, 1}};
     ans = shortestBridge::shortestBridge(grid);
     cout << ans << endl;
 }
 
 namespace knightDialer {
     int mod = 1e9 + 7;
+
     int knightDialer(int n) {
         vector<vector<int>> moves = {
                 {4, 6},
@@ -11427,9 +11440,9 @@ namespace movesToStamp {
     }
 }
 
-void movesToStamp_test(){
+void movesToStamp_test() {
     string stamp, target;
-    vector<int>ans;
+    vector<int> ans;
     stamp = "abc", target = "ababc";
     ans = movesToStamp::movesToStamp(stamp, target);
     print_vector(ans);
@@ -11438,9 +11451,105 @@ void movesToStamp_test(){
     print_vector(ans);
 }
 
+namespace shortestSuperstring {
+    int getOverlap(string a, string b) {
+        int n = a.size();
+        int m = b.size();
+        int t = min(n, m);
+        for (int i = n; i > 0; --i) {
+            string at = a.substr(n - i, i);
+            string bt = b.substr(0, i);
+            if (at == bt)
+                return i;
+        }
+        return 0;
+    }
+
+    string shortestSuperstring(vector<string> &words) {
+        string ret;
+        int n = words.size();
+        vector<vector<int>> overlap(n, vector<int>(n, 0));
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                overlap[i][j] = getOverlap(words[i], words[j]);
+            }
+            ret += words[i];
+        }
+        vector<vector<string>> dp(1 << n, vector<string>(n, ret));
+        for (uint32_t state = 1; state < (1 << n); state++) {
+            for (int j = 0; j < n; j++) {
+                if (state >> j & 1) {
+                    uint32_t preState = (state ^ (1 << j));
+                    if (preState == 0) {
+                        dp[state][j] = words[j];
+                    } else {
+                        for (int i = 0; i < n; i++) {
+                            if (state >> i & 1) {
+                                if (j == i)
+                                    continue;
+                                int t = dp[preState][i].size() + words[j].size() - overlap[i][j];
+                                if (dp[state][j].size() > t)
+                                    dp[state][j] = dp[preState][i] +
+                                                   words[j].substr(overlap[i][j], words[j].size() - overlap[i][j]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        uint32_t endNum = (1 << n) - 1;
+        for (int i = 0; i < n; i++) {
+            string s = dp[endNum][i];
+            if (ret.size() > s.size())
+                ret = s;
+        }
+        return ret;
+    }
+}
+
+void shortestSuperstring_test() {
+    vector<string> words;
+    words = {"alex", "loves", "leetcode"};
+    cout << "alexlovesleetcode," << shortestSuperstring::shortestSuperstring(words) << endl;
+
+    words = {"catg", "ctaagt", "gcta", "ttca", "atgcatc"};
+    cout << "gctaagttcatgcatc," << shortestSuperstring::shortestSuperstring(words) << endl;
+}
+
+namespace minDeletionSize {
+    int minDeletionSize(vector<string>& strs) {
+        int row = strs.size();
+        int col = strs[0].size();
+        int ans = 0;
+        for (int j = 0; j < col; ++j) {
+            for (int i = 1; i < row; ++i) {
+                if (strs[i - 1][j] > strs[i][j]) {
+                    ans++;
+                    break;
+                }
+            }
+        }
+        return ans;
+    }
+}
+
+void minDeletionSize_test(){
+    vector<string>strs;
+    strs = {"cba","daf","ghi"};
+    cout << minDeletionSize::minDeletionSize(strs) << endl;
+    strs = {"a","b"};
+    cout << minDeletionSize::minDeletionSize(strs) << endl;
+    strs = {"zyx","wvu","tsr"};
+    cout << minDeletionSize::minDeletionSize(strs) << endl;
+}
+
 int main() {
-    movesToStamp_test();
+    minDeletionSize_test();
     {
+        //shortestSuperstring_test();
+
+        //movesToStamp_test();
+
         //knightDialer_test();
 
         //shortestBridge_test();
