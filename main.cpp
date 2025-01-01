@@ -11543,9 +11543,84 @@ void minDeletionSize_test(){
     cout << minDeletionSize::minDeletionSize(strs) << endl;
 }
 
+namespace minIncrementForUnique {
+    int minIncrementForUnique(vector<int>& nums) {
+        int cnt[800000] = {0};
+        for (int x : nums) {
+            cnt[x]++;
+        }
+        int ans = 0, taken = 0;
+        for (int i = 0; i < 800000; ++i) {
+            if (cnt[i] >= 2) {
+                taken += cnt[i] - 1;
+                ans -= i*(cnt[i] - 1);
+            } else if (taken > 0 && cnt[i] == 0) {
+                taken --;
+                ans += i;
+            }
+        }
+        return ans;
+    }
+}
+
+void minIncrementForUnique_test(){
+    vector<int>nums;
+    nums = {1,2,2};
+    cout << minIncrementForUnique::minIncrementForUnique(nums) << endl;
+    nums = {3,2,1,2,1,7};
+    cout << minIncrementForUnique::minIncrementForUnique(nums) << endl;
+}
+
+namespace validateStackSequences {
+    bool validateStackSequences(vector<int>& pushed, vector<int>& popped) {
+        int pu = 0, po = 0;
+        stack<int>stk;
+        stk.push(pushed[pu]);
+        pu++;
+        while(po < popped.size()) {
+            if (stk.empty() && pu == pushed.size()){
+                break;
+            }
+            if (stk.empty()) {
+                if (pu != pushed.size()) {
+                    stk.push(pushed[pu]);
+                    pu++;
+                }
+            }
+            if (stk.top() != popped[po]) {
+                if (pu >= pushed.size())
+                    return false;
+                stk.push(pushed[pu]);
+                pu++;
+            } else {
+                stk.pop();
+                po++;
+            }
+        }
+        return po == popped.size() ? true : false;
+    }
+}
+
+void validateStackSequences_test(){
+    vector<int>pushed, popped;
+    pushed = {1,2,3,4,5};
+    popped = {4,5,3,2,1};
+    cout << validateStackSequences::validateStackSequences(pushed, popped) << endl;
+    pushed = {1,2,3,4,5};
+    popped = {4,3,5,1,2};
+    cout << validateStackSequences::validateStackSequences(pushed, popped) << endl;
+    pushed = {1, 0};
+    popped = {1, 0};
+    cout << validateStackSequences::validateStackSequences(pushed, popped) << endl;
+}
+
 int main() {
-    minDeletionSize_test();
+    validateStackSequences_test();
     {
+        //minIncrementForUnique_test();
+
+        //minDeletionSize_test();
+
         //shortestSuperstring_test();
 
         //movesToStamp_test();
