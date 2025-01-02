@@ -11517,7 +11517,7 @@ void shortestSuperstring_test() {
 }
 
 namespace minDeletionSize {
-    int minDeletionSize(vector<string>& strs) {
+    int minDeletionSize(vector<string> &strs) {
         int row = strs.size();
         int col = strs[0].size();
         int ans = 0;
@@ -11533,18 +11533,18 @@ namespace minDeletionSize {
     }
 }
 
-void minDeletionSize_test(){
-    vector<string>strs;
-    strs = {"cba","daf","ghi"};
+void minDeletionSize_test() {
+    vector<string> strs;
+    strs = {"cba", "daf", "ghi"};
     cout << minDeletionSize::minDeletionSize(strs) << endl;
-    strs = {"a","b"};
+    strs = {"a", "b"};
     cout << minDeletionSize::minDeletionSize(strs) << endl;
-    strs = {"zyx","wvu","tsr"};
+    strs = {"zyx", "wvu", "tsr"};
     cout << minDeletionSize::minDeletionSize(strs) << endl;
 }
 
 namespace minIncrementForUnique {
-    int minIncrementForUnique(vector<int>& nums) {
+    int minIncrementForUnique(vector<int> &nums) {
         int cnt[800000] = {0};
         for (int x : nums) {
             cnt[x]++;
@@ -11553,9 +11553,9 @@ namespace minIncrementForUnique {
         for (int i = 0; i < 800000; ++i) {
             if (cnt[i] >= 2) {
                 taken += cnt[i] - 1;
-                ans -= i*(cnt[i] - 1);
+                ans -= i * (cnt[i] - 1);
             } else if (taken > 0 && cnt[i] == 0) {
-                taken --;
+                taken--;
                 ans += i;
             }
         }
@@ -11563,22 +11563,22 @@ namespace minIncrementForUnique {
     }
 }
 
-void minIncrementForUnique_test(){
-    vector<int>nums;
-    nums = {1,2,2};
+void minIncrementForUnique_test() {
+    vector<int> nums;
+    nums = {1, 2, 2};
     cout << minIncrementForUnique::minIncrementForUnique(nums) << endl;
-    nums = {3,2,1,2,1,7};
+    nums = {3, 2, 1, 2, 1, 7};
     cout << minIncrementForUnique::minIncrementForUnique(nums) << endl;
 }
 
 namespace validateStackSequences {
-    bool validateStackSequences(vector<int>& pushed, vector<int>& popped) {
+    bool validateStackSequences(vector<int> &pushed, vector<int> &popped) {
         int pu = 0, po = 0;
-        stack<int>stk;
+        stack<int> stk;
         stk.push(pushed[pu]);
         pu++;
-        while(po < popped.size()) {
-            if (stk.empty() && pu == pushed.size()){
+        while (po < popped.size()) {
+            if (stk.empty() && pu == pushed.size()) {
                 break;
             }
             if (stk.empty()) {
@@ -11601,22 +11601,112 @@ namespace validateStackSequences {
     }
 }
 
-void validateStackSequences_test(){
-    vector<int>pushed, popped;
-    pushed = {1,2,3,4,5};
-    popped = {4,5,3,2,1};
+void validateStackSequences_test() {
+    vector<int> pushed, popped;
+    pushed = {1, 2, 3, 4, 5};
+    popped = {4, 5, 3, 2, 1};
     cout << validateStackSequences::validateStackSequences(pushed, popped) << endl;
-    pushed = {1,2,3,4,5};
-    popped = {4,3,5,1,2};
+    pushed = {1, 2, 3, 4, 5};
+    popped = {4, 3, 5, 1, 2};
     cout << validateStackSequences::validateStackSequences(pushed, popped) << endl;
     pushed = {1, 0};
     popped = {1, 0};
     cout << validateStackSequences::validateStackSequences(pushed, popped) << endl;
 }
 
+namespace removeStones {
+    void dfs(int x, vector<vector<int>> &edge, vector<int> &vis) {
+        vis[x] = true;
+        for (auto &y : edge[x]) {
+            if (!vis[y]) {
+                dfs(y, edge, vis);
+            }
+        }
+    }
+
+    int removeStones(vector<vector<int>> &stones) {
+        int n = stones.size();
+        vector<vector<int>> edge(n);
+        unordered_map<int, vector<int>> rec;
+        for (int i = 0; i < n; ++i) {
+            rec[stones[i][0]].push_back(i);
+            rec[stones[i][1] + 10001].push_back(i);
+        }
+        for (auto &[_, vec] : rec) {
+            int k = vec.size();
+            for (int i = 1; i < k; ++i) {
+                edge[vec[i - 1]].push_back(vec[i]);
+                edge[vec[i]].push_back(vec[i - 1]);
+            }
+        }
+        vector<int> vis(n);
+        int num = 0;
+        for (int i = 0; i < n; ++i) {
+            if (!vis[i]) {
+                num++;
+                dfs(i, edge, vis);
+            }
+        }
+        return n - num;
+    }
+}
+
+void removeStones_test() {
+    vector<vector<int>> stones;
+    stones = {{0, 0},
+              {0, 1},
+              {1, 0},
+              {1, 2},
+              {2, 1},
+              {2, 2}};
+    cout << removeStones::removeStones(stones) << endl;
+    stones = {{0, 0},
+              {0, 2},
+              {1, 1},
+              {2, 0},
+              {2, 2}};
+    cout << removeStones::removeStones(stones) << endl;
+}
+
+namespace bagOfTokensScore {
+    int bagOfTokensScore(vector<int> &tokens, int power) {
+        sort(tokens.begin(), tokens.end());
+        int n = tokens.size(), ans = 0, l = 0, r = n - 1;
+        while (l <= r) {
+            if (power >= tokens[l]) {
+                power -= tokens[l++];
+                ans++;
+            } else if (l < r && ans > 0) {
+                ans--;
+                power += tokens[r--];
+            } else break;
+        }
+        return ans;
+    }
+
+}
+
+void bagOfTokensScore_test() {
+    vector<int> tokens;
+    int power;
+    tokens = {100};
+    power = 50;
+    //cout << bagOfTokensScore::bagOfTokensScore(tokens, power) << endl;
+    tokens = {200, 100};
+    power = 150;
+    cout << bagOfTokensScore::bagOfTokensScore(tokens, power) << endl;
+    tokens = {100, 200, 300, 400};
+    power = 200;
+    cout << bagOfTokensScore::bagOfTokensScore(tokens, power) << endl;
+}
+
 int main() {
-    validateStackSequences_test();
+    bagOfTokensScore_test();
+
+    //removeStones_test();
     {
+        //validateStackSequences_test();
+
         //minIncrementForUnique_test();
 
         //minDeletionSize_test();
