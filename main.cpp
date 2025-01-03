@@ -11700,11 +11700,73 @@ void bagOfTokensScore_test() {
     cout << bagOfTokensScore::bagOfTokensScore(tokens, power) << endl;
 }
 
-int main() {
-    bagOfTokensScore_test();
 
-    //removeStones_test();
+
+namespace largestTimeFromDigits {
+    string largestTimeFromDigits(vector<int>& arr) {
+        sort(arr.begin(), arr.end(), greater<int>());
+        int h, m;
+        do {
+            h = arr[0] * 10 + arr[1];
+            m = arr[2] * 10 + arr[3];
+            if (h < 24 && m < 60) break;
+        } while (next_permutation(arr.begin(), arr.end(), greater<int>()));
+        if (h < 24 && m < 60) {
+            char ans[6];
+            sprintf(ans, "%02d:%02d", h, m);
+            return string(ans);
+        } else return "";
+    }
+}
+
+void largestTimeFromDigits_test(){
+    vector<int>arr;
+    arr = {1,2,3,4};
+    cout << largestTimeFromDigits::largestTimeFromDigits(arr) << endl;
+    arr = {5,5,5,5};
+    cout << largestTimeFromDigits::largestTimeFromDigits(arr) << endl;
+    arr = {0,0,0,0};
+    cout << largestTimeFromDigits::largestTimeFromDigits(arr) << endl;
+    arr = {0,0,1,0};
+    cout << largestTimeFromDigits::largestTimeFromDigits(arr) << endl;
+}
+
+namespace deckRevealedIncreasing {
+    vector<int> deckRevealedIncreasing(vector<int>& deck) {
+        sort(deck.begin(), deck.end());
+        // 如何从有序数组得到原先的数组。
+        // n-1逆序添加，每次添加需保证当前牌处在当前牌顶。
+        // 添加前将牌底元素添加到牌顶。
+        int n = deck.size();
+        deque<int> dq;
+        for(int i = n -1; i >= 0; i--){
+            if(!dq.empty()){
+                dq.push_front(dq.back());
+                dq.pop_back();
+            }
+            dq.push_front(deck[i]);
+        }
+        vector<int> res(dq.begin(), dq.end());
+        return res;
+    }
+}
+
+void deckRevealedIncreasing_test(){
+    vector<int>deck, ans;
+    deck = {17,13,11,2,3,5,7};
+    ans = deckRevealedIncreasing::deckRevealedIncreasing(deck);
+    print_vector(ans);
+}
+
+int main() {
+    deckRevealedIncreasing_test();
     {
+        //largestTimeFromDigits_test();
+
+        //bagOfTokensScore_test();
+
+        //removeStones_test();
+
         //validateStackSequences_test();
 
         //minIncrementForUnique_test();
