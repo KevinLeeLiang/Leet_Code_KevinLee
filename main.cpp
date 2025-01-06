@@ -11700,8 +11700,6 @@ void bagOfTokensScore_test() {
     cout << bagOfTokensScore::bagOfTokensScore(tokens, power) << endl;
 }
 
-
-
 namespace largestTimeFromDigits {
     string largestTimeFromDigits(vector<int>& arr) {
         sort(arr.begin(), arr.end(), greater<int>());
@@ -11824,9 +11822,82 @@ void largestComponentSize_test(){
     cout << largestComponentSize::largestComponentSize(nums) << endl;
 }
 
+namespace minDeletionSize2 {
+    int minDeletionSize(vector<string>&strs) {
+        int n = strs.size();
+        int len = strs.size();
+        vector<int>vis(n);
+        int deletecnt = 0;
+        for (int i = 0; i < len; ++i) {
+            vector<int>tempVis(vis);
+            bool need_delete = false;
+            for (int j = 1; j < n; ++j) {
+                if (tempVis[j]) continue;
+                if (strs[j - 1][i] > strs[j][i]) {
+                    need_delete = true;
+                    break;
+                } else if (strs[j - 1][1] < strs[j][i]) {
+                    tempVis[j] = 1;
+                }
+            }
+            if (need_delete) deletecnt++;
+            else vis = tempVis;
+        }
+        return deletecnt;
+    }
+}
+
+void minDeletionSize2_test(){
+    vector<string>strs;
+    strs = {"koccmoezl", "hbccayhbd"};
+    cout << minDeletionSize2::minDeletionSize(strs) << endl;
+    strs = {"ca", "bb", "ac"};
+    cout << minDeletionSize2::minDeletionSize(strs) << endl;
+    strs = {"xc", "yb", "za"};
+    cout << minDeletionSize2::minDeletionSize(strs) << endl;
+    strs = {"xyz", "wvu", "tsr"};
+    cout << minDeletionSize2::minDeletionSize(strs) << endl;
+}
+
+namespace tallestBillboard {
+    const int inf = 0x3f3f3f3f;
+    int tallestBillboard(vector<int>&rods) {
+        int n = rods.size(), md = std::accumulate(rods.begin(), rods.end(), 0);
+        vector<vector<int>> dp(n, vector<int>(md + 1, -1));
+        std::function<int(int, int)>dfs = [&](int i, int d)->int {
+            if (d > md) return -inf;
+            if (~dp[i][d]) return dp[i][d];
+            if (i == 0) {
+                if (rods[i] == d) return d;
+                if (d == 0) return 0;
+                return -inf;
+            }
+            int res = dfs(i - 1, d);
+            res = max(res, dfs(i - 1, d+rods[i]) + rods[i]);
+            res = max(res, dfs(i - 1, abs(d - rods[i])) + rods[i]);
+            return dp[i][d] = res;
+        };
+        return dfs(n - 1, 0) > 0 ? dfs(n - 1, 0) / 2 : 0;
+    }
+}
+
+void tallestBillboard_test(){
+    vector<int>rods;
+    rods = {1,2,3,6};
+    cout << tallestBillboard::tallestBillboard(rods) << endl;
+    rods = {1,2,3,4,5,6};
+    cout << tallestBillboard::tallestBillboard(rods) << endl;
+    rods = {1,2};
+    cout << tallestBillboard::tallestBillboard(rods) << endl;
+}
+
 int main() {
-    largestComponentSize_test();
+    tallestBillboard_test();
     {
+        //minDeletionSize2_test();
+
+        //largestComponentSize_test();
+
         //deckRevealedIncreasing_test();
 
         //largestTimeFromDigits_test();
