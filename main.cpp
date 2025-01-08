@@ -11891,9 +11891,173 @@ void tallestBillboard_test(){
     cout << tallestBillboard::tallestBillboard(rods) << endl;
 }
 
+namespace prisonAfterNDays {
+    vector<int> prisonAfterNDays(vector<int>& cells, int n) {
+        vector<int> backup(8, 0);
+        vector<int> dp(1<<8, -1); //记录每个状态出现的次数
+        int state=0;
+        for(int i=0; i<8; i++)
+            if(cells[i]==1)
+                state += (1<<i);
+
+        dp[state] = 0;
+        int pre = state;
+        int i=0;
+        for(; i<n; i++){
+            pre = state;
+            state = (~((state<<1) ^ (state>>1))) & 127 & 254;
+
+            if(dp[state]>=0)
+                break;
+
+            dp[state] = i+1;
+        }
+
+        if(i<n-1){
+            int iter = i+1-dp[state];
+            int nn = (n-i)%iter;
+            // printf("%d, %d, %d", iter, i, state);
+            state = pre;
+            for(int ii=0; ii<nn; ii++){
+                state =  (~((state<<1) ^ (state>>1))) & 127 & 254; //左移和右移得到新的状态，127将第一个置零，254将最后一个置零
+            }
+        }
+
+
+        for(int i=0; i<8; i++){
+            if(state & (1<<i)){
+                cells[i] = 1;
+            }else{
+                cells[i] = 0;
+            }
+        }
+
+        return cells;
+    }
+};
+
+void prisonAfterNDays_test(){
+    vector<int>cells, ans;
+    int n;
+    cells = {0,1,0,1,1,0,0,1}, n = 7;
+    ans = prisonAfterNDays::prisonAfterNDays(cells, n);
+    print_vector(ans);
+    cells = {1,0,0,1,0,0,1,0}, n = 1000000000;
+    cout << "+++++" << endl;
+    ans = prisonAfterNDays::prisonAfterNDays(cells, n);
+    print_vector(ans);
+    cout << "+++++" << endl;
+}
+
+namespace regionsBySlashes {
+    int find(vector<int>& f, int x) {
+        if (f[x] == x) {
+            return x;
+        }
+        int fa = find(f, f[x]);
+        f[x] = fa;
+        return fa;
+    }
+
+    void merge(vector<int>& f, int x, int y) {
+        int fx = find(f, x);
+        int fy = find(f, y);
+        f[fx] = fy;
+    }
+
+    int regionsBySlashes(vector<string>& grid) {
+        int n = grid.size();
+        vector<int> f(n * n * 4);
+        for (int i = 0; i < n * n * 4; i++) {
+            f[i] = i;
+        }
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                int idx = i * n + j;
+                if (i < n - 1) {
+                    int bottom = idx + n;
+                    merge(f, idx * 4 + 2, bottom * 4);
+                }
+                if (j < n - 1) {
+                    int right = idx + 1;
+                    merge(f, idx * 4 + 1, right * 4 + 3);
+                }
+                if (grid[i][j] == '/') {
+                    merge(f, idx * 4, idx * 4 + 3);
+                    merge(f, idx * 4 + 1, idx * 4 + 2);
+                } else if (grid[i][j] == '\\') {
+                    merge(f, idx * 4, idx * 4 + 1);
+                    merge(f, idx * 4 + 2, idx * 4 + 3);
+                } else {
+                    merge(f, idx * 4, idx * 4 + 1);
+                    merge(f, idx * 4 + 1, idx * 4 + 2);
+                    merge(f, idx * 4 + 2, idx * 4 + 3);
+                }
+            }
+        }
+
+        unordered_set<int> fathers;
+        for (int i = 0; i < n * n * 4; i++) {
+            int fa = find(f, i);
+            fathers.insert(fa);
+        }
+        return fathers.size();
+    }
+}
+
+void regionsBySlashes_test(){
+    vector<string>grid;
+    grid = {" /","/ "};
+    cout << regionsBySlashes::regionsBySlashes(grid) << endl;
+    grid = {" /","  "};
+    cout << regionsBySlashes::regionsBySlashes(grid) << endl;
+    grid = {"/\\","\\/"};
+    cout << regionsBySlashes::regionsBySlashes(grid) << endl;
+}
+
+namespace minDeletionSize3 {
+    int minDeletionSize(vector<string>& strs) {
+        int n = strs[0].size(),m = strs.size();
+        vector<int> f(n);
+        for (int i = 0; i < n; i++) {
+            f[i] = 0;
+            for (int j = 0; j < i; j++) {
+                int flag = 1;
+                for (int k = 0;k < m; k++) {
+                    if (strs[k][j] > strs[k][i]){
+                        flag = 0;
+                    }
+                }
+                if (flag) {
+                    f[i] = max(f[i], f[j]);
+                }
+            }
+            f[i]++;
+        }
+        return n - *max_element(f.begin(), f.end());
+    }
+}
+
+void minDeletionSize3_test(){
+    vector<string> strs;
+    strs = {"babca","bbazb"};
+    cout << minDeletionSize3::minDeletionSize(strs) << endl;
+    strs = {"edcba"};
+    cout << minDeletionSize3::minDeletionSize(strs) << endl;
+    strs = {"ghi","def","abc"};
+    cout << minDeletionSize3::minDeletionSize(strs) << endl;
+}
+
 int main() {
-    tallestBillboard_test();
+    minDeletionSize3_test();
     {
+        //regionsBySlashes_test();
+
+        //prisonAfterNDays_test();
+
+        //tallestBillboard_test();
+
         //minDeletionSize2_test();
 
         //largestComponentSize_test();
