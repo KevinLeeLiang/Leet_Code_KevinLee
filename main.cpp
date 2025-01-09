@@ -12049,9 +12049,65 @@ void minDeletionSize3_test(){
     cout << minDeletionSize3::minDeletionSize(strs) << endl;
 }
 
+namespace repeatedNTimes {
+    int repeatedNTimes(vector<int>& nums) {
+        unordered_map<int, int> map;
+        for (auto num : nums) {
+            map[num]++;
+        }
+        int n = nums.size() / 2;
+        for (auto pair : map) {
+            if (pair.second == n) {
+                return pair.first;
+            }
+        }
+    }
+}
+
+void repeatedNTimes_test(){
+    vector<int>nums;
+    nums = {1,2,3,3};
+    cout << repeatedNTimes::repeatedNTimes(nums) << endl;
+    nums = {2,1,2,5,3,2};
+    cout << repeatedNTimes::repeatedNTimes(nums) << endl;
+    nums = {5,1,5,2,5,3,5,4};
+    cout << repeatedNTimes::repeatedNTimes(nums) << endl;
+}
+
+namespace maxWidthRamp {
+    int maxWidthRamp(vector<int>& nums) {
+        int n = nums.size();
+        vector<pair<int, int>> data(n);
+        for (int i = 0; i < n; i++) {
+            data[i] = {nums[i], i};
+        }
+        sort(data.begin(), data.end());
+
+        int ans = 0;
+        int mininum = n;
+        for (auto [_, idx] : data) {
+            ans = max(ans, idx - mininum);
+            mininum = min(mininum, idx);
+        }
+        return ans;
+    }
+}
+
+void maxWidthRamp_test(){
+    vector<int>nums;
+    nums = {6,0,8,2,1,5};
+    cout << maxWidthRamp::maxWidthRamp(nums) << endl;
+    nums = {9,8,1,0,1,9,4,0,4,1};
+    cout << maxWidthRamp::maxWidthRamp(nums) << endl;
+}
+
 int main() {
-    minDeletionSize3_test();
+    maxWidthRamp_test();
     {
+        //repeatedNTimes_test();
+
+        //minDeletionSize3_test();
+
         //regionsBySlashes_test();
 
         //prisonAfterNDays_test();
