@@ -11701,9 +11701,8 @@ void bagOfTokensScore_test() {
 }
 
 
-
 namespace largestTimeFromDigits {
-    string largestTimeFromDigits(vector<int>& arr) {
+    string largestTimeFromDigits(vector<int> &arr) {
         sort(arr.begin(), arr.end(), greater<int>());
         int h, m;
         do {
@@ -11719,28 +11718,28 @@ namespace largestTimeFromDigits {
     }
 }
 
-void largestTimeFromDigits_test(){
-    vector<int>arr;
-    arr = {1,2,3,4};
+void largestTimeFromDigits_test() {
+    vector<int> arr;
+    arr = {1, 2, 3, 4};
     cout << largestTimeFromDigits::largestTimeFromDigits(arr) << endl;
-    arr = {5,5,5,5};
+    arr = {5, 5, 5, 5};
     cout << largestTimeFromDigits::largestTimeFromDigits(arr) << endl;
-    arr = {0,0,0,0};
+    arr = {0, 0, 0, 0};
     cout << largestTimeFromDigits::largestTimeFromDigits(arr) << endl;
-    arr = {0,0,1,0};
+    arr = {0, 0, 1, 0};
     cout << largestTimeFromDigits::largestTimeFromDigits(arr) << endl;
 }
 
 namespace deckRevealedIncreasing {
-    vector<int> deckRevealedIncreasing(vector<int>& deck) {
+    vector<int> deckRevealedIncreasing(vector<int> &deck) {
         sort(deck.begin(), deck.end());
         // 如何从有序数组得到原先的数组。
         // n-1逆序添加，每次添加需保证当前牌处在当前牌顶。
         // 添加前将牌底元素添加到牌顶。
         int n = deck.size();
         deque<int> dq;
-        for(int i = n -1; i >= 0; i--){
-            if(!dq.empty()){
+        for (int i = n - 1; i >= 0; i--) {
+            if (!dq.empty()) {
                 dq.push_front(dq.back());
                 dq.pop_back();
             }
@@ -11751,16 +11750,132 @@ namespace deckRevealedIncreasing {
     }
 }
 
-void deckRevealedIncreasing_test(){
-    vector<int>deck, ans;
-    deck = {17,13,11,2,3,5,7};
+void deckRevealedIncreasing_test() {
+    vector<int> deck, ans;
+    deck = {17, 13, 11, 2, 3, 5, 7};
     ans = deckRevealedIncreasing::deckRevealedIncreasing(deck);
     print_vector(ans);
 }
+#include <cfloat>
+namespace minAreaFreeRect {
+    double minAreaFreeRect(vector<vector<int>> &points) {
+        int n = points.size();
+        set<pair<int, int>>points_set;
+        for (auto &v : points) {
+            points_set.insert(make_pair(v[0], v[1]));
+        }
+        double res = DBL_MAX;
+        for (int i = 0; i < n; ++i) {
+            int x1 = points[i][0], y1 = points[i][1];
+            for (int j = 0; j < n; ++j) {
+                if (i == j)
+                    continue;
+                int x2 = points[j][0], y2 = points[j][1];
+                for (int k = j + 1; k < n; ++k) {
+                    if (k == i)
+                        continue;
+                    int x3 = points[k][0], y3 = points[k][1];
+                    int x4 = x2 + x3 - x1, y4 = y2 + y3 - y1;
+                    if (points_set.count(pair<int,int>{x4, y4}) != 0) {  //p4存在
+                        vector<int> v21{x2 - x1, y2 - y1};
+                        vector<int> v31{x3 - x1, y3 - y1};
+                        if (v21[0] * v31[0] + v21[1] * v31[1] == 0) {
+                            double cur_area = pow(pow(v21[0], 2) + pow(v21[1], 2), 0.5) *
+                                              pow(pow(v31[0], 2) + pow(v31[1], 2), 0.5);
+                            if (cur_area < res)
+                                res = cur_area;
+                        }
+                    }
+                }
+            }
+        }
+        return res !=DBL_MAX ? res : 0;
+    }
+}
+
+void minAreaFreeRect_test() {
+    vector<vector<int>> points;
+    points = {{1, 2},
+              {2, 1},
+              {1, 0},
+              {0, 1}};
+    cout << minAreaFreeRect::minAreaFreeRect(points) << endl;
+    points = {{0, 1},
+              {2, 1},
+              {1, 1},
+              {1, 0},
+              {2, 0}};
+    cout << minAreaFreeRect::minAreaFreeRect(points) << endl;
+    points = {{0, 3},
+              {1, 2},
+              {3, 1},
+              {1, 3},
+              {2, 1}};
+    cout << minAreaFreeRect::minAreaFreeRect(points) << endl;
+    points = {{3, 1},
+              {1, 1},
+              {0, 1},
+              {2, 1},
+              {3, 3},
+              {3, 2},
+              {0, 2},
+              {2, 3}};
+    cout << minAreaFreeRect::minAreaFreeRect(points) << endl;
+}
+
+namespace leastOpsExpressTarget {
+    // target到对应的数量映射
+    unordered_map<int, int> target2num;
+
+    // 递归计算的函数
+    int dfs(int x, int target){
+        if (target2num.find(target) != target2num.end()) {
+            return target2num[target];
+        }
+        if (x == target) {
+            return 0;
+        } else if (x > target) {
+            return min(2*target - 1, 2*(x - target));
+        } else {
+            int p = 0;
+            long xp = x;;
+            while(xp < target) {
+                xp*=x;
+                ++p;
+            }
+            if(xp - target >= target) {
+                return p - 1 + 1 + dfs(x, target - xp/x);
+            } else {
+                target2num[target] = min(p-1+dfs(x, target - xp/x), p + dfs(x, xp - target)) + 1;
+                return target2num[target];
+            }
+        }
+
+    }
+
+    int leastOpsExpressTarget(int x, int target) {
+        // 如果相等，那么就是0
+        return x != target ? dfs(x, target) : 0;
+    }
+}
+
+void leastOpsExpressTarget_test(){
+    int x, target;
+    x = 3, target = 19;
+    cout << leastOpsExpressTarget::leastOpsExpressTarget(x, target) << endl;
+    x = 5, target = 501;
+    cout << leastOpsExpressTarget::leastOpsExpressTarget(x, target) << endl;
+    x = 100, target = 100000000;
+    cout << leastOpsExpressTarget::leastOpsExpressTarget(x, target) << endl;
+}
 
 int main() {
-    deckRevealedIncreasing_test();
+    leastOpsExpressTarget_test();
     {
+        //minAreaFreeRect_test();
+
+        //deckRevealedIncreasing_test();
+
         //largestTimeFromDigits_test();
 
         //bagOfTokensScore_test();
