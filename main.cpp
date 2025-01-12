@@ -11756,11 +11756,13 @@ void deckRevealedIncreasing_test() {
     ans = deckRevealedIncreasing::deckRevealedIncreasing(deck);
     print_vector(ans);
 }
+
 #include <cfloat>
+
 namespace minAreaFreeRect {
     double minAreaFreeRect(vector<vector<int>> &points) {
         int n = points.size();
-        set<pair<int, int>>points_set;
+        set<pair<int, int>> points_set;
         for (auto &v : points) {
             points_set.insert(make_pair(v[0], v[1]));
         }
@@ -11776,7 +11778,7 @@ namespace minAreaFreeRect {
                         continue;
                     int x3 = points[k][0], y3 = points[k][1];
                     int x4 = x2 + x3 - x1, y4 = y2 + y3 - y1;
-                    if (points_set.count(pair<int,int>{x4, y4}) != 0) {  //p4存在
+                    if (points_set.count(pair<int, int>{x4, y4}) != 0) {  //p4存在
                         vector<int> v21{x2 - x1, y2 - y1};
                         vector<int> v31{x3 - x1, y3 - y1};
                         if (v21[0] * v31[0] + v21[1] * v31[1] == 0) {
@@ -11789,7 +11791,7 @@ namespace minAreaFreeRect {
                 }
             }
         }
-        return res !=DBL_MAX ? res : 0;
+        return res != DBL_MAX ? res : 0;
     }
 }
 
@@ -11828,25 +11830,25 @@ namespace leastOpsExpressTarget {
     unordered_map<int, int> target2num;
 
     // 递归计算的函数
-    int dfs(int x, int target){
+    int dfs(int x, int target) {
         if (target2num.find(target) != target2num.end()) {
             return target2num[target];
         }
         if (x == target) {
             return 0;
         } else if (x > target) {
-            return min(2*target - 1, 2*(x - target));
+            return min(2 * target - 1, 2 * (x - target));
         } else {
             int p = 0;
             long xp = x;;
-            while(xp < target) {
-                xp*=x;
+            while (xp < target) {
+                xp *= x;
                 ++p;
             }
-            if(xp - target >= target) {
-                return p - 1 + 1 + dfs(x, target - xp/x);
+            if (xp - target >= target) {
+                return p - 1 + 1 + dfs(x, target - xp / x);
             } else {
-                target2num[target] = min(p-1+dfs(x, target - xp/x), p + dfs(x, xp - target)) + 1;
+                target2num[target] = min(p - 1 + dfs(x, target - xp / x), p + dfs(x, xp - target)) + 1;
                 return target2num[target];
             }
         }
@@ -11859,7 +11861,7 @@ namespace leastOpsExpressTarget {
     }
 }
 
-void leastOpsExpressTarget_test(){
+void leastOpsExpressTarget_test() {
     int x, target;
     x = 3, target = 19;
     cout << leastOpsExpressTarget::leastOpsExpressTarget(x, target) << endl;
@@ -11869,9 +11871,105 @@ void leastOpsExpressTarget_test(){
     cout << leastOpsExpressTarget::leastOpsExpressTarget(x, target) << endl;
 }
 
+namespace numsSameConsecDiff {
+    string path;
+    vector<int> ret;
+
+    void dfs(int n, int index, int k) {
+        // 找到了一个符合要求的答案
+        if (index == n) {
+            ret.push_back(stoi(path));
+            return;
+        }
+
+        for (int i = 0; i <= 9; ++i) {
+            // i 与前一位的差值相差 k，则 index 位置可以放入 i，然后继续往下递归
+            if ((path[index - 1] - '0' - i == k) || (i + '0' - path[index - 1] == k)) {
+
+                path += '0' + i;
+                dfs(n, index + 1, k);
+                path.pop_back();
+            }
+        }
+    }
+
+    vector<int> numsSameConsecDiff(int n, int k) {
+        path = "";
+        ret = {};
+        for (int i = 1; i <= 9; ++i) {
+            // 先确定第一位避免前导零
+            path += '0' + i;
+            dfs(n, 1, k);
+            path.pop_back();
+        }
+        return ret;
+    }
+}
+
+void numsSameConsecDiff_test() {
+    int n, k;
+    vector<int> ans;
+    n = 3;
+    k = 7;
+    ans = numsSameConsecDiff::numsSameConsecDiff(n, k);
+    print_vector(ans);
+    n = 2;
+    k = 1;
+    ans = numsSameConsecDiff::numsSameConsecDiff(n, k);
+    print_vector(ans);
+    n = 2;
+    k = 0;
+    ans = numsSameConsecDiff::numsSameConsecDiff(n, k);
+    print_vector(ans);
+    n = 2;
+    k = 2;
+    ans = numsSameConsecDiff::numsSameConsecDiff(n, k);
+    print_vector(ans);
+}
+
+namespace minCameraCover {
+    struct Status {
+        int a; // root 必须放置摄像头的情况下，覆盖整棵树需要的摄像头数目
+        int b; // 覆盖整棵树需要的摄像头数目，无论 root 是否放置摄像头
+        int c; // 覆盖两棵子树需要的摄像头数目，无论节点 root 本身是否被监控到
+    };
+
+    Status dfs(TreeNode::TreeNode *root) {
+        if (!root) {
+            return {INT_MAX / 2, 0, 0};
+        }
+        auto[la, lb, lc] = dfs(root->left);
+        auto[ra, rb, rc] = dfs(root->right);
+        int a = lc + rc + 1;
+        int b = min(a, min(la + rb, ra + lb));
+        int c = min(a, lb + rb);
+        return {a, b, c};
+    }
+
+    int minCameraCover(TreeNode::TreeNode *root) {
+        auto[a, b, c] = dfs(root);
+        return b;
+    }
+}
+
+void minCameraCover_test() {
+    vector<int> vals;
+    TreeNode::TreeNode *root;
+    vals = {0, 0, -1, 0, 0};
+    root = create_treenode(vals, true);
+    cout << minCameraCover::minCameraCover(root) << endl;
+    vals = {0, 0, -1, 0, -1, 0, -1, -1, 0};
+    root = create_treenode(vals, true);
+    cout << minCameraCover::minCameraCover(root) << endl;
+}
+
 int main() {
-    leastOpsExpressTarget_test();
+    minCameraCover_test();
     {
+        //numsSameConsecDiff_test();
+
+        //leastOpsExpressTarget_test();
+
         //minAreaFreeRect_test();
 
         //deckRevealedIncreasing_test();
