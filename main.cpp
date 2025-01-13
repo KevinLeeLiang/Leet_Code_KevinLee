@@ -11963,9 +11963,80 @@ void minCameraCover_test() {
     cout << minCameraCover::minCameraCover(root) << endl;
 }
 
+namespace pancakeSort {
+    vector<int> pancakeSort(vector<int>& arr) {
+        vector<int> ret;
+        for (int n = arr.size(); n > 1; n--) {
+            int index = max_element(arr.begin(), arr.begin() + n) - arr.begin();
+            if (index == n - 1) {
+                continue;
+            }
+            reverse(arr.begin(), arr.begin() + index + 1);
+            reverse(arr.begin(), arr.begin() + n);
+            ret.push_back(index + 1);
+            ret.push_back(n);
+        }
+        return ret;
+    }
+}
+
+void pancakeSort_test() {
+    vector<int>arr, ans;
+    arr = {3,2,4,1};
+    ans = pancakeSort::pancakeSort(arr);
+    print_vector(ans);
+    cout << "+++++++++++++" << endl;
+    arr = {1,2,3};
+    ans = pancakeSort::pancakeSort(arr);
+    print_vector(ans);
+    cout << "+++++++++++++" << endl;
+}
+
+namespace powerfulIntegers {
+    vector<int> powerfulIntegers(int x, int y, int bound) {
+        unordered_set<int> cnt;
+        int value1 = 1;
+        for (int i = 0; i < 21; i++) {
+            int value2 = 1;
+            for (int j = 0; j < 21; j++) {
+                int value = value1 + value2;
+                if (value <= bound) {
+                    cnt.emplace(value);
+                } else {
+                    break;
+                }
+                value2 *= y;
+            }
+            if (value1 > bound) {
+                break;
+            }
+            value1 *= x;
+        }
+        return vector<int>(cnt.begin(), cnt.end());
+    }
+}
+
+void powerfulIntegers_test() {
+    int x, y, bound;
+    vector<int>ans;
+    x = 2, y = 3, bound = 10;
+    ans = powerfulIntegers::powerfulIntegers(x, y, bound);
+    print_vector(ans);
+    cout << "+++++++++++++" << endl;
+    x = 3, y = 5, bound = 15;
+    ans = powerfulIntegers::powerfulIntegers(x, y, bound);
+    print_vector(ans);
+    cout << "+++++++++++++" << endl;
+
+}
+
 int main() {
-    minCameraCover_test();
+    powerfulIntegers_test();
     {
+        //pancakeSort_test();
+
+        //minCameraCover_test();
+
         //numsSameConsecDiff_test();
 
         //leastOpsExpressTarget_test();
