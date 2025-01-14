@@ -12030,9 +12030,136 @@ void powerfulIntegers_test() {
 
 }
 
+namespace flipMatchVoyage {
+    bool dfs(TreeNode::TreeNode* root, vector<int>&voyage, int &i, vector<int>&res) {
+        if (!root) {
+            return true;
+        }
+        if (root->val != voyage[i++]) {
+            return false;
+        }
+        if (root->left && root->left->val != voyage[i]) {
+            res.push_back(root->val);
+            return dfs(root->right, voyage, i, res) && dfs(root->left, voyage, i, res);
+        }
+        return dfs(root->left, voyage, i, res) && dfs(root->right, voyage, i, res);
+    }
+    vector<int> flipMatchVoyage(TreeNode::TreeNode* root, vector<int>& voyage) {
+        vector<int>res;
+        int i = 0;
+        if (dfs(root, voyage, i, res)) {
+            return res;
+        }
+        return {-1};
+    }
+}
+
+void flipMatchVoyage_test(){
+    vector<int>vals, voyage, ans;
+    TreeNode::TreeNode *root;
+    vals = {1,2};
+    voyage = {2,1};
+    root = create_treenode(vals);
+    ans = flipMatchVoyage::flipMatchVoyage(root, voyage);
+    print_vector(ans);
+    cout << "+++++++++" << endl;
+    vals = {1,2,3};
+    voyage = {1,3,2};
+    root = create_treenode(vals);
+    ans = flipMatchVoyage::flipMatchVoyage(root, voyage);
+    print_vector(ans);
+    cout << "+++++++++" << endl;
+    vals = {1,2,3};
+    voyage = {1,2,3};
+    root = create_treenode(vals);
+    ans = flipMatchVoyage::flipMatchVoyage(root, voyage);
+    print_vector(ans);
+    cout << "+++++++++" << endl;
+}
+
+namespace isRationalEqual{
+#define x first
+#define y second
+    typedef unsigned long long ULL;
+
+    typedef pair<ULL, ULL> PLL;
+    ULL gcd(ULL a, ULL b){
+
+        return b ? gcd(b, a%b) : a;
+
+    }
+
+    PLL simple(PLL a){//化简分数
+
+        ULL t = gcd(a.x,a.y);
+
+        return {a.x/t, a.y/t};
+
+    }
+
+    PLL add(PLL a, PLL b){//两个分数相加
+
+        a = simple(a),b = simple(b);
+
+        ULL down = a.y*b.y;
+
+        ULL up = a.x*b.y + b.x*a.y;
+
+        return simple({up,down});
+
+    }
+
+    PLL convert(string &s){//将小数转为分数
+
+        PLL a = {0,1}, b = {0,1}, c = {0, 0};//整数部分 不循环小数部分 循环小数部分
+
+        int i = 0;
+
+        //例如25.01(52)
+
+        while(i < s.size() && s[i]!='.') a.x = a.x*10 + s[i]-'0', i++; // 分解出整数部分 {25,1}
+
+        i++;//跳过小数点
+
+        while(i < s.size() && s[i]!='(') b.x = b.x*10 + s[i]-'0', b.y = b.y*10, i++; // 分解出不循环小数部分 {1,100}
+
+        i++;//跳过左括号
+
+        while(i < s.size() && s[i]!=')') c.x = c.x*10 + s[i]-'0', c.y = c.y*10+9, i++;// 分解出循环小数部分 {52,99}
+
+        c.y *= b.y;//把循环小数前面的0也计算在内 {52,9900}
+
+        if(c.y==0) c.y = 1;//注意 可能无循环部分 分母不能为零 这里把分母设为1即可
+
+        // cout<<a.x<<" "<<a.y<<"--"<<b.x<<" "<<b.y<<"--"<<c.x<<" "<<c.y<<endl;
+
+        return add(add(a,b),c);
+
+    }
+
+    bool isRationalEqual(string s, string t) {
+        auto t1 = convert(s), t2 = convert(t);
+        return t1.x == t2.x && t1.y == t2.y;
+    }
+}
+
+void isRationalEqual_test(){
+    string s, t;
+    s = "0.(52)", t = "0.5(25)";
+    cout << isRationalEqual::isRationalEqual(s, t) << endl;
+    s = "0.1666(6)", t = "0.166(66)";
+    cout << isRationalEqual::isRationalEqual(s, t) << endl;
+    s = "0.9(9)", t = "1.";
+    cout << isRationalEqual::isRationalEqual(s, t) << endl;
+}
+
 int main() {
-    powerfulIntegers_test();
+    isRationalEqual_test();
     {
+        //flipMatchVoyage_test();
+
+        //powerfulIntegers_test();
+
         //pancakeSort_test();
 
         //minCameraCover_test();
