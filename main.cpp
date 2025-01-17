@@ -12231,9 +12231,150 @@ void subarraysDivByK_test() {
     cout << subarraysDivByK::subarraysDivByK(nums, k) << endl;
 }
 
+namespace oddEvenJumps {
+    vector<int> make(vector<int> & idxArr) {
+        vector<int> rs(idxArr.size(), -1);
+        stack<int> s;
+        for(int idx: idxArr) {
+            while (!s.empty() && s.top() < idx) {
+                int tmp = s.top(); s.pop();
+                rs[tmp] = idx;
+            }
+            s.push(idx);
+        }
+        return rs;
+    }
+
+    int oddEvenJumps(vector<int>& arr) {
+        int n = arr.size();
+        vector<int> iArr(n), odd(n), even(n), oddNext, evenNext;
+        odd[n-1] = even[n-1] = true;
+
+        for(int i = 0; i < n; i++) iArr[i] = i;
+        sort(iArr.begin(), iArr.end(), [&](auto a, auto b){return arr[a] == arr[b] ? a < b: arr[a] < arr[b];});
+        oddNext = make(iArr);
+        sort(iArr.begin(), iArr.end(), [&](auto a, auto b){return arr[a] == arr[b] ? a < b: arr[a] > arr[b];});
+        evenNext = make(iArr);
+
+        for(int i = n-2; i >= 0; i--) {
+            if (oddNext[i] != -1) {
+                int nxt = oddNext[i];
+                odd[i] = even[nxt];
+            }
+            if (evenNext[i] != -1) {
+                int nxt = evenNext[i];
+                even[i] = odd[nxt];
+            }
+        }
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            if (odd[i] == true) ans++;
+        }
+        return ans;
+    }
+}
+
+void oddEvenJumps_test(){
+    vector<int>arr;
+    arr = {10,13,12,14,15};
+    cout << oddEvenJumps::oddEvenJumps(arr) << endl;
+    arr = {2,3,1,1,4};
+    cout << oddEvenJumps::oddEvenJumps(arr) << endl;
+}
+
+namespace largestPerimeter {
+    int largestPerimeter(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        for (int i = (int)nums.size() - 1; i >= 2; --i){
+            if (nums[i - 2] + nums[i - 1] > nums[i]) {
+                return nums[i - 2] + nums[i - 1] + nums[i];
+            }
+        }
+        return 0;
+    }
+}
+
+void largestPerimeter_test() {
+    vector<int>nums;
+    nums = {2,1,2};
+    cout << largestPerimeter::largestPerimeter(nums) << endl;
+    nums = {1,2,1,10};
+    cout << largestPerimeter::largestPerimeter(nums) << endl;
+}
+
+namespace sortedSquares {
+    vector<int> sortedSquares(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> ans(n);
+        for (int i = 0, j = n - 1, pos = n - 1; i <= j;) {
+            if (nums[i] * nums[i] > nums[j] * nums[j]) {
+                ans[pos] = nums[i] * nums[i];
+                ++i;
+            } else {
+                ans[pos] = nums[j] * nums[j];
+                --j;
+            }
+            --pos;
+        }
+        return ans;
+    }
+}
+
+void sortedSquares_test(){
+    vector<int>nums, ans;
+    nums = {-4,-1,0,3,10};
+    ans = sortedSquares::sortedSquares(nums);
+    print_vector(nums);
+    nums = {-7,-3,2,3,11};
+    ans = sortedSquares::sortedSquares(nums);
+    print_vector(nums);
+}
+
+namespace maxTurbulenceSize {
+    int maxTurbulenceSize(vector<int>& arr) {
+        int n = arr.size();
+        int ret = 1;
+        int left = 0, right = 0;
+        while (right < n - 1) {
+            if (left == right) {
+                if (arr[left] == arr[left + 1]) {
+                    left++;
+                }
+                right++;
+            } else {
+                if (arr[right - 1] < arr[right] && arr[right] > arr[right + 1]) {
+                    right++;
+                } else if (arr[right - 1] > arr[right] && arr[right] < arr[right + 1]) {
+                    right++;
+                } else {
+                    left = right;
+                }
+            }
+            ret = max(ret, right - left + 1);
+        }
+        return ret;
+    }
+}
+
+void maxTurbulenceSize_test(){
+    vector<int>arr;
+    arr = {9,4,2,10,7,8,8,1,9};
+    cout << maxTurbulenceSize::maxTurbulenceSize(arr) << endl;
+    arr = {4,8,12,16};
+    cout << maxTurbulenceSize::maxTurbulenceSize(arr) << endl;
+}
+
 int main() {
-    subarraysDivByK_test();
+    maxTurbulenceSize_test();
     {
+        //sortedSquares_test();
+
+        //largestPerimeter_test();
+
+        //oddEvenJumps_test();
+
+        //subarraysDivByK_test();
+
         //kClosest_test();
 
         //isRationalEqual_test();
