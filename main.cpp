@@ -12364,9 +12364,47 @@ void maxTurbulenceSize_test(){
     cout << maxTurbulenceSize::maxTurbulenceSize(arr) << endl;
 }
 
+namespace distributeCoins {
+    int distributeCoins(TreeNode::TreeNode* root) {
+        int move = 0;
+
+        function<int(const TreeNode::TreeNode *)> dfs = [&](const TreeNode::TreeNode *root) -> int {
+            int moveleft = 0;
+            int moveright = 0;
+            if (root == nullptr) {
+                return 0;
+            }
+            if (root->left) {
+                moveleft = dfs(root->left);
+            }
+            if (root->right) {
+                moveright = dfs(root->right);
+            }
+            move += abs(moveleft) + abs(moveright);
+            return moveleft + moveright + root->val - 1;
+        };
+
+        dfs(root);
+        return move;
+    }
+}
+
+void distributeCoins_test(){
+    vector<int>vals;
+    TreeNode::TreeNode* root;
+    vals = {3,0,0};
+    root = create_treenode(vals, true);
+    cout << distributeCoins::distributeCoins(root) << endl;
+    vals = {0,3,0};
+    root = create_treenode(vals, true);
+    cout << distributeCoins::distributeCoins(root) << endl;
+}
+
 int main() {
-    maxTurbulenceSize_test();
+    distributeCoins_test();
     {
+        //maxTurbulenceSize_test();
+
         //sortedSquares_test();
 
         //largestPerimeter_test();
