@@ -12400,9 +12400,125 @@ void distributeCoins_test(){
     cout << distributeCoins::distributeCoins(root) << endl;
 }
 
+namespace countTriplets {
+    int countTriplets(vector<int>& nums) {
+        vector<int> cnt(1 << 16);
+        for (int x: nums) {
+            for (int y: nums) {
+                ++cnt[x & y];
+            }
+        }
+        int ans = 0;
+        for (int x: nums) {
+            for (int mask = 0; mask < (1 << 16); ++mask) {
+                if ((x & mask) == 0) {
+                    ans += cnt[mask];
+                }
+            }
+        }
+        return ans;
+    }
+}
+
+void countTriplets_test(){
+    vector<int>nums;
+    nums = {2,1,3};
+    cout << countTriplets::countTriplets(nums) << endl;
+    nums = {0,0,0};
+    cout << countTriplets::countTriplets(nums) << endl;
+}
+
+namespace mincostTickets {
+    unordered_set<int> dayset;
+    vector<int> costs_;
+    int memo[366] = {0};
+
+    int dp(int i) {
+        if (i > 365) {
+            return 0;
+        }
+        if (memo[i] != -1) {
+            return memo[i];
+        }
+        if (dayset.count(i)) {
+            memo[i] = min(min(dp(i + 1) + costs_[0], dp(i + 7) + costs_[1]), dp(i + 30) + costs_[2]);
+        } else {
+            memo[i] = dp(i + 1);
+        }
+        return memo[i];
+    }
+
+    int mincostTickets(vector<int>& days, vector<int>& costs) {
+        costs_ = costs;
+        dayset.clear();
+        for (int d: days) {
+            dayset.insert(d);
+        }
+        memset(memo, -1, sizeof(memo));
+        return dp(1);
+    }
+}
+
+void mincostTickets_test(){
+    vector<int> days, costs;
+    days = {1,4,6,7,8,20}, costs = {2,7,15};
+    cout << mincostTickets::mincostTickets(days, costs) << endl;
+    days = {1,2,3,4,5,6,7,8,9,10,30,31}, costs = {2,7,15};
+    cout << mincostTickets::mincostTickets(days, costs) << endl;
+}
+
+namespace strWithout3a3b {
+    string strWithout3a3b(int a, int b) {
+        string s;
+        int A = a, B = b;
+        int cnta = 0, cntb = 0;
+        while(A>0 || B>0)
+            if (A>B) {
+                if (cnta < 2) {
+                    s = s + 'a';
+                    cnta++;
+                    A--;
+                    cntb = 0;
+                } else {
+                    s = s + 'b';
+                    cntb++;
+                    B--;
+                    cnta = 0;
+                }
+            }else {
+                if (cntb < 2) {
+                    s = s + 'b';
+                    cntb++;
+                    B--;
+                    cnta = 0;
+                } else {
+                    s = s + 'a';
+                    cnta++;
+                    A--;
+                    cntb = 0;
+                }
+            }
+        return s;
+    }
+}
+
+void strWithout3a3b_test() {
+    int a, b;
+    a = 1, b = 2;
+    cout << strWithout3a3b::strWithout3a3b(a, b) << endl;
+    a = 4, b = 1;
+    cout << strWithout3a3b::strWithout3a3b(a, b) << endl;
+}
+
 int main() {
-    distributeCoins_test();
+    strWithout3a3b_test();
     {
+        //mincostTickets_test();
+
+        //countTriplets_test();
+
+        //distributeCoins_test();
+
         //maxTurbulenceSize_test();
 
         //sortedSquares_test();
