@@ -12510,9 +12510,101 @@ void strWithout3a3b_test() {
     cout << strWithout3a3b::strWithout3a3b(a, b) << endl;
 }
 
+namespace sumEvenAfterQueries {
+    vector<int> sumEvenAfterQueries(vector<int>& nums, vector<vector<int>>& queries) {
+        vector<int> res;
+        int sum = 0;
+        for(int i = 0; i < nums.size(); i++)
+            if(nums[i]%2 == 0)
+                sum += nums[i];
+        for(int i = 0; i < queries.size(); i++)
+        {
+            int val = queries[i][0];
+            int index = queries[i][1];
+            if(nums[index] % 2 == 0)
+            {
+                if(val % 2 == 0)
+                    sum += val;
+                else
+                    sum -= nums[index];
+            }
+            else
+            {
+                if(val % 2 != 0)
+                    sum += nums[index]+val;
+            }
+            nums[index] += val;
+            res.push_back(sum);
+        }
+        return res;
+    }
+}
+
+void sumEvenAfterQueries_test(){
+    vector<int>nums, ans;
+    vector<vector<int>> queries;
+    nums = {1,2,3,4};
+    queries = {{1,0},{-3,1},{-4,0},{2,3}};
+    ans  = sumEvenAfterQueries::sumEvenAfterQueries(nums, queries);
+    print_vector(ans);
+}
+
+namespace intervalIntersection {
+    vector<vector<int>> intervalIntersection(vector<vector<int>>& firstList, vector<vector<int>>& secondList) {
+        int i = 0, j = 0;
+        vector<vector<int>> res;
+        while(i < firstList.size() && j < secondList.size()){
+            int low = max(firstList[i][0], secondList[j][0]);
+            int high = min(firstList[i][1], secondList[j][1]);
+            if(low <= high){
+                res.push_back({low, high});
+            }
+            if(firstList[i][1] < secondList[j][1]){
+                i++;
+            }
+            else{
+                j++;
+            }
+        }
+        return res;
+    }
+}
+
+void intervalIntersection_test(){
+    vector<vector<int>>firstList, secondList, ans;
+    firstList = firstList = {{0,2},{5,10},{13,23},{24,25}}, secondList = {{1,5},{8,12},{15,24},{25,26}};
+    ans = intervalIntersection::intervalIntersection(firstList, secondList);
+    for (auto list : ans) {
+        cout << list[0] << " " << list[1] << ", ";
+    }
+    cout << endl;
+    firstList = {{1,3},{5,9}}, secondList = {};
+    ans = intervalIntersection::intervalIntersection(firstList, secondList);
+    for (auto list : ans) {
+        cout << list[0] << " " << list[1] << ", ";
+    }
+    cout << endl;
+    firstList = {}, secondList = {{4,8},{10,12}};
+    ans = intervalIntersection::intervalIntersection(firstList, secondList);
+    for (auto list : ans) {
+        cout << list[0] << " " << list[1] << ", ";
+    }
+    cout << endl;
+    firstList = {{1,7}}, secondList = {{3,10}};
+    ans = intervalIntersection::intervalIntersection(firstList, secondList);
+    for (auto list : ans) {
+        cout << list[0] << " " << list[1] << ", ";
+    }
+    cout << endl;
+}
+
 int main() {
-    strWithout3a3b_test();
+    intervalIntersection_test();
     {
+        //sumEvenAfterQueries_test();
+
+        //strWithout3a3b_test();
+
         //mincostTickets_test();
 
         //countTriplets_test();
