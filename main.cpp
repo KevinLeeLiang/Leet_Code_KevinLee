@@ -12664,9 +12664,116 @@ void smallestFromLeaf_test(){
     cout << smallestFromLeaf::smallestFromLeaf(root) << endl;
 }
 
+namespace addToArrayForm {
+    vector<int> addToArrayForm(vector<int>& nums, int k) {
+        int n = nums.size();
+        vector<int> ans;
+        for (int i = n - 1; i >= 0 || k > 0; --i) {
+            if (i >= 0) {
+                k += nums[i];
+            }
+            ans.push_back(k % 10);
+            k /= 10;
+        }
+        reverse(ans.begin(), ans.end());
+        return ans;
+    }
+ }
+
+void addToArrayForm_test(){
+    vector<int>nums, ans;
+    int k;
+    nums = {9,9,9,9,9,9,9,9,9,9};
+    k = 1;
+    ans = addToArrayForm::addToArrayForm(nums, k);
+    print_vector(ans);
+    nums = {1,2,0,0};
+    k = 34;
+    ans = addToArrayForm::addToArrayForm(nums, k);
+    print_vector(ans);
+    nums = {2,7,4};
+    k = 181;
+    ans = addToArrayForm::addToArrayForm(nums, k);
+    print_vector(ans);
+    nums = {2,1,5};
+    k = 806;
+    ans = addToArrayForm::addToArrayForm(nums, k);
+    print_vector(ans);
+}
+
+namespace equationsPossible {
+    class UnionFind {
+    private:
+        vector<int> parent;
+
+    public:
+        UnionFind() {
+            parent.resize(26);
+            iota(parent.begin(), parent.end(), 0);
+        }
+
+        int find(int index) {
+            if (index == parent[index]) {
+                return index;
+            }
+            parent[index] = find(parent[index]);
+            return parent[index];
+        }
+
+        void unite(int index1, int index2) {
+            parent[find(index1)] = find(index2);
+        }
+    };
+
+    bool equationsPossible(vector<string>& equations) {
+        UnionFind uf;
+        for (const string& str: equations) {
+            if (str[1] == '=') {
+                int index1 = str[0] - 'a';
+                int index2 = str[3] - 'a';
+                uf.unite(index1, index2);
+            }
+        }
+        for (const string& str: equations) {
+            if (str[1] == '!') {
+                int index1 = str[0] - 'a';
+                int index2 = str[3] - 'a';
+                if (uf.find(index1) == uf.find(index2)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+}
+
+void equationsPossible_test(){
+    vector<string> equations;
+    bool ans;
+    equations = {"a==b","b!=a"};
+    ans = equationsPossible::equationsPossible(equations);
+    cout << ans << endl;
+    equations = {"b==a","a==b"};
+    ans = equationsPossible::equationsPossible(equations);
+    cout << ans << endl;
+    equations = {"c==c","b==d","x!=z"};
+    ans = equationsPossible::equationsPossible(equations);
+    cout << ans << endl;
+    equations = {"c==c","b==c","c==a"};
+    ans = equationsPossible::equationsPossible(equations);
+    cout << ans << endl;
+    equations = {"a==b", "b!=c", "c==a"};
+    ans = equationsPossible::equationsPossible(equations);
+    cout << ans << endl;
+}
+
 int main() {
-    smallestFromLeaf_test();
+    equationsPossible_test();
     {
+        //addToArrayForm_test();
+
+        //smallestFromLeaf_test();
+
         //verticalTraversal_test();
     
         //intervalIntersection_test();
