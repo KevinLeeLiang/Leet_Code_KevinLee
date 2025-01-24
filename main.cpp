@@ -12422,16 +12422,441 @@ namespace countTriplets {
 
 void countTriplets_test(){
     vector<int>nums;
-    nums = {2, 1, 3};
+    nums = {2,1,3};
     cout << countTriplets::countTriplets(nums) << endl;
-    nums = {0, 0, 0};
+    nums = {0,0,0};
     cout << countTriplets::countTriplets(nums) << endl;
+}
 
+namespace mincostTickets {
+    unordered_set<int> dayset;
+    vector<int> costs_;
+    int memo[366] = {0};
+
+    int dp(int i) {
+        if (i > 365) {
+            return 0;
+        }
+        if (memo[i] != -1) {
+            return memo[i];
+        }
+        if (dayset.count(i)) {
+            memo[i] = min(min(dp(i + 1) + costs_[0], dp(i + 7) + costs_[1]), dp(i + 30) + costs_[2]);
+        } else {
+            memo[i] = dp(i + 1);
+        }
+        return memo[i];
+    }
+
+    int mincostTickets(vector<int>& days, vector<int>& costs) {
+        costs_ = costs;
+        dayset.clear();
+        for (int d: days) {
+            dayset.insert(d);
+        }
+        memset(memo, -1, sizeof(memo));
+        return dp(1);
+    }
+}
+
+void mincostTickets_test(){
+    vector<int> days, costs;
+    days = {1,4,6,7,8,20}, costs = {2,7,15};
+    cout << mincostTickets::mincostTickets(days, costs) << endl;
+    days = {1,2,3,4,5,6,7,8,9,10,30,31}, costs = {2,7,15};
+    cout << mincostTickets::mincostTickets(days, costs) << endl;
+}
+
+namespace strWithout3a3b {
+    string strWithout3a3b(int a, int b) {
+        string s;
+        int A = a, B = b;
+        int cnta = 0, cntb = 0;
+        while(A>0 || B>0)
+            if (A>B) {
+                if (cnta < 2) {
+                    s = s + 'a';
+                    cnta++;
+                    A--;
+                    cntb = 0;
+                } else {
+                    s = s + 'b';
+                    cntb++;
+                    B--;
+                    cnta = 0;
+                }
+            }else {
+                if (cntb < 2) {
+                    s = s + 'b';
+                    cntb++;
+                    B--;
+                    cnta = 0;
+                } else {
+                    s = s + 'a';
+                    cnta++;
+                    A--;
+                    cntb = 0;
+                }
+            }
+        return s;
+    }
+}
+
+void strWithout3a3b_test() {
+    int a, b;
+    a = 1, b = 2;
+    cout << strWithout3a3b::strWithout3a3b(a, b) << endl;
+    a = 4, b = 1;
+    cout << strWithout3a3b::strWithout3a3b(a, b) << endl;
+}
+
+namespace sumEvenAfterQueries {
+    vector<int> sumEvenAfterQueries(vector<int>& nums, vector<vector<int>>& queries) {
+        vector<int> res;
+        int sum = 0;
+        for(int i = 0; i < nums.size(); i++)
+            if(nums[i]%2 == 0)
+                sum += nums[i];
+        for(int i = 0; i < queries.size(); i++)
+        {
+            int val = queries[i][0];
+            int index = queries[i][1];
+            if(nums[index] % 2 == 0)
+            {
+                if(val % 2 == 0)
+                    sum += val;
+                else
+                    sum -= nums[index];
+            }
+            else
+            {
+                if(val % 2 != 0)
+                    sum += nums[index]+val;
+            }
+            nums[index] += val;
+            res.push_back(sum);
+        }
+        return res;
+    }
+}
+
+void sumEvenAfterQueries_test(){
+    vector<int>nums, ans;
+    vector<vector<int>> queries;
+    nums = {1,2,3,4};
+    queries = {{1,0},{-3,1},{-4,0},{2,3}};
+    ans  = sumEvenAfterQueries::sumEvenAfterQueries(nums, queries);
+    print_vector(ans);
+}
+
+namespace intervalIntersection {
+    vector<vector<int>> intervalIntersection(vector<vector<int>>& firstList, vector<vector<int>>& secondList) {
+        int i = 0, j = 0;
+        vector<vector<int>> res;
+        while(i < firstList.size() && j < secondList.size()){
+            int low = max(firstList[i][0], secondList[j][0]);
+            int high = min(firstList[i][1], secondList[j][1]);
+            if(low <= high){
+                res.push_back({low, high});
+            }
+            if(firstList[i][1] < secondList[j][1]){
+                i++;
+            }
+            else{
+                j++;
+            }
+        }
+        return res;
+    }
+}
+
+void intervalIntersection_test(){
+    vector<vector<int>>firstList, secondList, ans;
+    firstList = firstList = {{0,2},{5,10},{13,23},{24,25}}, secondList = {{1,5},{8,12},{15,24},{25,26}};
+    ans = intervalIntersection::intervalIntersection(firstList, secondList);
+    for (auto list : ans) {
+        cout << list[0] << " " << list[1] << ", ";
+    }
+    cout << endl;
+    firstList = {{1,3},{5,9}}, secondList = {};
+    ans = intervalIntersection::intervalIntersection(firstList, secondList);
+    for (auto list : ans) {
+        cout << list[0] << " " << list[1] << ", ";
+    }
+    cout << endl;
+    firstList = {}, secondList = {{4,8},{10,12}};
+    ans = intervalIntersection::intervalIntersection(firstList, secondList);
+    for (auto list : ans) {
+        cout << list[0] << " " << list[1] << ", ";
+    }
+    cout << endl;
+    firstList = {{1,7}}, secondList = {{3,10}};
+    ans = intervalIntersection::intervalIntersection(firstList, secondList);
+    for (auto list : ans) {
+        cout << list[0] << " " << list[1] << ", ";
+    }
+    cout << endl;
+}
+
+namespace verticalTraversal {
+    vector<vector<int>> verticalTraversal(TreeNode::TreeNode* root) {
+        vector<tuple<int, int, int>> nodes;
+        function<void(TreeNode::TreeNode*, int, int)> dfs = [&](TreeNode::TreeNode* node, int row, int col) {
+            if (node) {
+                nodes.emplace_back(col, row, node->val);
+                dfs(node->left, row + 1, col - 1);
+                dfs(node->right, row + 1, col + 1);
+            }
+        };
+        dfs(root, 0, 0);
+        sort(nodes.begin(), nodes.end());
+        vector<vector<int>> ans;
+        int lastcol = INT_MIN;
+        for (const auto& [col, row, value] : nodes) {
+            if (col != lastcol) {
+                lastcol = col;
+                ans.emplace_back();
+            }
+            ans.back().push_back(value);
+        }
+        return ans;
+    }
+}
+
+void verticalTraversal_test(){
+    vector<int>vals;
+    TreeNode::TreeNode* root;
+    vals = {3,9,20,-1,-1,15,7};
+    root = create_treenode(vals, true);
+    vector<vector<int>> ans = verticalTraversal::verticalTraversal(root);
+    for (auto list : ans) {
+        print_vector(list);
+    }
+}
+
+namespace smallestFromLeaf {
+    string smallestFromLeaf(TreeNode::TreeNode* root) {
+        string ans = "~";
+        function<void(TreeNode::TreeNode*, string)> dfs = [&](TreeNode::TreeNode* node, string path) {
+            if (node != nullptr) {
+                path += (char)('a' + node->val);
+                if (node->left == nullptr && node->right == nullptr) {
+                    ans = min(ans, string(path.rbegin(), path.rend()));
+                } else {
+                    dfs(node->left, path);
+                    dfs(node->right, path);
+                }
+            }
+        };
+        dfs(root, "");
+        return ans;
+    }
+}
+
+void smallestFromLeaf_test(){
+    vector<int>vals;
+    TreeNode::TreeNode* root;
+    vals = {0,1,2,3,4,3,4};
+    root = create_treenode(vals, true);
+    cout << smallestFromLeaf::smallestFromLeaf(root) << endl;
+    vals = {25,1,3,1,3,0,2};
+    root = create_treenode(vals, true);
+    cout << smallestFromLeaf::smallestFromLeaf(root) << endl;
+}
+
+namespace addToArrayForm {
+    vector<int> addToArrayForm(vector<int>& nums, int k) {
+        int n = nums.size();
+        vector<int> ans;
+        for (int i = n - 1; i >= 0 || k > 0; --i) {
+            if (i >= 0) {
+                k += nums[i];
+            }
+            ans.push_back(k % 10);
+            k /= 10;
+        }
+        reverse(ans.begin(), ans.end());
+        return ans;
+    }
+ }
+
+void addToArrayForm_test(){
+    vector<int>nums, ans;
+    int k;
+    nums = {9,9,9,9,9,9,9,9,9,9};
+    k = 1;
+    ans = addToArrayForm::addToArrayForm(nums, k);
+    print_vector(ans);
+    nums = {1,2,0,0};
+    k = 34;
+    ans = addToArrayForm::addToArrayForm(nums, k);
+    print_vector(ans);
+    nums = {2,7,4};
+    k = 181;
+    ans = addToArrayForm::addToArrayForm(nums, k);
+    print_vector(ans);
+    nums = {2,1,5};
+    k = 806;
+    ans = addToArrayForm::addToArrayForm(nums, k);
+    print_vector(ans);
+}
+
+namespace equationsPossible {
+    class UnionFind {
+    private:
+        vector<int> parent;
+
+    public:
+        UnionFind() {
+            parent.resize(26);
+            iota(parent.begin(), parent.end(), 0);
+        }
+
+        int find(int index) {
+            if (index == parent[index]) {
+                return index;
+            }
+            parent[index] = find(parent[index]);
+            return parent[index];
+        }
+
+        void unite(int index1, int index2) {
+            parent[find(index1)] = find(index2);
+        }
+    };
+
+    bool equationsPossible(vector<string>& equations) {
+        UnionFind uf;
+        for (const string& str: equations) {
+            if (str[1] == '=') {
+                int index1 = str[0] - 'a';
+                int index2 = str[3] - 'a';
+                uf.unite(index1, index2);
+            }
+        }
+        for (const string& str: equations) {
+            if (str[1] == '!') {
+                int index1 = str[0] - 'a';
+                int index2 = str[3] - 'a';
+                if (uf.find(index1) == uf.find(index2)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+}
+
+void equationsPossible_test(){
+    vector<string> equations;
+    bool ans;
+    equations = {"a==b","b!=a"};
+    ans = equationsPossible::equationsPossible(equations);
+    cout << ans << endl;
+    equations = {"b==a","a==b"};
+    ans = equationsPossible::equationsPossible(equations);
+    cout << ans << endl;
+    equations = {"c==c","b==d","x!=z"};
+    ans = equationsPossible::equationsPossible(equations);
+    cout << ans << endl;
+    equations = {"c==c","b==c","c==a"};
+    ans = equationsPossible::equationsPossible(equations);
+    cout << ans << endl;
+    equations = {"a==b", "b!=c", "c==a"};
+    ans = equationsPossible::equationsPossible(equations);
+    cout << ans << endl;
+}
+
+namespace brokenCalc {
+    int brokenCalc(int startValue, int target) {
+        if (startValue >= target) {
+            return startValue - target;
+        }
+        int count = 0;
+        while (startValue != target) {
+
+            if (target > startValue) {
+                if (target % 2 == 1) {
+                    target = target + 1;
+                } else {
+                    target = target / 2;
+                }
+                count++;
+            } else if (target < startValue) {
+                count = count + startValue - target;
+                target = startValue;
+            }
+        }
+
+        return count;
+    }
+}
+
+void brokenCalc_test(){
+    int startValue, target;
+    startValue = 2, target = 3;
+    cout << brokenCalc::brokenCalc(startValue, target) << endl;
+    startValue = 5, target = 8;
+    cout << brokenCalc::brokenCalc(startValue, target) << endl;
+    startValue = 3, target = 10;
+    cout << brokenCalc::brokenCalc(startValue, target) << endl;
+}
+
+namespace subarraysWithKDistinct {
+    int getMostDistinct(vector<int>& nums, int k) {
+        unordered_map<int, int> mp;
+        int left = 0, right = 0, ret = 0;
+        while (right < nums.size()) {
+            ++mp[nums[right++]];
+            while (mp.size() > k) {
+                --mp[nums[left]];
+                if (mp[nums[left]] == 0) mp.erase(nums[left]);
+                ++left;
+            }
+            // 如果这里改成 ret = max(ret, right - left)，那么此函数就是 LeetCode 904 题的解：求长度最大的子数组（此子数组中包含不同整数个数最多为K）
+            ret += right - left;
+        }
+        return ret;
+    }
+    int subarraysWithKDistinct(vector<int>& nums, int k) {
+        return getMostDistinct(nums, k) - getMostDistinct(nums, k - 1);
+    }
+}
+
+void subarraysWithKDistinct_test(){
+    vector<int>nums;
+    int k;
+    nums = {1,2,1,2,3};
+    k = 2;
+    cout << subarraysWithKDistinct::subarraysWithKDistinct(nums, k) << endl;
+    nums = {1,2,1,3,4};
+    k = 3;
+    cout << subarraysWithKDistinct::subarraysWithKDistinct(nums, k) << endl;
 }
 
 int main() {
-    countTriplets_test();
+    subarraysWithKDistinct_test();
     {
+        //brokenCalc_test();
+
+        //equationsPossible_test();
+
+        //addToArrayForm_test();
+
+        //smallestFromLeaf_test();
+
+        //verticalTraversal_test();
+    
+        //intervalIntersection_test();
+    
+        //sumEvenAfterQueries_test();
+
+        //strWithout3a3b_test();
+
+        //mincostTickets_test();
+
+        //countTriplets_test();
+
         //distributeCoins_test();
 
         //maxTurbulenceSize_test();
