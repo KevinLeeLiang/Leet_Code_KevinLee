@@ -12400,9 +12400,40 @@ void distributeCoins_test(){
     cout << distributeCoins::distributeCoins(root) << endl;
 }
 
+namespace countTriplets {
+    int countTriplets(vector<int>& nums) {
+        vector<int> cnt(1 << 16);
+        for (int x: nums) {
+            for (int y: nums) {
+                ++cnt[x & y];
+            }
+        }
+        int ans = 0;
+        for (int x: nums) {
+            for (int mask = 0; mask < (1 << 16); ++mask) {
+                if ((x & mask) == 0) {
+                    ans += cnt[mask];
+                }
+            }
+        }
+        return ans;
+    }
+}
+
+void countTriplets_test(){
+    vector<int>nums;
+    nums = {2, 1, 3};
+    cout << countTriplets::countTriplets(nums) << endl;
+    nums = {0, 0, 0};
+    cout << countTriplets::countTriplets(nums) << endl;
+
+}
+
 int main() {
-    distributeCoins_test();
+    countTriplets_test();
     {
+        //distributeCoins_test();
+
         //maxTurbulenceSize_test();
 
         //sortedSquares_test();
