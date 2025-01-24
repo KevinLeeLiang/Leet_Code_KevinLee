@@ -12767,9 +12767,80 @@ void equationsPossible_test(){
     cout << ans << endl;
 }
 
+namespace brokenCalc {
+    int brokenCalc(int startValue, int target) {
+        if (startValue >= target) {
+            return startValue - target;
+        }
+        int count = 0;
+        while (startValue != target) {
+
+            if (target > startValue) {
+                if (target % 2 == 1) {
+                    target = target + 1;
+                } else {
+                    target = target / 2;
+                }
+                count++;
+            } else if (target < startValue) {
+                count = count + startValue - target;
+                target = startValue;
+            }
+        }
+
+        return count;
+    }
+}
+
+void brokenCalc_test(){
+    int startValue, target;
+    startValue = 2, target = 3;
+    cout << brokenCalc::brokenCalc(startValue, target) << endl;
+    startValue = 5, target = 8;
+    cout << brokenCalc::brokenCalc(startValue, target) << endl;
+    startValue = 3, target = 10;
+    cout << brokenCalc::brokenCalc(startValue, target) << endl;
+}
+
+namespace subarraysWithKDistinct {
+    int getMostDistinct(vector<int>& nums, int k) {
+        unordered_map<int, int> mp;
+        int left = 0, right = 0, ret = 0;
+        while (right < nums.size()) {
+            ++mp[nums[right++]];
+            while (mp.size() > k) {
+                --mp[nums[left]];
+                if (mp[nums[left]] == 0) mp.erase(nums[left]);
+                ++left;
+            }
+            // 如果这里改成 ret = max(ret, right - left)，那么此函数就是 LeetCode 904 题的解：求长度最大的子数组（此子数组中包含不同整数个数最多为K）
+            ret += right - left;
+        }
+        return ret;
+    }
+    int subarraysWithKDistinct(vector<int>& nums, int k) {
+        return getMostDistinct(nums, k) - getMostDistinct(nums, k - 1);
+    }
+}
+
+void subarraysWithKDistinct_test(){
+    vector<int>nums;
+    int k;
+    nums = {1,2,1,2,3};
+    k = 2;
+    cout << subarraysWithKDistinct::subarraysWithKDistinct(nums, k) << endl;
+    nums = {1,2,1,3,4};
+    k = 3;
+    cout << subarraysWithKDistinct::subarraysWithKDistinct(nums, k) << endl;
+}
+
 int main() {
-    equationsPossible_test();
+    subarraysWithKDistinct_test();
     {
+        //brokenCalc_test();
+
+        //equationsPossible_test();
+
         //addToArrayForm_test();
 
         //smallestFromLeaf_test();
