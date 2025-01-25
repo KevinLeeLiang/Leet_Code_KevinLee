@@ -11964,7 +11964,7 @@ void minCameraCover_test() {
 }
 
 namespace pancakeSort {
-    vector<int> pancakeSort(vector<int>& arr) {
+    vector<int> pancakeSort(vector<int> &arr) {
         vector<int> ret;
         for (int n = arr.size(); n > 1; n--) {
             int index = max_element(arr.begin(), arr.begin() + n) - arr.begin();
@@ -11981,12 +11981,12 @@ namespace pancakeSort {
 }
 
 void pancakeSort_test() {
-    vector<int>arr, ans;
-    arr = {3,2,4,1};
+    vector<int> arr, ans;
+    arr = {3, 2, 4, 1};
     ans = pancakeSort::pancakeSort(arr);
     print_vector(ans);
     cout << "+++++++++++++" << endl;
-    arr = {1,2,3};
+    arr = {1, 2, 3};
     ans = pancakeSort::pancakeSort(arr);
     print_vector(ans);
     cout << "+++++++++++++" << endl;
@@ -12018,7 +12018,7 @@ namespace powerfulIntegers {
 
 void powerfulIntegers_test() {
     int x, y, bound;
-    vector<int>ans;
+    vector<int> ans;
     x = 2, y = 3, bound = 10;
     ans = powerfulIntegers::powerfulIntegers(x, y, bound);
     print_vector(ans);
@@ -12031,7 +12031,7 @@ void powerfulIntegers_test() {
 }
 
 namespace flipMatchVoyage {
-    bool dfs(TreeNode::TreeNode* root, vector<int>&voyage, int &i, vector<int>&res) {
+    bool dfs(TreeNode::TreeNode *root, vector<int> &voyage, int &i, vector<int> &res) {
         if (!root) {
             return true;
         }
@@ -12044,8 +12044,9 @@ namespace flipMatchVoyage {
         }
         return dfs(root->left, voyage, i, res) && dfs(root->right, voyage, i, res);
     }
-    vector<int> flipMatchVoyage(TreeNode::TreeNode* root, vector<int>& voyage) {
-        vector<int>res;
+
+    vector<int> flipMatchVoyage(TreeNode::TreeNode *root, vector<int> &voyage) {
+        vector<int> res;
         int i = 0;
         if (dfs(root, voyage, i, res)) {
             return res;
@@ -12054,86 +12055,87 @@ namespace flipMatchVoyage {
     }
 }
 
-void flipMatchVoyage_test(){
-    vector<int>vals, voyage, ans;
+void flipMatchVoyage_test() {
+    vector<int> vals, voyage, ans;
     TreeNode::TreeNode *root;
-    vals = {1,2};
-    voyage = {2,1};
+    vals = {1, 2};
+    voyage = {2, 1};
     root = create_treenode(vals);
     ans = flipMatchVoyage::flipMatchVoyage(root, voyage);
     print_vector(ans);
     cout << "+++++++++" << endl;
-    vals = {1,2,3};
-    voyage = {1,3,2};
+    vals = {1, 2, 3};
+    voyage = {1, 3, 2};
     root = create_treenode(vals);
     ans = flipMatchVoyage::flipMatchVoyage(root, voyage);
     print_vector(ans);
     cout << "+++++++++" << endl;
-    vals = {1,2,3};
-    voyage = {1,2,3};
+    vals = {1, 2, 3};
+    voyage = {1, 2, 3};
     root = create_treenode(vals);
     ans = flipMatchVoyage::flipMatchVoyage(root, voyage);
     print_vector(ans);
     cout << "+++++++++" << endl;
 }
 
-namespace isRationalEqual{
+namespace isRationalEqual {
 #define x first
 #define y second
     typedef unsigned long long ULL;
 
     typedef pair<ULL, ULL> PLL;
-    ULL gcd(ULL a, ULL b){
 
-        return b ? gcd(b, a%b) : a;
+    ULL gcd(ULL a, ULL b) {
 
-    }
-
-    PLL simple(PLL a){//化简分数
-
-        ULL t = gcd(a.x,a.y);
-
-        return {a.x/t, a.y/t};
+        return b ? gcd(b, a % b) : a;
 
     }
 
-    PLL add(PLL a, PLL b){//两个分数相加
+    PLL simple(PLL a) {//化简分数
 
-        a = simple(a),b = simple(b);
+        ULL t = gcd(a.x, a.y);
 
-        ULL down = a.y*b.y;
-
-        ULL up = a.x*b.y + b.x*a.y;
-
-        return simple({up,down});
+        return {a.x / t, a.y / t};
 
     }
 
-    PLL convert(string &s){//将小数转为分数
+    PLL add(PLL a, PLL b) {//两个分数相加
 
-        PLL a = {0,1}, b = {0,1}, c = {0, 0};//整数部分 不循环小数部分 循环小数部分
+        a = simple(a), b = simple(b);
+
+        ULL down = a.y * b.y;
+
+        ULL up = a.x * b.y + b.x * a.y;
+
+        return simple({up, down});
+
+    }
+
+    PLL convert(string &s) {//将小数转为分数
+
+        PLL a = {0, 1}, b = {0, 1}, c = {0, 0};//整数部分 不循环小数部分 循环小数部分
 
         int i = 0;
 
         //例如25.01(52)
 
-        while(i < s.size() && s[i]!='.') a.x = a.x*10 + s[i]-'0', i++; // 分解出整数部分 {25,1}
+        while (i < s.size() && s[i] != '.') a.x = a.x * 10 + s[i] - '0', i++; // 分解出整数部分 {25,1}
 
         i++;//跳过小数点
 
-        while(i < s.size() && s[i]!='(') b.x = b.x*10 + s[i]-'0', b.y = b.y*10, i++; // 分解出不循环小数部分 {1,100}
+        while (i < s.size() && s[i] != '(') b.x = b.x * 10 + s[i] - '0', b.y = b.y * 10, i++; // 分解出不循环小数部分 {1,100}
 
         i++;//跳过左括号
 
-        while(i < s.size() && s[i]!=')') c.x = c.x*10 + s[i]-'0', c.y = c.y*10+9, i++;// 分解出循环小数部分 {52,99}
+        while (i < s.size() && s[i] != ')') c.x = c.x * 10 + s[i] - '0', c.y = c.y * 10 + 9, i++;// 分解出循环小数部分 {52,99}
 
         c.y *= b.y;//把循环小数前面的0也计算在内 {52,9900}
 
-        if(c.y==0) c.y = 1;//注意 可能无循环部分 分母不能为零 这里把分母设为1即可
+        if (c.y == 0) c.y = 1;//注意 可能无循环部分 分母不能为零 这里把分母设为1即可
 
         // cout<<a.x<<" "<<a.y<<"--"<<b.x<<" "<<b.y<<"--"<<c.x<<" "<<c.y<<endl;
 
-        return add(add(a,b),c);
+        return add(add(a, b), c);
 
     }
 
@@ -12143,7 +12145,7 @@ namespace isRationalEqual{
     }
 }
 
-void isRationalEqual_test(){
+void isRationalEqual_test() {
     string s, t;
     s = "0.(52)", t = "0.5(25)";
     cout << isRationalEqual::isRationalEqual(s, t) << endl;
@@ -12155,7 +12157,8 @@ void isRationalEqual_test(){
 
 namespace kClosest {
     mt19937 gen{random_device{}()};
-    void random_select(vector<vector<int>>& points, int left, int right, int k) {
+
+    void random_select(vector<vector<int>> &points, int left, int right, int k) {
         int pivot_id = uniform_int_distribution<int>{left, right}(gen);
         int pivot = points[pivot_id][0] * points[pivot_id][0] + points[pivot_id][1] * points[pivot_id][1];
         swap(points[right], points[pivot_id]);
@@ -12172,43 +12175,45 @@ namespace kClosest {
         // [left, i-1] 都小于等于 pivot, [i+1, right] 都大于 pivot
         if (k < i - left + 1) {
             random_select(points, left, i - 1, k);
-        }
-        else if (k > i - left + 1) {
+        } else if (k > i - left + 1) {
             random_select(points, i + 1, right, k - (i - left + 1));
         }
     }
 
-    vector<vector<int>> kClosest(vector<vector<int>>& points, int k) {
+    vector<vector<int>> kClosest(vector<vector<int>> &points, int k) {
         int n = points.size();
         random_select(points, 0, n - 1, k);
         return {points.begin(), points.begin() + k};
     }
 }
 
-void kClosest_test(){
+void kClosest_test() {
     vector<vector<int>> points, ans;
     int k;
-    points = {{1,3},{-2,2}};
+    points = {{1,  3},
+              {-2, 2}};
     k = 1;
     ans = kClosest::kClosest(points, k);
     for (auto p : ans) {
-        cout << p[0] << "," << p[1]<<";";
+        cout << p[0] << "," << p[1] << ";";
     }
     cout << endl;
     cout << "++++++++++++++++" << endl;
-    points = {{3,3},{5,-1},{-2,4}};
+    points = {{3,  3},
+              {5,  -1},
+              {-2, 4}};
     k = 2;
     ans = kClosest::kClosest(points, k);
     for (auto p : ans) {
-        cout << p[0] << "," << p[1]<<";";
+        cout << p[0] << "," << p[1] << ";";
     }
     cout << endl;
     cout << "++++++++++++++++" << endl;
 }
 
 namespace subarraysDivByK {
-    int subarraysDivByK(vector<int>& nums, int k) {
-        unordered_map<int, int> record = {{0,1}};
+    int subarraysDivByK(vector<int> &nums, int k) {
+        unordered_map<int, int> record = {{0, 1}};
         int sum = 0, ans = 0;
         for (int elem : nums) {
             sum += elem;
@@ -12223,21 +12228,22 @@ namespace subarraysDivByK {
 }
 
 void subarraysDivByK_test() {
-    vector<int>nums;
+    vector<int> nums;
     int k;
-    nums = {4,5,0,-2,-3,1}, k = 5;
+    nums = {4, 5, 0, -2, -3, 1}, k = 5;
     cout << subarraysDivByK::subarraysDivByK(nums, k) << endl;
     nums = {5}, k = 9;
     cout << subarraysDivByK::subarraysDivByK(nums, k) << endl;
 }
 
 namespace oddEvenJumps {
-    vector<int> make(vector<int> & idxArr) {
+    vector<int> make(vector<int> &idxArr) {
         vector<int> rs(idxArr.size(), -1);
         stack<int> s;
-        for(int idx: idxArr) {
+        for (int idx: idxArr) {
             while (!s.empty() && s.top() < idx) {
-                int tmp = s.top(); s.pop();
+                int tmp = s.top();
+                s.pop();
                 rs[tmp] = idx;
             }
             s.push(idx);
@@ -12245,18 +12251,18 @@ namespace oddEvenJumps {
         return rs;
     }
 
-    int oddEvenJumps(vector<int>& arr) {
+    int oddEvenJumps(vector<int> &arr) {
         int n = arr.size();
         vector<int> iArr(n), odd(n), even(n), oddNext, evenNext;
-        odd[n-1] = even[n-1] = true;
+        odd[n - 1] = even[n - 1] = true;
 
-        for(int i = 0; i < n; i++) iArr[i] = i;
-        sort(iArr.begin(), iArr.end(), [&](auto a, auto b){return arr[a] == arr[b] ? a < b: arr[a] < arr[b];});
+        for (int i = 0; i < n; i++) iArr[i] = i;
+        sort(iArr.begin(), iArr.end(), [&](auto a, auto b) { return arr[a] == arr[b] ? a < b : arr[a] < arr[b]; });
         oddNext = make(iArr);
-        sort(iArr.begin(), iArr.end(), [&](auto a, auto b){return arr[a] == arr[b] ? a < b: arr[a] > arr[b];});
+        sort(iArr.begin(), iArr.end(), [&](auto a, auto b) { return arr[a] == arr[b] ? a < b : arr[a] > arr[b]; });
         evenNext = make(iArr);
 
-        for(int i = n-2; i >= 0; i--) {
+        for (int i = n - 2; i >= 0; i--) {
             if (oddNext[i] != -1) {
                 int nxt = oddNext[i];
                 odd[i] = even[nxt];
@@ -12274,18 +12280,18 @@ namespace oddEvenJumps {
     }
 }
 
-void oddEvenJumps_test(){
-    vector<int>arr;
-    arr = {10,13,12,14,15};
+void oddEvenJumps_test() {
+    vector<int> arr;
+    arr = {10, 13, 12, 14, 15};
     cout << oddEvenJumps::oddEvenJumps(arr) << endl;
-    arr = {2,3,1,1,4};
+    arr = {2, 3, 1, 1, 4};
     cout << oddEvenJumps::oddEvenJumps(arr) << endl;
 }
 
 namespace largestPerimeter {
-    int largestPerimeter(vector<int>& nums) {
+    int largestPerimeter(vector<int> &nums) {
         sort(nums.begin(), nums.end());
-        for (int i = (int)nums.size() - 1; i >= 2; --i){
+        for (int i = (int) nums.size() - 1; i >= 2; --i) {
             if (nums[i - 2] + nums[i - 1] > nums[i]) {
                 return nums[i - 2] + nums[i - 1] + nums[i];
             }
@@ -12295,15 +12301,15 @@ namespace largestPerimeter {
 }
 
 void largestPerimeter_test() {
-    vector<int>nums;
-    nums = {2,1,2};
+    vector<int> nums;
+    nums = {2, 1, 2};
     cout << largestPerimeter::largestPerimeter(nums) << endl;
-    nums = {1,2,1,10};
+    nums = {1, 2, 1, 10};
     cout << largestPerimeter::largestPerimeter(nums) << endl;
 }
 
 namespace sortedSquares {
-    vector<int> sortedSquares(vector<int>& nums) {
+    vector<int> sortedSquares(vector<int> &nums) {
         int n = nums.size();
         vector<int> ans(n);
         for (int i = 0, j = n - 1, pos = n - 1; i <= j;) {
@@ -12320,18 +12326,18 @@ namespace sortedSquares {
     }
 }
 
-void sortedSquares_test(){
-    vector<int>nums, ans;
-    nums = {-4,-1,0,3,10};
+void sortedSquares_test() {
+    vector<int> nums, ans;
+    nums = {-4, -1, 0, 3, 10};
     ans = sortedSquares::sortedSquares(nums);
     print_vector(nums);
-    nums = {-7,-3,2,3,11};
+    nums = {-7, -3, 2, 3, 11};
     ans = sortedSquares::sortedSquares(nums);
     print_vector(nums);
 }
 
 namespace maxTurbulenceSize {
-    int maxTurbulenceSize(vector<int>& arr) {
+    int maxTurbulenceSize(vector<int> &arr) {
         int n = arr.size();
         int ret = 1;
         int left = 0, right = 0;
@@ -12356,16 +12362,16 @@ namespace maxTurbulenceSize {
     }
 }
 
-void maxTurbulenceSize_test(){
-    vector<int>arr;
-    arr = {9,4,2,10,7,8,8,1,9};
+void maxTurbulenceSize_test() {
+    vector<int> arr;
+    arr = {9, 4, 2, 10, 7, 8, 8, 1, 9};
     cout << maxTurbulenceSize::maxTurbulenceSize(arr) << endl;
-    arr = {4,8,12,16};
+    arr = {4, 8, 12, 16};
     cout << maxTurbulenceSize::maxTurbulenceSize(arr) << endl;
 }
 
 namespace distributeCoins {
-    int distributeCoins(TreeNode::TreeNode* root) {
+    int distributeCoins(TreeNode::TreeNode *root) {
         int move = 0;
 
         function<int(const TreeNode::TreeNode *)> dfs = [&](const TreeNode::TreeNode *root) -> int {
@@ -12389,19 +12395,19 @@ namespace distributeCoins {
     }
 }
 
-void distributeCoins_test(){
-    vector<int>vals;
-    TreeNode::TreeNode* root;
-    vals = {3,0,0};
+void distributeCoins_test() {
+    vector<int> vals;
+    TreeNode::TreeNode *root;
+    vals = {3, 0, 0};
     root = create_treenode(vals, true);
     cout << distributeCoins::distributeCoins(root) << endl;
-    vals = {0,3,0};
+    vals = {0, 3, 0};
     root = create_treenode(vals, true);
     cout << distributeCoins::distributeCoins(root) << endl;
 }
 
 namespace countTriplets {
-    int countTriplets(vector<int>& nums) {
+    int countTriplets(vector<int> &nums) {
         vector<int> cnt(1 << 16);
         for (int x: nums) {
             for (int y: nums) {
@@ -12420,11 +12426,11 @@ namespace countTriplets {
     }
 }
 
-void countTriplets_test(){
-    vector<int>nums;
-    nums = {2,1,3};
+void countTriplets_test() {
+    vector<int> nums;
+    nums = {2, 1, 3};
     cout << countTriplets::countTriplets(nums) << endl;
-    nums = {0,0,0};
+    nums = {0, 0, 0};
     cout << countTriplets::countTriplets(nums) << endl;
 }
 
@@ -12448,7 +12454,7 @@ namespace mincostTickets {
         return memo[i];
     }
 
-    int mincostTickets(vector<int>& days, vector<int>& costs) {
+    int mincostTickets(vector<int> &days, vector<int> &costs) {
         costs_ = costs;
         dayset.clear();
         for (int d: days) {
@@ -12459,11 +12465,11 @@ namespace mincostTickets {
     }
 }
 
-void mincostTickets_test(){
+void mincostTickets_test() {
     vector<int> days, costs;
-    days = {1,4,6,7,8,20}, costs = {2,7,15};
+    days = {1, 4, 6, 7, 8, 20}, costs = {2, 7, 15};
     cout << mincostTickets::mincostTickets(days, costs) << endl;
-    days = {1,2,3,4,5,6,7,8,9,10,30,31}, costs = {2,7,15};
+    days = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 30, 31}, costs = {2, 7, 15};
     cout << mincostTickets::mincostTickets(days, costs) << endl;
 }
 
@@ -12472,8 +12478,8 @@ namespace strWithout3a3b {
         string s;
         int A = a, B = b;
         int cnta = 0, cntb = 0;
-        while(A>0 || B>0)
-            if (A>B) {
+        while (A > 0 || B > 0)
+            if (A > B) {
                 if (cnta < 2) {
                     s = s + 'a';
                     cnta++;
@@ -12485,7 +12491,7 @@ namespace strWithout3a3b {
                     B--;
                     cnta = 0;
                 }
-            }else {
+            } else {
                 if (cntb < 2) {
                     s = s + 'b';
                     cntb++;
@@ -12511,27 +12517,23 @@ void strWithout3a3b_test() {
 }
 
 namespace sumEvenAfterQueries {
-    vector<int> sumEvenAfterQueries(vector<int>& nums, vector<vector<int>>& queries) {
+    vector<int> sumEvenAfterQueries(vector<int> &nums, vector<vector<int>> &queries) {
         vector<int> res;
         int sum = 0;
-        for(int i = 0; i < nums.size(); i++)
-            if(nums[i]%2 == 0)
+        for (int i = 0; i < nums.size(); i++)
+            if (nums[i] % 2 == 0)
                 sum += nums[i];
-        for(int i = 0; i < queries.size(); i++)
-        {
+        for (int i = 0; i < queries.size(); i++) {
             int val = queries[i][0];
             int index = queries[i][1];
-            if(nums[index] % 2 == 0)
-            {
-                if(val % 2 == 0)
+            if (nums[index] % 2 == 0) {
+                if (val % 2 == 0)
                     sum += val;
                 else
                     sum -= nums[index];
-            }
-            else
-            {
-                if(val % 2 != 0)
-                    sum += nums[index]+val;
+            } else {
+                if (val % 2 != 0)
+                    sum += nums[index] + val;
             }
             nums[index] += val;
             res.push_back(sum);
@@ -12540,29 +12542,31 @@ namespace sumEvenAfterQueries {
     }
 }
 
-void sumEvenAfterQueries_test(){
-    vector<int>nums, ans;
+void sumEvenAfterQueries_test() {
+    vector<int> nums, ans;
     vector<vector<int>> queries;
-    nums = {1,2,3,4};
-    queries = {{1,0},{-3,1},{-4,0},{2,3}};
-    ans  = sumEvenAfterQueries::sumEvenAfterQueries(nums, queries);
+    nums = {1, 2, 3, 4};
+    queries = {{1,  0},
+               {-3, 1},
+               {-4, 0},
+               {2,  3}};
+    ans = sumEvenAfterQueries::sumEvenAfterQueries(nums, queries);
     print_vector(ans);
 }
 
 namespace intervalIntersection {
-    vector<vector<int>> intervalIntersection(vector<vector<int>>& firstList, vector<vector<int>>& secondList) {
+    vector<vector<int>> intervalIntersection(vector<vector<int>> &firstList, vector<vector<int>> &secondList) {
         int i = 0, j = 0;
         vector<vector<int>> res;
-        while(i < firstList.size() && j < secondList.size()){
+        while (i < firstList.size() && j < secondList.size()) {
             int low = max(firstList[i][0], secondList[j][0]);
             int high = min(firstList[i][1], secondList[j][1]);
-            if(low <= high){
+            if (low <= high) {
                 res.push_back({low, high});
             }
-            if(firstList[i][1] < secondList[j][1]){
+            if (firstList[i][1] < secondList[j][1]) {
                 i++;
-            }
-            else{
+            } else {
                 j++;
             }
         }
@@ -12570,27 +12574,35 @@ namespace intervalIntersection {
     }
 }
 
-void intervalIntersection_test(){
-    vector<vector<int>>firstList, secondList, ans;
-    firstList = firstList = {{0,2},{5,10},{13,23},{24,25}}, secondList = {{1,5},{8,12},{15,24},{25,26}};
+void intervalIntersection_test() {
+    vector<vector<int>> firstList, secondList, ans;
+    firstList = firstList = {{0,  2},
+                             {5,  10},
+                             {13, 23},
+                             {24, 25}}, secondList = {{1,  5},
+                                                      {8,  12},
+                                                      {15, 24},
+                                                      {25, 26}};
     ans = intervalIntersection::intervalIntersection(firstList, secondList);
     for (auto list : ans) {
         cout << list[0] << " " << list[1] << ", ";
     }
     cout << endl;
-    firstList = {{1,3},{5,9}}, secondList = {};
+    firstList = {{1, 3},
+                 {5, 9}}, secondList = {};
     ans = intervalIntersection::intervalIntersection(firstList, secondList);
     for (auto list : ans) {
         cout << list[0] << " " << list[1] << ", ";
     }
     cout << endl;
-    firstList = {}, secondList = {{4,8},{10,12}};
+    firstList = {}, secondList = {{4,  8},
+                                  {10, 12}};
     ans = intervalIntersection::intervalIntersection(firstList, secondList);
     for (auto list : ans) {
         cout << list[0] << " " << list[1] << ", ";
     }
     cout << endl;
-    firstList = {{1,7}}, secondList = {{3,10}};
+    firstList = {{1, 7}}, secondList = {{3, 10}};
     ans = intervalIntersection::intervalIntersection(firstList, secondList);
     for (auto list : ans) {
         cout << list[0] << " " << list[1] << ", ";
@@ -12599,9 +12611,9 @@ void intervalIntersection_test(){
 }
 
 namespace verticalTraversal {
-    vector<vector<int>> verticalTraversal(TreeNode::TreeNode* root) {
+    vector<vector<int>> verticalTraversal(TreeNode::TreeNode *root) {
         vector<tuple<int, int, int>> nodes;
-        function<void(TreeNode::TreeNode*, int, int)> dfs = [&](TreeNode::TreeNode* node, int row, int col) {
+        function<void(TreeNode::TreeNode *, int, int)> dfs = [&](TreeNode::TreeNode *node, int row, int col) {
             if (node) {
                 nodes.emplace_back(col, row, node->val);
                 dfs(node->left, row + 1, col - 1);
@@ -12612,7 +12624,7 @@ namespace verticalTraversal {
         sort(nodes.begin(), nodes.end());
         vector<vector<int>> ans;
         int lastcol = INT_MIN;
-        for (const auto& [col, row, value] : nodes) {
+        for (const auto&[col, row, value] : nodes) {
             if (col != lastcol) {
                 lastcol = col;
                 ans.emplace_back();
@@ -12623,10 +12635,10 @@ namespace verticalTraversal {
     }
 }
 
-void verticalTraversal_test(){
-    vector<int>vals;
-    TreeNode::TreeNode* root;
-    vals = {3,9,20,-1,-1,15,7};
+void verticalTraversal_test() {
+    vector<int> vals;
+    TreeNode::TreeNode *root;
+    vals = {3, 9, 20, -1, -1, 15, 7};
     root = create_treenode(vals, true);
     vector<vector<int>> ans = verticalTraversal::verticalTraversal(root);
     for (auto list : ans) {
@@ -12635,11 +12647,11 @@ void verticalTraversal_test(){
 }
 
 namespace smallestFromLeaf {
-    string smallestFromLeaf(TreeNode::TreeNode* root) {
+    string smallestFromLeaf(TreeNode::TreeNode *root) {
         string ans = "~";
-        function<void(TreeNode::TreeNode*, string)> dfs = [&](TreeNode::TreeNode* node, string path) {
+        function<void(TreeNode::TreeNode *, string)> dfs = [&](TreeNode::TreeNode *node, string path) {
             if (node != nullptr) {
-                path += (char)('a' + node->val);
+                path += (char) ('a' + node->val);
                 if (node->left == nullptr && node->right == nullptr) {
                     ans = min(ans, string(path.rbegin(), path.rend()));
                 } else {
@@ -12653,19 +12665,19 @@ namespace smallestFromLeaf {
     }
 }
 
-void smallestFromLeaf_test(){
-    vector<int>vals;
-    TreeNode::TreeNode* root;
-    vals = {0,1,2,3,4,3,4};
+void smallestFromLeaf_test() {
+    vector<int> vals;
+    TreeNode::TreeNode *root;
+    vals = {0, 1, 2, 3, 4, 3, 4};
     root = create_treenode(vals, true);
     cout << smallestFromLeaf::smallestFromLeaf(root) << endl;
-    vals = {25,1,3,1,3,0,2};
+    vals = {25, 1, 3, 1, 3, 0, 2};
     root = create_treenode(vals, true);
     cout << smallestFromLeaf::smallestFromLeaf(root) << endl;
 }
 
 namespace addToArrayForm {
-    vector<int> addToArrayForm(vector<int>& nums, int k) {
+    vector<int> addToArrayForm(vector<int> &nums, int k) {
         int n = nums.size();
         vector<int> ans;
         for (int i = n - 1; i >= 0 || k > 0; --i) {
@@ -12678,24 +12690,24 @@ namespace addToArrayForm {
         reverse(ans.begin(), ans.end());
         return ans;
     }
- }
+}
 
-void addToArrayForm_test(){
-    vector<int>nums, ans;
+void addToArrayForm_test() {
+    vector<int> nums, ans;
     int k;
-    nums = {9,9,9,9,9,9,9,9,9,9};
+    nums = {9, 9, 9, 9, 9, 9, 9, 9, 9, 9};
     k = 1;
     ans = addToArrayForm::addToArrayForm(nums, k);
     print_vector(ans);
-    nums = {1,2,0,0};
+    nums = {1, 2, 0, 0};
     k = 34;
     ans = addToArrayForm::addToArrayForm(nums, k);
     print_vector(ans);
-    nums = {2,7,4};
+    nums = {2, 7, 4};
     k = 181;
     ans = addToArrayForm::addToArrayForm(nums, k);
     print_vector(ans);
-    nums = {2,1,5};
+    nums = {2, 1, 5};
     k = 806;
     ans = addToArrayForm::addToArrayForm(nums, k);
     print_vector(ans);
@@ -12725,16 +12737,16 @@ namespace equationsPossible {
         }
     };
 
-    bool equationsPossible(vector<string>& equations) {
+    bool equationsPossible(vector<string> &equations) {
         UnionFind uf;
-        for (const string& str: equations) {
+        for (const string &str: equations) {
             if (str[1] == '=') {
                 int index1 = str[0] - 'a';
                 int index2 = str[3] - 'a';
                 uf.unite(index1, index2);
             }
         }
-        for (const string& str: equations) {
+        for (const string &str: equations) {
             if (str[1] == '!') {
                 int index1 = str[0] - 'a';
                 int index2 = str[3] - 'a';
@@ -12747,19 +12759,19 @@ namespace equationsPossible {
     }
 }
 
-void equationsPossible_test(){
+void equationsPossible_test() {
     vector<string> equations;
     bool ans;
-    equations = {"a==b","b!=a"};
+    equations = {"a==b", "b!=a"};
     ans = equationsPossible::equationsPossible(equations);
     cout << ans << endl;
-    equations = {"b==a","a==b"};
+    equations = {"b==a", "a==b"};
     ans = equationsPossible::equationsPossible(equations);
     cout << ans << endl;
-    equations = {"c==c","b==d","x!=z"};
+    equations = {"c==c", "b==d", "x!=z"};
     ans = equationsPossible::equationsPossible(equations);
     cout << ans << endl;
-    equations = {"c==c","b==c","c==a"};
+    equations = {"c==c", "b==c", "c==a"};
     ans = equationsPossible::equationsPossible(equations);
     cout << ans << endl;
     equations = {"a==b", "b!=c", "c==a"};
@@ -12792,7 +12804,7 @@ namespace brokenCalc {
     }
 }
 
-void brokenCalc_test(){
+void brokenCalc_test() {
     int startValue, target;
     startValue = 2, target = 3;
     cout << brokenCalc::brokenCalc(startValue, target) << endl;
@@ -12803,7 +12815,7 @@ void brokenCalc_test(){
 }
 
 namespace subarraysWithKDistinct {
-    int getMostDistinct(vector<int>& nums, int k) {
+    int getMostDistinct(vector<int> &nums, int k) {
         unordered_map<int, int> mp;
         int left = 0, right = 0, ret = 0;
         while (right < nums.size()) {
@@ -12818,25 +12830,183 @@ namespace subarraysWithKDistinct {
         }
         return ret;
     }
-    int subarraysWithKDistinct(vector<int>& nums, int k) {
+
+    int subarraysWithKDistinct(vector<int> &nums, int k) {
         return getMostDistinct(nums, k) - getMostDistinct(nums, k - 1);
     }
 }
 
-void subarraysWithKDistinct_test(){
-    vector<int>nums;
+void subarraysWithKDistinct_test() {
+    vector<int> nums;
     int k;
-    nums = {1,2,1,2,3};
+    nums = {1, 2, 1, 2, 3};
     k = 2;
     cout << subarraysWithKDistinct::subarraysWithKDistinct(nums, k) << endl;
-    nums = {1,2,1,3,4};
+    nums = {1, 2, 1, 3, 4};
     k = 3;
     cout << subarraysWithKDistinct::subarraysWithKDistinct(nums, k) << endl;
 }
 
+namespace isCousins {
+    // x 的信息
+    int x_;
+    TreeNode::TreeNode *x_parent;
+    int x_depth;
+    bool x_found = false;
+
+    // y 的信息
+    int y_;
+    TreeNode::TreeNode *y_parent;
+    int y_depth;
+    bool y_found = false;
+
+    // 用来判断是否遍历到 x 或 y 的辅助函数
+    void update(TreeNode::TreeNode *node, TreeNode::TreeNode *parent, int depth) {
+        if (node->val == x_) {
+            tie(x_parent, x_depth, x_found) = tuple{parent, depth, true};
+        } else if (node->val == y_) {
+            tie(y_parent, y_depth, y_found) = tuple{parent, depth, true};
+        }
+    }
+
+    bool isCousins(TreeNode::TreeNode *root, int x, int y) {
+        x_ = x;
+        x_parent = nullptr;
+        x_depth = 0;
+        x_found = false;
+        y_ = y;
+        y_parent = nullptr;
+        y_depth = 0;
+        y_found = false;
+        queue<pair<TreeNode::TreeNode *, int>> q;
+        q.emplace(root, 0);
+        while (!q.empty()) {
+            if (x_found && y_found) {
+                break;
+            }
+            int size = q.size();
+            for (int i = 0; i < size; ++i) {
+                auto&&[node, depth] = q.front();
+                if (node->left) {
+                    if (node->left->val == x_) {
+                        x_parent = node;
+                        x_depth = depth + 1;
+                        x_found = true;
+                    }
+                    if (node->left->val == y_) {
+                        y_parent = node;
+                        y_depth = depth + 1;
+                        y_found = true;
+                    }
+                    q.emplace(node->left, depth + 1);
+                }
+                if (node->right) {
+                    if (node->right->val == x_) {
+                        x_parent = node;
+                        x_depth = depth + 1;
+                        x_found = true;
+                    }
+                    if (node->right->val == y_) {
+                        y_parent = node;
+                        y_depth = depth + 1;
+                        y_found = true;
+                    }
+                    q.emplace(node->right, depth + 1);
+                }
+                q.pop();
+            }
+
+
+        }
+
+        return x_depth == y_depth && x_parent != y_parent;
+    }
+}
+
+void isCousins_test() {
+    vector<int> vals;
+    TreeNode::TreeNode *root;
+    int x = 4, y = 3;
+//    vals = {1,2,3,4};
+//    root = create_treenode(vals, false);
+//    cout << isCousins::isCousins(root, x, y) << endl;
+//    vals = {1,2,3,0,4,0,5};
+//    x = 5, y = 4;
+//    root = create_treenode(vals, false);
+//    cout << isCousins::isCousins(root, x, y) << endl;
+    vals = {1, 2, 3, 0, 0, 0, 4, 5};
+    x = 1, y = 2;
+    root = create_treenode(vals, false);
+    cout << isCousins::isCousins(root, x, y) << endl;
+}
+
+namespace orangesRotting {
+    int cnt;
+    int dis[10][10];
+    int dir_x[4] = {0, 1, 0, -1};
+    int dir_y[4] = {1, 0, -1, 0};
+
+    int orangesRotting(vector<vector<int>> &grid) {
+        queue<pair<int, int>> Q;
+        memset(dis, -1, sizeof(dis));
+        cnt = 0;
+        int n = (int) grid.size(), m = (int) grid[0].size(), ans = 0;
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < m; ++j) {
+                if (grid[i][j] == 2) {
+                    Q.emplace(i, j);
+                    dis[i][j] = 0;
+                } else if (grid[i][j] == 1) {
+                    cnt += 1;
+                }
+            }
+        }
+        while (!Q.empty()) {
+            auto[r, c] = Q.front();
+            Q.pop();
+            for (int i = 0; i < 4; ++i) {
+                int tx = r + dir_x[i];
+                int ty = c + dir_y[i];
+                if (tx < 0 || tx >= n || ty < 0 || ty >= m || ~dis[tx][ty] || !grid[tx][ty]) {
+                    continue;
+                }
+                dis[tx][ty] = dis[r][c] + 1;
+                Q.emplace(tx, ty);
+                if (grid[tx][ty] == 1) {
+                    cnt -= 1;
+                    ans = dis[tx][ty];
+                    if (!cnt) {
+                        break;
+                    }
+                }
+            }
+        }
+        return cnt ? -1 : ans;
+    }
+
+}
+
+void orangesRotting_test() {
+    vector<vector<int>> grid;
+    grid = {{2, 1, 1},
+            {1, 1, 0},
+            {0, 1, 1}};
+    cout << orangesRotting::orangesRotting(grid) << endl;
+    grid = {{2, 1, 0},
+            {0, 1, 1},
+            {1, 0, 1}};
+    cout << orangesRotting::orangesRotting(grid) << endl;
+    grid = {{2, 0}};
+    cout << orangesRotting::orangesRotting(grid) << endl;
+}
+
 int main() {
-    subarraysWithKDistinct_test();
+    orangesRotting_test();
     {
+        //isCousins_test();
+
+        //subarraysWithKDistinct_test();
+
         //brokenCalc_test();
 
         //equationsPossible_test();
@@ -12846,9 +13016,9 @@ int main() {
         //smallestFromLeaf_test();
 
         //verticalTraversal_test();
-    
+
         //intervalIntersection_test();
-    
+
         //sumEvenAfterQueries_test();
 
         //strWithout3a3b_test();
