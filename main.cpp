@@ -13000,9 +13000,90 @@ void orangesRotting_test() {
     cout << orangesRotting::orangesRotting(grid) << endl;
 }
 
+namespace minKBitFlips {
+    int minKBitFlips(vector<int> &nums, int k) {
+        int cnt = 0;
+        queue<int> ends;
+        for (int i = 0; i < nums.size(); i++) {
+            if (!ends.empty() && ends.front() == i) {
+                ends.pop();
+            }
+            if (!(nums[i] ^ (ends.size() & 1))) {
+                int end = i + k;
+                if (end > nums.size()) {
+                    return -1;
+                }
+                ends.push(end);
+                cnt++;
+            }
+        }
+        return cnt;
+    }
+}
+
+void minKBitFlips_test() {
+    vector<int> A;
+    int K;
+    A = {0, 1, 0};
+    K = 1;
+    cout << minKBitFlips::minKBitFlips(A, K) << endl;
+    A = {1, 1, 0};
+    K = 2;
+    cout << minKBitFlips::minKBitFlips(A, K) << endl;
+    A = {0,0,0,1,0,1,1,0};
+    K = 3;
+    cout << minKBitFlips::minKBitFlips(A, K) << endl;
+}
+
+namespace numSquarefulPerms {
+    int dp[13][1<<12], g[13];
+    unordered_map<int,int>mp;
+    bool check(int a,int b) {
+        int d=(int)sqrt(a+b);
+        return d*d==(a+b);
+    }
+    int numSquarefulPerms(vector<int> &nums) {
+        int n=nums.size();
+        for(int i=0;i<n;i++) {
+            dp[i][(1<<i)]=1;
+            g[i]|=(1<<i);
+            mp[nums[i]]++;
+        }
+        for(int i=1;i<1<<n;i++) {
+            for(int j=0;j<n;j++) {
+                if(i&(1<<j)){
+                    for(int k=0;k<n;k++) {
+                        if(j!=k&&check(nums[j],nums[k])&&((1<<k)&i))
+                            dp[j][i]+=dp[k][i^(1<<j)];
+                    }
+                    //printf("j=%d i=%x dp[j][i]=%d\n",j,i,dp[j][i]);
+                }
+            }
+        }
+        int ans=0;
+        for(int i=0;i<n;i++) ans+=dp[i][(1<<n)-1];
+        for(auto& [k,v]:mp) {
+            for(int i=1;i<=v;i++) ans/=i;
+        }
+        return ans;
+    }
+}
+
+void numSquarefulPerms_test() {
+    vector<int> A;
+    A = {1, 17, 8};
+    cout << numSquarefulPerms::numSquarefulPerms(A) << endl;
+    A = {2, 2, 2};
+    cout << numSquarefulPerms::numSquarefulPerms(A) << endl;
+}
+
 int main() {
-    orangesRotting_test();
+    numSquarefulPerms_test();
     {
+        //minKBitFlips_test();
+
+        //orangesRotting_test();
+
         //isCousins_test();
 
         //subarraysWithKDistinct_test();
