@@ -13030,40 +13030,42 @@ void minKBitFlips_test() {
     A = {1, 1, 0};
     K = 2;
     cout << minKBitFlips::minKBitFlips(A, K) << endl;
-    A = {0,0,0,1,0,1,1,0};
+    A = {0, 0, 0, 1, 0, 1, 1, 0};
     K = 3;
     cout << minKBitFlips::minKBitFlips(A, K) << endl;
 }
 
 namespace numSquarefulPerms {
-    int dp[13][1<<12], g[13];
-    unordered_map<int,int>mp;
-    bool check(int a,int b) {
-        int d=(int)sqrt(a+b);
-        return d*d==(a+b);
+    int dp[13][1 << 12], g[13];
+    unordered_map<int, int> mp;
+
+    bool check(int a, int b) {
+        int d = (int) sqrt(a + b);
+        return d * d == (a + b);
     }
+
     int numSquarefulPerms(vector<int> &nums) {
-        int n=nums.size();
-        for(int i=0;i<n;i++) {
-            dp[i][(1<<i)]=1;
-            g[i]|=(1<<i);
+        int n = nums.size();
+        for (int i = 0; i < n; i++) {
+            dp[i][(1 << i)] = 1;
+            g[i] |= (1 << i);
             mp[nums[i]]++;
         }
-        for(int i=1;i<1<<n;i++) {
-            for(int j=0;j<n;j++) {
-                if(i&(1<<j)){
-                    for(int k=0;k<n;k++) {
-                        if(j!=k&&check(nums[j],nums[k])&&((1<<k)&i))
-                            dp[j][i]+=dp[k][i^(1<<j)];
+        for (int i = 1; i < 1 << n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i & (1 << j)) {
+                    for (int k = 0; k < n; k++) {
+                        if (j != k && check(nums[j], nums[k]) && ((1 << k) & i))
+                            dp[j][i] += dp[k][i ^ (1 << j)];
                     }
                     //printf("j=%d i=%x dp[j][i]=%d\n",j,i,dp[j][i]);
                 }
             }
         }
-        int ans=0;
-        for(int i=0;i<n;i++) ans+=dp[i][(1<<n)-1];
-        for(auto& [k,v]:mp) {
-            for(int i=1;i<=v;i++) ans/=i;
+        int ans = 0;
+        for (int i = 0; i < n; i++) ans += dp[i][(1 << n) - 1];
+        for (auto&[k, v]:mp) {
+            for (int i = 1; i <= v; i++) ans /= i;
         }
         return ans;
     }
@@ -13077,9 +13079,225 @@ void numSquarefulPerms_test() {
     cout << numSquarefulPerms::numSquarefulPerms(A) << endl;
 }
 
+namespace findjudge {
+    int findJudge(int n, vector<vector<int>> &trust) {
+        vector<int> inDegrees(n + 1);
+        vector<int> outDegrees(n + 1);
+        for (auto &edge : trust) {
+            int x = edge[0], y = edge[1];
+            ++inDegrees[y];
+            ++outDegrees[x];
+        }
+        for (int i = 1; i <= n; ++i) {
+            if (inDegrees[i] == n - 1 && outDegrees[i] == 0) {
+                return i;
+            }
+        }
+        return -1;
+    }
+}
+
+void findJudge_test() {
+    vector<vector<int>> trust;
+    int n;
+    n = 2, trust = {{1, 2}};
+    cout << findjudge::findJudge(n, trust) << endl;
+    n = 3, trust = {{1, 3},
+                    {2, 3}};
+    cout << findjudge::findJudge(n, trust) << endl;
+    n = 3, trust = {{1, 3},
+                    {2, 3},
+                    {3, 1}};
+    cout << findjudge::findJudge(n, trust) << endl;
+}
+
+namespace insertIntoMaxTree {
+    TreeNode::TreeNode *insertIntoMaxTree(TreeNode::TreeNode *root, int val) {
+        TreeNode::TreeNode *parent = nullptr;
+        TreeNode::TreeNode *cur = root;
+        while (cur) {
+            if (val > cur->val) {
+                if (!parent) {
+                    return new TreeNode::TreeNode(val, root, nullptr);
+                }
+                TreeNode::TreeNode *node = new TreeNode::TreeNode(val, cur, nullptr);
+                parent->right = node;
+                return root;
+            } else {
+                parent = cur;
+                cur = cur->right;
+            }
+        }
+        parent->right = new TreeNode::TreeNode(val);
+        return root;
+    }
+}
+
+void insertIntoMaxTree_test() {
+    vector<int> vals;
+    int val;
+    TreeNode::TreeNode *root, *ans;
+    vector<vector<string>> anss;
+    vals = {4, 1, 3, 0, 0, 2}, val = 5;
+    root = create_treenode(vals, false);
+    ans = insertIntoMaxTree::insertIntoMaxTree(root, val);
+    anss = printTree::printTree(ans);
+    for (int i = 0; i < anss.size(); i++) {
+        print_vector(anss[i]);
+    }
+    cout << "++++++++" << endl;
+    vals = {5, 2, 4, 0, 1}, val = 3;
+    root = create_treenode(vals, false);
+    ans = insertIntoMaxTree::insertIntoMaxTree(root, val);
+    anss = printTree::printTree(ans);
+    for (int i = 0; i < anss.size(); i++) {
+        print_vector(anss[i]);
+    }
+    cout << "++++++++" << endl;
+    vals = {5, 2, 3, 0, 1}, val = 4;
+    root = create_treenode(vals, false);
+    ans = insertIntoMaxTree::insertIntoMaxTree(root, val);
+    anss = printTree::printTree(ans);
+    for (int i = 0; i < anss.size(); i++) {
+        print_vector(anss[i]);
+    }
+    cout << "++++++++" << endl;
+};
+
+namespace numRookCaptures {
+    int numRookCaptures(vector<vector<char>>& board) {
+        int cnt = 0, st = 0, ed = 0;
+        int dx[4] = {0, 1, 0, -1};
+        int dy[4] = {1, 0, -1, 0};
+        for (int i = 0; i < 8; ++i) {
+            for (int j = 0; j < 8; ++j) {
+                if (board[i][j] == 'R') {
+                    st = i;
+                    ed = j;
+                    break;
+                }
+            }
+        }
+        for (int i = 0; i < 4; ++i) {
+            for (int step = 0;; ++step) {
+                int tx = st + step * dx[i];
+                int ty = ed + step * dy[i];
+                if (tx < 0 || tx >= 8 || ty < 0 || ty >= 8 || board[tx][ty] == 'B') {
+                    break;
+                }
+                if (board[tx][ty] == 'p') {
+                    cnt++;
+                    break;
+                }
+            }
+        }
+        return cnt;
+
+    }
+}
+
+void numRookCaptures_test() {
+    vector<vector<char>> board;
+    board = {{'.', '.', '.', '.', '.', '.', '.', '.'},
+             {'.', '.', '.', 'p', '.', '.', '.', '.'},
+             {'.', '.', '.', 'R', '.', '.', '.', 'p'},
+             {'.', '.', '.', '.', '.', '.', '.', '.'},
+             {'.', '.', '.', '.', '.', '.', '.', '.'},
+             {'.', '.', '.', 'p', '.', '.', '.', '.'},
+             {'.', '.', '.', '.', '.', '.', '.', '.'}};
+    cout << numRookCaptures::numRookCaptures(board) << endl;
+    board = {{'.', '.', '.', '.', '.', '.', '.', '.'},
+             {'.', 'p', 'p', 'p', 'p', 'p', '.', '.'},
+             {'.', 'p', 'p', 'B', 'p', 'p', '.', '.'},
+             {'.', 'p', 'B', 'R', 'B', 'p', '.', '.'},
+             {'.', 'p', 'p', 'B', 'p', 'p', '.', '.'},
+             {'.', 'p', 'p', 'p', 'p', 'p', '.', '.'},
+             {'.', '.', '.', '.', '.', '.', '.', '.'},
+             {'.', '.', '.', '.', '.', '.', '.', '.'}};
+    cout << numRookCaptures::numRookCaptures(board) << endl;
+    board = {{'.', '.', '.', '.', '.', '.', '.', '.'},
+             {'.', '.', '.', 'p', '.', '.', '.', '.'},
+             {'.', '.', '.', 'p', '.', '.', '.', '.'},
+             {'p', 'p', '.', 'R', '.', 'p', 'B', '.'},
+             {'.', '.', '.', '.', '.', '.', '.', '.'},
+             {'.', '.', '.', 'B', '.', '.', '.', '.'},
+             {'.', '.', '.', 'p', '.', '.', '.', '.'},
+             {'.', '.', '.', '.', '.', '.', '.', '.'}};
+    cout << numRookCaptures::numRookCaptures(board) << endl;
+}
+
+namespace mergeStones {
+    static constexpr int inf = 0x3f3f3f3f;
+    vector<vector<vector<int>>> d;
+    vector<int> sum;
+    int k;
+    int get(int l, int r, int t) {
+        // 若 d[l][r][t] 不为 -1，表示已经在之前的递归被求解过，直接返回答案
+        if (d[l][r][t] != -1) {
+            return d[l][r][t];
+        }
+        // 当石头堆数小于 t 时，一定无解
+        if (t > r - l + 1) {
+            return inf;
+        }
+        if (t == 1) {
+            int res = get(l, r, k);
+            if (res == inf) {
+                return d[l][r][t] = inf;
+            }
+            return d[l][r][t] = res + (sum[r] - (l == 0 ? 0 : sum[l - 1]));
+        }
+        int val = inf;
+        for (int p = l; p < r; p += (k - 1)) {
+            val = min(val, get(l, p, 1) + get(p + 1, r, t - 1));
+        }
+        return d[l][r][t] = val;
+    }
+
+    int mergeStones(vector<int> &stones, int K) {
+        int n = stones.size();
+        if ((n - 1) % (k - 1) != 0) {
+            return -1;
+        }
+        this->k = k;
+        d = vector(n, vector(n, vector<int>(k + 1, -1)));
+        sum = vector<int>(n, 0);
+
+        // 初始化
+        for (int i = 0, s = 0; i < n; i++) {
+            d[i][i][1] = 0;
+            s += stones[i];
+            sum[i] = s;
+        }
+        int res = get(0, n - 1, 1);
+        return res;
+    }
+ }
+
+void mergeStones_test() {
+    vector<int> &stones, int K;
+    stones = {3, 2, 4, 1};
+    K = 2;
+    cout << mergeStones::mergeStones(stones, K) << endl;
+    stones = {3, 2, 4, 1};
+    K = 3;
+    cout << mergeStones::mergeStones(stones, K) << endl;
+    stones = {3, 5, 1, 2, 6};
+    K = 3;
+    cout << mergeStones::mergeStones(stones, K) << endl;
+}
+
 int main() {
-    numSquarefulPerms_test();
+    mergeStones_test();
     {
+        //numRookCaptures_test();
+
+        //insertIntoMaxTree_test();
+
+        //findJudge_test();
+
+        //numSquarefulPerms_test();
+
         //minKBitFlips_test();
 
         //orangesRotting_test();
